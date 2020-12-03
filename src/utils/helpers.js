@@ -1,9 +1,9 @@
 import data from "../config/config.json";
-import localForage from "localforage";
+// import localForage from "localforage";
 import { runRpc } from "./rpc.js";
-localForage.config({
-  name: "log"
-});
+// localForage.config({
+//   name: "log"
+// });
 const regionconfig = {};
 // require(`../config/${"config" &&
 //   process.env.REACT_APP_REFERENCE}`);
@@ -63,7 +63,7 @@ export const setConfig = function(config) {
 };
 
 export const writeLog = function(data) {
-  localForage.setItem(GetGUID(), data);
+  localStorage.setItem(GetGUID(), data);
 };
 
 export const getDivisions = async () => {

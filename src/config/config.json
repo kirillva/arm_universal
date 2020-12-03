@@ -1,0 +1,7 @@
+{
+    "BASE_URL": "http://kes.it-serv.ru/vote/{0}",
+    "ARM_URL": "http://kes.it-serv.ru/arm/vote/{0}",
+    "WS_URL": "http://kes.it-serv.ru",
+    "defaultNamespace": "PN",
+    "dir": "test"
+  }

@@ -6,8 +6,11 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { AdminPanel } from "pages/AdminPanel";
 import { MainMenu } from "components/MainMenu";
+import { menuItems } from "components/Menu";
+import { routeItems } from "components/Routes";
+import { getClaims } from "utils/user";
+import { Route, Switch } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -37,6 +40,22 @@ function ResponsiveDrawer() {
     setMobileOpen(!mobileOpen);
   };
 
+  const filter = (item) => {
+    let val = false;
+    if (item.public) return true;
+    item.claims.forEach((element) => {
+      if (getClaims().indexOf(`.${element}.`) >= 0) {
+        val = true;
+      }
+    });
+    return val;
+  };
+  const filteredMenu = menuItems.filter(filter);
+  const filteredRoute = routeItems.filter(filter);
+
+  console.log('filteredMenu', filteredMenu);
+  console.log('filteredRoute', filteredRoute);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -58,9 +77,18 @@ function ResponsiveDrawer() {
       </AppBar>
       <MainMenu
         mobileOpen={mobileOpen}
+        data={menuItems}
         handleDrawerToggle={handleDrawerToggle}
       />
-      <AdminPanel />
+      <Switch>
+        {routeItems.map((item) => {
+          return (
+            <Route exact={item.exact} path={item.path}>
+              {React.createElement(item.component)}
+            </Route>
+          );
+        })}
+      </Switch>
     </div>
   );
 }

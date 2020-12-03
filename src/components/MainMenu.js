@@ -5,9 +5,11 @@ import {
   Hidden,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MainMenu = ({ mobileOpen, handleDrawerToggle }) => {
+export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
 
   const drawer = (
@@ -31,14 +33,15 @@ export const MainMenu = ({ mobileOpen, handleDrawerToggle }) => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
-            {/* <ListItemIcon>
-              {index % 2 === 0 ? <InboxI /> : <MailIcon />}
-            </ListItemIcon> */}
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        {data.map((item, index) => {
+          const { path, title, icon } = item;
+          return (
+            <ListItem button key={path} component={Link} to={path}>
+              <ListItemIcon>{React.createElement(icon)}</ListItemIcon>
+              <ListItemText primary={title} />
+            </ListItem>
+          );
+        })}
       </List>
     </>
   );

@@ -10,7 +10,7 @@ export const menuItems = [
       "division",
     ],
     icon: ArrowDownward,
-    path: "/qrcode",
+    path: "/scan",
     title: "Инструкция",
   }
 ];

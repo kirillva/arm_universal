@@ -4,7 +4,7 @@ export const routeItems = [
   {
     claims: ["manager"],
     exact: true,
-    path: "/admin_panel",
+    path: "/scan",
     component: AdminPanel,
   },
 ];
