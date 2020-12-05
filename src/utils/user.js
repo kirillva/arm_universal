@@ -27,7 +27,7 @@ export const isProfileExist = () => {
 };
 
 export const getUsername = () => {
-  return getItem("username");
+  return getItem("userName");
 };
 
 export const getToken = () => {
@@ -38,17 +38,18 @@ export const getClaims = () => {
   return getItem("claims") || "";
 };
 
-export const authenticate = ({ username, token, userId, claims, persist }) => {
-  setItem("username", username, persist);
+export const authenticate = ({ userName, token, userId, claims, persist }) => {
+  setItem("userName", userName, persist);
   setItem("token", token, persist);
   setItem("userid", userId, persist);
   setItem("claims", claims, persist);
+  
   if (global && global.__audit) {
     const config = getConfig();
     const BASE_URL = config.BASE_URL.replace("{0}", config.dir);
     const auditProvider = new global.__audit({
       baseUrl: BASE_URL,
-      login: username,
+      login: userName,
       token: token,
       app_id: "mlk",
     });
@@ -74,7 +75,7 @@ export const auth = async ({
       onDisabled();
     } else {
       authenticate({
-        username: login,
+        userName: responce.user.userName,
         token: responce.token,
         userId: responce.user.userId,
         persist: persist,
@@ -92,12 +93,12 @@ export const getUserId = () => {
 };
 
 export const logout = () => {
-  setItem("username", "");
+  setItem("userName", "");
   setItem("token", "");
   setItem("userid", "");
   setItem("claims", "");
 
-  setItem("username", "", true);
+  setItem("userName", "", true);
   setItem("token", "", true);
   setItem("userid", "", true);
   setItem("claims", "", true);

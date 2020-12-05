@@ -11,6 +11,7 @@ import { menuItems } from "components/Menu";
 import { routeItems } from "components/Routes";
 import { getClaims, isAuthorized } from "utils/user";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { blue } from "@material-ui/core/colors";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
+    backgroundColor: blue[500]
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -42,10 +44,9 @@ function ResponsiveDrawer() {
   const currentRouteItem = routeItems.find(
     (item) => item.path === location.pathname
   );
-  debugger;
-  console.log(currentMenuItem);
-  console.log(location);
-  console.log(menuItems);
+  // console.log(currentMenuItem);
+  // console.log(location);
+  // console.log(menuItems);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -71,35 +72,36 @@ function ResponsiveDrawer() {
     return isAuthorized() ? <Route {...rest} /> : <Redirect to="/auth" />;
   };
 
-  if (!currentRouteItem) return '404';
+  if (!currentRouteItem) return "404";
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       {currentRouteItem.path === "/auth" ? null : (
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              {currentMenuItem.title}
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <>
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                className={classes.menuButton}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap>
+                {currentMenuItem.title}
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <MainMenu
+            mobileOpen={mobileOpen}
+            data={menuItems}
+            handleDrawerToggle={handleDrawerToggle}
+          />
+        </>
       )}
-
-      <MainMenu
-        mobileOpen={mobileOpen}
-        data={menuItems}
-        handleDrawerToggle={handleDrawerToggle}
-      />
       <Switch>
         {routeItems.map((item) => {
           return item.public ? (

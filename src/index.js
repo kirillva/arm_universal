@@ -5,12 +5,12 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { HashRouter as Router } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import orange from "@material-ui/core/colors/orange";
+import blue from "@material-ui/core/colors/blue";
 
 const outerTheme = createMuiTheme({
   palette: {
     secondary: {
-      main: orange[500],
+      main: blue[500],
     },
   },
   typography: { useNextVariants: true },
