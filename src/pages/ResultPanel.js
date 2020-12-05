@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AdminPanel = withRouter(() => {
+export const ResultPanel = withRouter(() => {
     const classes = useStyles();
   return (
     <div className={classes.content}>

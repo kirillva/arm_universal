@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,7 +10,8 @@ import { MainMenu } from "components/MainMenu";
 import { menuItems } from "components/Menu";
 import { routeItems } from "components/Routes";
 import { getClaims } from "utils/user";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
+import { SigninForm } from "pages/SigninForm";
 
 const drawerWidth = 240;
 
@@ -34,7 +35,15 @@ const useStyles = makeStyles((theme) => ({
 
 function ResponsiveDrawer() {
   const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  const currentMenuItem = menuItems.find(
+    (item) => item.path === location.pathname
+  );
+  debugger;
+  console.log(currentMenuItem);
+  console.log(location);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -52,9 +61,10 @@ function ResponsiveDrawer() {
   };
   const filteredMenu = menuItems.filter(filter);
   const filteredRoute = routeItems.filter(filter);
+  debugger;
 
-  console.log('filteredMenu', filteredMenu);
-  console.log('filteredRoute', filteredRoute);
+  console.log("filteredMenu", filteredMenu);
+  console.log("filteredRoute", filteredRoute);
 
   return (
     <div className={classes.root}>
@@ -71,7 +81,7 @@ function ResponsiveDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Responsive drawer
+            {currentMenuItem ? currentMenuItem.title : ""}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -81,9 +91,12 @@ function ResponsiveDrawer() {
         handleDrawerToggle={handleDrawerToggle}
       />
       <Switch>
+        <Route exact={true} path={"/auth"}>
+          <SigninForm />
+        </Route>
         {routeItems.map((item) => {
           return (
-            <Route exact={item.exact} path={item.path}>
+            <Route exact={true} path={item.path}>
               {React.createElement(item.component)}
             </Route>
           );

@@ -11,6 +11,18 @@ export const menuItems = [
     ],
     icon: ArrowDownward,
     path: "/scan",
-    title: "Инструкция",
+    title: "Сканировать",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: ArrowDownward,
+    path: "/result",
+    title: "Результаты",
   }
 ];

@@ -16,14 +16,23 @@ const outerTheme = createMuiTheme({
   typography: { useNextVariants: true },
 });
 
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <MuiThemeProvider theme={outerTheme}>
+//       <Router>
+//         <App />
+//       </Router>
+//     </MuiThemeProvider>
+//   </React.StrictMode>,
+//   document.getElementById("root")
+// );
+
 ReactDOM.render(
-  <React.StrictMode>
     <MuiThemeProvider theme={outerTheme}>
       <Router>
         <App />
       </Router>
-    </MuiThemeProvider>
-  </React.StrictMode>,
+    </MuiThemeProvider>,
   document.getElementById("root")
 );
 

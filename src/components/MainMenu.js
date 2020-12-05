@@ -48,18 +48,16 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
 
   return (
     <div className={classes.drawer} aria-label="mailbox folders">
-      {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
       <Hidden smUp implementation="css">
         <Drawer
           variant="temporary"
-          // anchor={theme.direction === "rtl" ? "right" : "left"}
           open={mobileOpen}
           onClose={handleDrawerToggle}
           classes={{
             paper: classes.drawerPaper,
           }}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
         >
           {drawer}
