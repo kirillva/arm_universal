@@ -1,7 +1,7 @@
 {
-    "BASE_URL": "http://kes.it-serv.ru/vote/{0}",
-    "ARM_URL": "http://kes.it-serv.ru/arm/vote/{0}",
-    "WS_URL": "http://kes.it-serv.ru",
-    "defaultNamespace": "PN",
-    "dir": "test"
-  }
+  "BASE_URL": "http://kes.it-serv.ru/delivery/release",
+  "WS_URL": "http://kes.it-serv.ru",
+  "defaultNamespace": "PN",
+  "WS_PATH": "/delivery/release/socket.io",
+  "dir": "test"
+}

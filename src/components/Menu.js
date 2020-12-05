@@ -1,6 +1,19 @@
-import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 export const menuItems = [
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: ArrowDownward,
+  //   path: "/auth",
+  //   title: "Авторизация",
+  // },
   {
     claims: [
       "manual_edit",
@@ -9,8 +22,8 @@ export const menuItems = [
       "manager_candidate",
       "division",
     ],
-    icon: ArrowDownward,
-    path: "/scan",
+    icon: PhotoCameraIcon,
+    path: "/",
     title: "Сканировать",
   },
   {
@@ -21,7 +34,7 @@ export const menuItems = [
       "manager_candidate",
       "division",
     ],
-    icon: ArrowDownward,
+    icon: AssignmentIcon,
     path: "/result",
     title: "Результаты",
   }

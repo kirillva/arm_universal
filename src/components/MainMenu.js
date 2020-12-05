@@ -9,7 +9,8 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import { logout } from "utils/user";
 
 const drawerWidth = 240;
 
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
+export const MainMenu = withRouter(({ history, data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
 
   const drawer = (
@@ -33,15 +34,42 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
+        <ListItem
+          button
+          key={'/'}
+          component={Link}
+          to={'/'}
+          onClick={() => handleDrawerToggle()}
+        >
+          {/* <ListItemIcon>{React.createElement(icon)}</ListItemIcon> */}
+          <ListItemText primary={'Главная'} />
+        </ListItem>
         {data.map((item, index) => {
           const { path, title, icon } = item;
           return (
-            <ListItem button key={path} component={Link} to={path}>
+            <ListItem
+              button
+              key={path}
+              component={Link}
+              to={path}
+              onClick={() => handleDrawerToggle()}
+            >
               <ListItemIcon>{React.createElement(icon)}</ListItemIcon>
               <ListItemText primary={title} />
             </ListItem>
           );
         })}
+        <ListItem
+          button
+          onClick={() => {
+            logout();
+            handleDrawerToggle();
+            history.push('/');
+          }}
+        >
+          {/* <ListItemIcon>{React.createElement(icon)}</ListItemIcon> */}
+          <ListItemText primary={'Выход'} />
+        </ListItem>
       </List>
     </>
   );
@@ -76,4 +104,4 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
       </Hidden>
     </div>
   );
-};
+});
