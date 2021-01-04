@@ -23,17 +23,15 @@ export function findAccess(list, constant) {
 /**
  * Возвращает уникальный идентификатор
  */
-export const GetGUID = function(short = false) {
+export const GetGUID = function (short = false) {
   var d = new Date().getTime();
-  var uuid = ""
+  var uuid = "";
   if (short) {
-    uuid = "xxxxxxxx"
+    uuid = "xxxxxxxx";
   } else {
-    uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
   }
-  uuid = uuid.replace(/[xy]/g, function(
-    c
-  ) {
+  uuid = uuid.replace(/[xy]/g, function (c) {
     var r = (d + Math.random() * 16) % 16 | 0;
     d = Math.floor(d / 16);
     return (c === "x" ? r : r && 0x7 | 0x8).toString(16);
@@ -41,7 +39,7 @@ export const GetGUID = function(short = false) {
   return uuid;
 };
 
-export const getConfig = function() {
+export const getConfig = function () {
   let config = localStorage.getItem("config");
   try {
     config = JSON.parse(config);
@@ -52,7 +50,7 @@ export const getConfig = function() {
   return Object.assign(data, config, regionconfig);
 };
 
-export const setConfig = function(config) {
+export const setConfig = function (config) {
   try {
     config = JSON.stringify(config);
   } catch (error) {
@@ -62,7 +60,7 @@ export const setConfig = function(config) {
   localStorage.setItem("config", config);
 };
 
-export const writeLog = function(data) {
+export const writeLog = function (data) {
   localStorage.setItem(GetGUID(), data);
 };
 
@@ -72,29 +70,29 @@ export const getDivisions = async () => {
       action: "sd_divisions",
       method: "Query",
       data: [{}],
-      type: "rpc"
+      type: "rpc",
     }),
     runRpc({
       action: "sd_subdivisions",
       method: "Query",
       data: [{}],
-      type: "rpc"
-    })
+      type: "rpc",
+    }),
   ]);
   const sd_divisions = responce[0].result.records;
   const sd_subdivisions = responce[1].result.records;
 
   const sd_division_keys = {};
-  sd_divisions.forEach(item => (sd_division_keys[item.id] = item));
+  sd_divisions.forEach((item) => (sd_division_keys[item.id] = item));
   const sd_subdivision_keys = {};
-  sd_subdivisions.forEach(item => (sd_subdivision_keys[item.id] = item));
+  sd_subdivisions.forEach((item) => (sd_subdivision_keys[item.id] = item));
 
-  const divisions = sd_divisions.map(item => {
+  const divisions = sd_divisions.map((item) => {
     let val = {
       id: item.id,
       level: 0,
       divisions: [item.id],
-      c_name: item.c_name
+      c_name: item.c_name,
     };
     let parent = item;
     let counter = 10;
@@ -114,15 +112,17 @@ export const getDivisions = async () => {
   });
 
   const subdivisions = [];
-  sd_subdivisions.forEach(item => {
+  sd_subdivisions.forEach((item) => {
     let val = {};
 
-    const parent = divisions.find(division => division.id === item.f_division);
+    const parent = divisions.find(
+      (division) => division.id === item.f_division
+    );
     subdivisions.push({
       ...parent,
       subdivision: item.id,
       c_name: item.c_name,
-      level: parent.level + 1
+      level: parent.level + 1,
     });
 
     return val;
@@ -142,7 +142,7 @@ export const arrayMove = (array, moveIndex, toIndex) => {
       ...array.slice(0, toIndex),
       item,
       ...array.slice(toIndex, moveIndex),
-      ...array.slice(moveIndex + 1, length)
+      ...array.slice(moveIndex + 1, length),
     ];
   } else if (diff < 0) {
     // move right
@@ -151,7 +151,7 @@ export const arrayMove = (array, moveIndex, toIndex) => {
       ...array.slice(0, moveIndex),
       ...array.slice(moveIndex + 1, targetIndex),
       item,
-      ...array.slice(targetIndex, length)
+      ...array.slice(targetIndex, length),
     ];
   }
   return array;
