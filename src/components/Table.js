@@ -1,4 +1,3 @@
-import { useLoadTables } from "hooks/useLoadTables";
 import React, { useEffect, useState } from "react";
 import {
   useTable,
@@ -8,7 +7,9 @@ import {
   useGroupBy,
   useExpanded,
   useRowSelect,
+  useAsyncDebounce,
 } from "react-table";
+import { runRpc } from "utils/rpc";
 
 const EditableCell = ({
   value: initialValue,
@@ -60,8 +61,10 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
-export const Table = ({ columns, skipReset, action }) => {
+export const Table = ({ columns, action }) => {
   const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
   const updateMyData = () => {};
 
@@ -90,6 +93,17 @@ export const Table = ({ columns, skipReset, action }) => {
     []
   );
 
+  const initialState = {
+    pageSize: 20,
+  };
+
+  const skipPageResetRef = React.useRef();
+
+  React.useEffect(() => {
+    // After the table has updated, always remove the flag
+    skipPageResetRef.current = false;
+  });
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -99,7 +113,7 @@ export const Table = ({ columns, skipReset, action }) => {
     canPreviousPage,
     canNextPage,
     pageOptions,
-    pageCount,
+    // pageCount,
     gotoPage,
     nextPage,
     previousPage,
@@ -120,12 +134,17 @@ export const Table = ({ columns, skipReset, action }) => {
       defaultColumn,
       filterTypes,
       updateMyData,
-      autoResetPage: !skipReset,
-      // autoResetSelectedRows: !skipReset,
-      // disableMultiSort: true,
-      autoResetSelectedRows: false,
-      getRowId: (row, relativeIndex)=>{
-        return row.id
+      pageCount: pageCount,
+      autoResetPage: false, //!skipPageResetRef.current,
+      autoResetExpanded: false, //!skipPageResetRef.current,
+      autoResetGroupBy: false, //!skipPageResetRef.current,
+      autoResetSelectedRows: false, //!skipPageResetRef.current,
+      autoResetSortBy: false, //!skipPageResetRef.current,
+      autoResetFilters: false, //!skipPageResetRef.current,
+      autoResetRowState: false, //!skipPageResetRef.current,
+
+      getRowId: (row, relativeIndex) => {
+        return row.id;
       },
       manualSortBy: true,
       manualFilters: true,
@@ -159,13 +178,45 @@ export const Table = ({ columns, skipReset, action }) => {
       });
     }
   );
-  const LoadTables = useLoadTables();
-  
-  useEffect(() => {
-    LoadTables({ action: action, pageIndex: pageIndex, pageSize: pageSize, filters: filters }).then((records) => {
-      setData(records);
+
+  const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
+    debugger;
+    runRpc({
+      action: action,
+      method: "Query",
+      data: [
+        {
+          page: pageIndex,
+          start: pageIndex * pageSize,
+          limit: pageSize,
+          filter: filters.map((item) => ({
+            property: item.id,
+            value: item.value,
+            operator: "like",
+          })),
+        },
+      ],
+      type: "rpc",
+    }).then((responce) => {
+      if (responce.meta && responce.meta.success) {
+        const _records = responce.result.records;
+        setPageCount(Math.ceil(responce.result.total / pageSize));
+        // setPageSize(initialState.pageSize);
+
+        setData(_records);
+        skipPageResetRef.current = true;
+      } else {
+        setData([]);
+        skipPageResetRef.current = true;
+      }
     });
-  }, [LoadTables, pageIndex, pageSize, sortBy, filters, action])
+  };
+
+  const onFetchDataDebounced = useAsyncDebounce(onFetchData, 100);
+
+  useEffect(() => {
+    onFetchDataDebounced({ pageIndex, pageSize, sortBy, filters, action });
+  }, [onFetchDataDebounced, pageIndex, pageSize, sortBy, filters, action]);
 
   return (
     <>

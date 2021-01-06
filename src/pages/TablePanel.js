@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { runRpc } from "utils/rpc";
 import { Table } from "components/Table";
-// import { getConfig } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
