@@ -63,14 +63,12 @@ export const TablePanel = () => {
 
   const columns = React.useMemo(
     () => [
-      {
-        Header: "id",
-        accessor: "id"
-      },
-      {
-        Header: "c_name",
-        accessor: "c_name",
-      },
+      { Header: "id", accessor: "id" },
+      { Header: "fn_user_point", accessor: "fn_user_point" },
+      { Header: "fn_point", accessor: "fn_point" },
+      { Header: "fn_type", accessor: "fn_type" },
+      { Header: "fn_user", accessor: "fn_user" },
+      { Header: "fn_route", accessor: "fn_route" },
     ],
     []
   );
@@ -80,7 +78,7 @@ export const TablePanel = () => {
       <div className={classes.toolbar} />
       <Typography paragraph>Таблица</Typography>
       <pre>{JSON.stringify(results, null, 4)}</pre>
-      <Table columns={columns} action="sd_divisions" />
+      <Table columns={columns} action="cd_results" />
     </div>
   );
 };

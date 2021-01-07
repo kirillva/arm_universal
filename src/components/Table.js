@@ -11,98 +11,47 @@ import {
 } from "react-table";
 import { runRpc } from "utils/rpc";
 
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateMyData,
-  editable,
-}) => {
-  const [value, setValue] = useState(initialValue);
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || defaultRef;
 
-  const onChange = (e) => {
-    setValue(e.target.value);
-  };
+    useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
 
-  const onBlur = () => {
-    updateMyData(index, id, value);
-  };
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  if (!editable) {
-    return `${initialValue}`;
+    return (
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
+    );
   }
+);
 
-  return <input value={value} onChange={onChange} onBlur={onBlur} />;
-};
-
-function DefaultColumnFilter({
-  column: { filterValue, preFilteredRows, setFilter },
-}) {
-  const count = preFilteredRows.length;
-
-  return (
-    <input
-      value={filterValue || ""}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-      placeholder={`Search ${count} records...`}
-    />
-  );
-}
-
-function fuzzyTextFilterFn(rows, id, filterValue) {
-  return false;
-}
-
-fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-export const Table = ({ columns, action }) => {
+export const Table = ({ columns, action, idProperty = 'id' }) => {
   const [data, setData] = useState([]);
-  const [total, setTotal] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
-  const updateMyData = () => {};
 
-  const filterTypes = React.useMemo(
-    () => ({
-      fuzzyText: fuzzyTextFilterFn,
-      text: (rows, id, filterValue) => {
-        return rows.filter((row) => {
-          const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue)
-                .toLowerCase()
-                .startsWith(String(filterValue).toLowerCase())
-            : true;
-        });
-      },
-    }),
-    []
-  );
+  const DefaultColumnFilter = ({ column, className }) => {
+    const { filterValue } = column;
+    return (
+      <input
+        className={className}
+        value={filterValue || ""}
+        onChange={(e) => {
+          column.setFilter(e.target.value);
+        }}
+      />
+    );
+  };
 
   const defaultColumn = React.useMemo(
     () => ({
-      Filter: DefaultColumnFilter,
-      Cell: EditableCell,
+      Filter: DefaultColumnFilter
     }),
     []
   );
-
-  const initialState = {
-    pageSize: 20,
-  };
-
-  const skipPageResetRef = React.useRef();
-
-  React.useEffect(() => {
-    // After the table has updated, always remove the flag
-    skipPageResetRef.current = false;
-  });
 
   const {
     getTableProps,
@@ -113,7 +62,6 @@ export const Table = ({ columns, action }) => {
     canPreviousPage,
     canNextPage,
     pageOptions,
-    // pageCount,
     gotoPage,
     nextPage,
     previousPage,
@@ -132,23 +80,20 @@ export const Table = ({ columns, action }) => {
       columns,
       data,
       defaultColumn,
-      filterTypes,
-      updateMyData,
       pageCount: pageCount,
-      autoResetPage: false, //!skipPageResetRef.current,
-      autoResetExpanded: false, //!skipPageResetRef.current,
-      autoResetGroupBy: false, //!skipPageResetRef.current,
-      autoResetSelectedRows: false, //!skipPageResetRef.current,
-      autoResetSortBy: false, //!skipPageResetRef.current,
-      autoResetFilters: false, //!skipPageResetRef.current,
-      autoResetRowState: false, //!skipPageResetRef.current,
-
+      autoResetPage: false,
+      autoResetExpanded: false,
+      autoResetGroupBy: false,
+      autoResetSelectedRows: false,
+      autoResetSortBy: false,
+      autoResetFilters: false,
+      autoResetRowState: false,
       getRowId: (row, relativeIndex) => {
-        return row.id;
+        return row[idProperty];
       },
       manualSortBy: true,
       manualFilters: true,
-      manualPagination: true,
+      manualPagination: true
     },
     useFilters,
     useGroupBy,
@@ -180,7 +125,6 @@ export const Table = ({ columns, action }) => {
   );
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
-    debugger;
     runRpc({
       action: action,
       method: "Query",
@@ -201,13 +145,9 @@ export const Table = ({ columns, action }) => {
       if (responce.meta && responce.meta.success) {
         const _records = responce.result.records;
         setPageCount(Math.ceil(responce.result.total / pageSize));
-        // setPageSize(initialState.pageSize);
-
         setData(_records);
-        skipPageResetRef.current = true;
       } else {
         setData([]);
-        skipPageResetRef.current = true;
       }
     });
   };
@@ -344,28 +284,3 @@ export const Table = ({ columns, action }) => {
   );
 };
 
-function filterGreaterThan(rows, id, filterValue) {
-  return rows.filter((row) => {
-    const rowValue = row.values[id];
-    return rowValue >= filterValue;
-  });
-}
-
-filterGreaterThan.autoRemove = (val) => typeof val !== "number";
-
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
-
-    useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    );
-  }
-);
