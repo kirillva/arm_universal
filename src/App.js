@@ -11,7 +11,7 @@ import { menuItems } from "components/Menu";
 import { routeItems } from "components/Routes";
 import { getClaims, isAuthorized } from "utils/user";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
-import { blue } from "@material-ui/core/colors";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
-    backgroundColor: blue[500]
+    backgroundColor: theme.palette.primary
   },
   menuButton: {
     marginRight: theme.spacing(2),

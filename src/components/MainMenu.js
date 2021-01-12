@@ -17,15 +17,19 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  toolbar: theme.mixins.toolbar,
   drawer: {
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
-    },
+    }
   },
   drawerPaper: {
-    width: drawerWidth,
+    width: drawerWidth
   },
+  grow: {
+    flex: 1
+  }
 }));
 
 export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
@@ -34,21 +38,11 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
 
   const drawer = (
     <>
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}>
+
+      </div>
       <Divider />
-      <List>
-        <ListItem
-          button
-          key={"/"}
-          component={Link}
-          to={"/"}
-          onClick={() => mobileOpen && handleDrawerToggle()}
-        >
-          <ListItemIcon>
-            <AccountCircleIcon />
-          </ListItemIcon>
-          <ListItemText primary={getUsername()} />
-        </ListItem>
+      <List className={classes.grow}>
         {data.map((item, index) => {
           const { path, title, icon } = item;
           return (
@@ -64,6 +58,19 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
             </ListItem>
           );
         })}
+      </List>
+      <ListItem
+          button
+          key={"/"}
+          component={Link}
+          to={"/"}
+          onClick={() => mobileOpen && handleDrawerToggle()}
+        >
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary={getUsername()} />
+        </ListItem>
         <ListItem
           button
           onClick={() => {
@@ -77,7 +84,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
           </ListItemIcon>
           <ListItemText primary={"Выход"} />
         </ListItem>
-      </List>
+        <div className={classes.toolbar} />
     </>
   );
 

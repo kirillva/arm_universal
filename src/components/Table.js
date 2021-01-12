@@ -110,7 +110,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     nextPage,
     previousPage,
     setPageSize,
-
+    selectedFlatRows,
     state: {
       pageIndex,
       pageSize,
@@ -118,7 +118,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
       groupBy,
       expanded,
       filters,
-      selectedRowIds,
+      selectedRowIds
     },
   } = useTable(
     {
@@ -191,7 +191,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
         const _records = responce.result.records;
         setTotal(responce.result.total);
         setPageCount(Math.ceil(responce.result.total / pageSize));
-        setData(_records);
+        setData(data.concat(_records));
       } else {
         setData([]);
       }
@@ -318,6 +318,9 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
               expanded: expanded,
               filters,
               selectedRowIds: selectedRowIds,
+              'selectedFlatRows[].original': selectedFlatRows.map(
+                d => d.original
+              )
             },
             null,
             2

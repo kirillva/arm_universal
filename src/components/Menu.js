@@ -49,5 +49,17 @@ export const menuItems = [
     icon: AssignmentIcon,
     path: "/table",
     title: "Таблица",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/form",
+    title: "Форма",
   }
 ];

@@ -6,9 +6,18 @@ import reportWebVitals from "./reportWebVitals";
 import { HashRouter as Router } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
+// import { red } from "@material-ui/core/colors";
 
 const outerTheme = createMuiTheme({
+  // palette: {
+  //   secondary: {
+  //     // main: red[200],
+  //   },
+  // },
   palette: {
+    primary: {
+      main: blue[900],
+    },
     secondary: {
       main: blue[500],
     },
@@ -28,11 +37,11 @@ const outerTheme = createMuiTheme({
 // );
 
 ReactDOM.render(
-    <MuiThemeProvider theme={outerTheme}>
-      <Router>
-        <App />
-      </Router>
-    </MuiThemeProvider>,
+  <MuiThemeProvider theme={outerTheme}>
+    <Router>
+      <App />
+    </Router>
+  </MuiThemeProvider>,
   document.getElementById("root")
 );
 

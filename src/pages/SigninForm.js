@@ -94,7 +94,7 @@ export const SigninForm = withRouter(({ history }) => {
           />
           <Button
             type="submit"
-            color="secondary"
+            color="primary"
             variant="contained"
             disabled={isSubmitting}
           >
