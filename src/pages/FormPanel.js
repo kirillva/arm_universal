@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(1),
     marginLeft: theme.spacing(3),
   },
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    gap: theme.spacing(1),
+  }
 }));
 
 export const FormPanel = () => {
@@ -121,7 +126,7 @@ export const FormPanel = () => {
     // };
 
     if (!items) return null;
-    
+
     items.forEach((item) => {
       switch (item.xtype) {
         case "datefield":
@@ -164,18 +169,25 @@ export const FormPanel = () => {
       return (
         <div className={visible ? classes.border : ""}>
           {visible && (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                item.layout = "vbox";
-                _setForm([...form])
-                setForm([...form])
-                
-              }}
-            >
-              hbox
-            </Button>
+            <div className={classes.buttons}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  item.layout = "vbox";
+                  _setForm([...form]);
+                  setForm([...form]);
+                }}
+              >
+                hbox
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+              >
+                +
+              </Button>
+            </div>
           )}
           <div
             //   onMouseEnter={onHoverStart}
@@ -191,18 +203,25 @@ export const FormPanel = () => {
       return (
         <div className={visible ? classes.border : ""}>
           {visible && (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                item.layout = "hbox";
-                _setForm([...form])
-                setForm([...form])
-                
-              }}
-            >
-              vbox
-            </Button>
+            <div className={classes.buttons}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  item.layout = "hbox";
+                  _setForm([...form]);
+                  setForm([...form]);
+                }}
+              >
+                vbox
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+              >
+                +
+              </Button>
+            </div>
           )}
           <div
             //   onMouseEnter={onHoverStart}
