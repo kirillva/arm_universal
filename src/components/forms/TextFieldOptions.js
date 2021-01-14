@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, TextField } from "@material-ui/core";
 
@@ -12,8 +12,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const TextFieldOptions = ({ selectedItem, setSelectedItem }) => {
-
-
     const classes = useStyles();
 
     const onChange = (name) => {
@@ -21,14 +19,6 @@ export const TextFieldOptions = ({ selectedItem, setSelectedItem }) => {
             selectedItem[name] = e.target.value;
         }
     }
-
-    // const onSelectedItem = () => {
-    //     setSelectedItem(selectedItem);
-    // }
-
-    // const onCancelItem = () => {
-    //     setSelectedItem(null);
-    // }
 
     if (!selectedItem) return null;
 
@@ -51,14 +41,12 @@ export const TextFieldOptions = ({ selectedItem, setSelectedItem }) => {
         <Button
             color="primary"
             variant="contained"
-            // onClick={onSelectedItem}
         >
             Сохранить
             </Button>
         <Button
             color="secondary"
             variant="contained"
-            // onClick={onCancelItem}
         >
             Отменить
             </Button>

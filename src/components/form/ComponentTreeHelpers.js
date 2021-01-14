@@ -1,5 +1,6 @@
 import _ from "lodash";
 import merge from "merge";
+import { GetGUID } from "utils/helpers";
 
 export const orderNodes = (a, b) => {
   if (a.order > b.order) return 1;
@@ -10,8 +11,8 @@ export const orderNodes = (a, b) => {
  * Преобразование объекта элементов формы в плоский массив
  * @param {*} items элементы формы
  */
-export const getComponentsArr = items => {
-  const componentsArr = Object.keys(items).map(key => {
+export const getComponentsArr = (items) => {
+  const componentsArr = Object.keys(items).map((key) => {
     return { key: key, ...items[key] };
   });
   componentsArr.sort((a, b) => {
@@ -26,10 +27,10 @@ export const getComponentsArr = items => {
  * Преобразовать плоский массив компонентов в дерево
  * @param {*} componentsArr массив компонетов
  */
-export const getComponentsTree = array => {
+export const getComponentsTree = (array) => {
   var componentsArr = _.cloneDeep(array);
   const components = [];
-  componentsArr.forEach(component => {
+  componentsArr.forEach((component) => {
     var clonedComponent = _.cloneDeep(component);
     let arrWhereSearch = components;
     if (!component.parent.length) components.push(component);
@@ -37,7 +38,7 @@ export const getComponentsTree = array => {
     while (component.parent.length > 0) {
       const parentComponentId = component.parent.shift();
       // поиск компонента к которому нужно прикрепить очередной элемент
-      const parentComponent = arrWhereSearch.find(item => {
+      const parentComponent = arrWhereSearch.find((item) => {
         return item.key === parentComponentId;
       });
       // Добавляем промежуточные компоненты а если это самый глубокий то его
@@ -55,8 +56,8 @@ export const getComponentsTree = array => {
  * Преобразовать узел в extjs
  * @param {*} node узел
  */
-const getExtJSNode = node => {
-  const newNode = {};
+const getExtJSNode = (node) => {
+  let newNode = {};
   if (node.horisontal === true) {
     newNode.layout = "hbox";
     newNode.xtype = "container";
@@ -75,7 +76,9 @@ const getExtJSNode = node => {
     newNode.items = newNode.items.concat(node.items.map(getExtJSNode));
   }
 
-  newNode.xtype = newNode.xtype || node.xtype;
+  if (node) {
+    newNode = node;
+  }
   return { ...newNode, ...node.props };
 };
 
@@ -83,18 +86,66 @@ const getExtJSNode = node => {
  * Преобразовать дерево компонентов в extjs
  * @param {*} tree дерево компонентов
  */
-export const getExtJSView = tree => {
-  debugger;
+export const getExtJSView = (tree) => {
   return tree.map(getExtJSNode);
 };
 
+export const getExtJSFromReactView = (tree) => {
+  return getExtJSView(getComponentsTree(getComponentsArr(tree)));
+}
+
 /**
- * Преобразовать extjs в дерево компонентов 
+ * Преобразовать extjs в дерево компонентов
  * @param {*} tree дерево компонентов
  */
-export const getFromExtJSView = tree => {
-  // return tree.map(getExtJSNode);
+export const getReactFromExtJSView = (extjs) => {
+  const _items = {};
+
+  let _order = 1;
+
+  let stack = extjs;
+
+  while (stack.length !== 0) {
+    const item = stack.pop();
+
+    const id = GetGUID();
+
+    let childLayouts = item.items
+      ? item.items.filter((item) => item.layout)
+      : [];
+
+    const components = item.items
+      ? item.items.filter((item) => !item.layout)
+      : [];
+
+    const _item = {
+      horisontal: item.layout === "vbox" ? false : true,
+      order: _order,
+      items: components,
+      parent: item.parent || []
+    };
+
+    if (childLayouts.length) {
+      childLayouts.forEach((item) => {
+        if (item.parent) {
+          item.parent.push(id);
+        } else {
+          item.parent = [id];
+        }
+      });
+
+      stack = stack.concat(childLayouts);
+    }
+
+    _items[id] = _item;
+
+    _order++;
+  }
+
+
+  return _items
 };
+
 
 let order = 0;
 export const updateFormObject = ({
@@ -105,7 +156,7 @@ export const updateFormObject = ({
   sort,
   moveUp = false,
   moveDown = false,
-  formContent
+  formContent,
 }) => {
   const orderObject = {};
   if (moveUp || moveDown) {
@@ -113,7 +164,7 @@ export const updateFormObject = ({
     const searchingOrder = currentOrder + moveDown - moveUp;
     if (searchingOrder <= order && searchingOrder > 0) {
       let found = null;
-      Object.keys(formContent).forEach(key => {
+      Object.keys(formContent).forEach((key) => {
         if (formContent[key].order === searchingOrder) {
           found = { key: key, ...formContent[key] };
           return;
@@ -139,8 +190,8 @@ export const updateFormObject = ({
           ? options.horisontal
           : formContent[id]
           ? formContent[id].horisontal
-          : false
-      }
+          : false,
+      },
     },
     { ...orderObject }
   );
