@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, TextField } from "@material-ui/core";
-import { TextFieldOptions } from "./TextFieldOptions";
-import classNames from "classnames";
+import { TextFieldOptions } from "../components/forms/TextFieldOptions";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -21,7 +20,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "rgba(0, 255, 0, 0.2)",
   },
   border: {
-    border: "black solid 3px",
+    display: "flex",
+    flexDirection: "column",
+    outline: "2px dashed black",
     margin: "3px",
   },
   textFieldRoot: {
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     gap: theme.spacing(1),
+    margin: theme.spacing(1),
   }
 }));
 
@@ -52,8 +54,6 @@ export const FormPanel = () => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const classes = useStyles();
-
-  const [_form, _setForm] = useState([]);
 
   const [form, setForm] = useState([
     {
@@ -101,29 +101,12 @@ export const FormPanel = () => {
           name: "lastName3",
         },
       ],
-    },
+    }
   ]);
 
-  const Container = ({ item }) => {
+  const Container = ({ item, visible = false }) => {
     const _items = [];
     const { items, layout } = item;
-
-    const [visible, setVisible] = useState(true);
-
-    // const onHoverStart = () => {
-    //   setVisible(true);
-    //   console.log("onHoverStart");
-    // };
-
-    // const onHoverEnd = () => {
-    //   setVisible(false);
-    //   console.log("onHoverEnd");
-    // };
-
-    // const onHoverMove = () => {
-    //   if (!visible) setVisible(true);
-    //   console.log("onHoverMove");
-    // };
 
     if (!items) return null;
 
@@ -160,83 +143,39 @@ export const FormPanel = () => {
           break;
 
         default:
-          _items.push(<Container item={item} />);
+          _items.push(<Container item={item} visible={visible} />);
           break;
       }
     });
 
-    if (layout === "hbox") {
-      return (
-        <div className={visible ? classes.border : ""}>
-          {visible && (
-            <div className={classes.buttons}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  item.layout = "vbox";
-                  _setForm([...form]);
-                  setForm([...form]);
-                }}
-              >
-                hbox
-              </Button>
-              <Button
-                color="primary"
-                variant="contained"
-              >
-                +
-              </Button>
-            </div>
-          )}
-          <div
-            //   onMouseEnter={onHoverStart}
-            //   onMouseOver={onHoverMove}
-            //   onMouseOut={onHoverEnd}
-            className={classes.hbox}
+    return <div className={visible ? classes.border : ""}>
+      {visible && (
+        <div className={classes.buttons}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => {
+              item.layout = layout === "vbox" ? "hbox" : "vbox";
+              setForm([...form]);
+            }}
           >
-            {_items}
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={visible ? classes.border : ""}>
-          {visible && (
-            <div className={classes.buttons}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  item.layout = "hbox";
-                  _setForm([...form]);
-                  setForm([...form]);
-                }}
-              >
-                vbox
-              </Button>
-              <Button
-                color="primary"
-                variant="contained"
-              >
-                +
-              </Button>
-            </div>
-          )}
-          <div
-            //   onMouseEnter={onHoverStart}
-            //   onMouseOver={onHoverMove}
-            //   onMouseOut={onHoverEnd}
-            className={classes.vbox}
+            {layout === "hbox" ? "hbox" : "vbox"}
+          </Button>
+          <Button
+            color="primary"
+            variant="contained"
           >
-            {_items}
-          </div>
+            +
+          </Button>
         </div>
-      );
-    }
+      )}
+      <div className={layout === "hbox" ? classes.hbox : classes.vbox}>
+        {_items}
+      </div>
+    </div>
   };
 
-  const ExtJSToReact = ({ form, className }) => {
+  const ExtJSToReact = ({ form, className, visible }) => {
     if (!form) return null;
 
     if (!form.length) {
@@ -245,7 +184,7 @@ export const FormPanel = () => {
 
     const components = [];
     form.forEach((item) => {
-      components.push(<Container item={item} />);
+      components.push(<Container item={item} visible={visible} />);
     });
 
     return <div className={className}>{components}</div>;
@@ -258,32 +197,15 @@ export const FormPanel = () => {
         <div className={classes.form}>
           {useMemo(
             () => (
-              <ExtJSToReact form={form} />
+              <ExtJSToReact form={form} visible={true} />
             ),
             [form]
           )}
         </div>
-
         {selectedItem && (
           <div className={classes.tools}>
-            <TextFieldOptions
-              item={selectedItem}
-              afterChange={() => _setForm([...form])}
-            />
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => setForm(_form)}
-            >
-              Сохранить
-            </Button>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setSelectedItem(null)}
-            >
-              Отменить
-            </Button>
+            <TextFieldOptions selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+            <pre>{JSON.stringify(form, null, 4)}</pre>
           </div>
         )}
       </div>
