@@ -13,11 +13,15 @@ import rootReducer from "rootReducer";
 const outerTheme = createMuiTheme({
   palette: {
     primary: {
-      main: blue[900],
+      main: '#2196F3',
     },
     secondary: {
       main: blue[500],
     },
+    text: {
+      main: 'rgba(0, 0, 0, 0.6)',
+      dark: 'rgba(0, 0, 0, 0.87)',
+    }
   },
   typography: { useNextVariants: true },
 });

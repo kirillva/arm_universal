@@ -30,6 +30,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { TextField } from "@material-ui/core";
+import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,9 +41,28 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
   },
-  table: {
-    minWidth: 750,
+  header: {
+    
   },
+  table: {
+    color: theme.palette.text.main,
+  },
+  cell: {
+    color: theme.palette.common.grey,
+    borderColor: theme.palette.common.grey,
+  },
+  headerTitle: {
+    userSelect: 'none',
+    display: "flex",
+    flexDirection: "row",
+  },
+  headerTitleText: {
+    flex: 1
+  },
+  // header: {
+  //   color: theme.palette.common.grey,
+  //   borderColor: theme.palette.common.grey,
+  // },
   visuallyHidden: {
     border: 0,
     clip: "rect(0 0 0 0)",
@@ -64,9 +85,10 @@ const IndeterminateCheckbox = React.forwardRef(
       resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
 
+    console.log(rest);
     return (
       <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
+        <Checkbox ref={resolvedRef} {...rest} color={"primary"} />
       </>
     );
   }
@@ -80,7 +102,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
   const DefaultColumnFilter = ({ column, className }) => {
     const { filterValue } = column;
     return (
-      <input
+      <TextField
         className={className}
         value={filterValue || ""}
         onChange={(e) => {
@@ -90,9 +112,14 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     );
   };
 
+  const DefaultHeader = ({ column, className }) => {
+    return <Typography className={classes.headerTitleText}>{column.title}</Typography>;
+  };
+
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
+      Header: DefaultHeader,
     }),
     []
   );
@@ -100,7 +127,8 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
   const {
     getTableProps,
     getTableBodyProps,
-    headerGroups,
+    // headerGroups,
+    headers,
     prepareRow,
     page,
     canPreviousPage,
@@ -110,7 +138,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     nextPage,
     previousPage,
     setPageSize,
-    selectedFlatRows,
+    // selectedFlatRows,
     state: {
       pageIndex,
       pageSize,
@@ -118,7 +146,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
       groupBy,
       expanded,
       filters,
-      selectedRowIds
+      selectedRowIds,
     },
   } = useTable(
     {
@@ -227,33 +255,28 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
             aria-label="enhanced table"
           >
             <MaterialTableHead>
-                {headerGroups.map((headerGroup) => (
-                  <TableRow {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <TableCell {...column.getHeaderProps()}>
-                        <div>
-                          {column.canGroupBy ? (
-                            <span {...column.getGroupByToggleProps()}>
-                              {column.isGrouped ? "🛑 " : "👊 "}
-                            </span>
-                          ) : null}
-                          <span {...column.getSortByToggleProps()}>
-                            {column.render("Header")}
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? " 🔽"
-                                : " 🔼"
-                              : ""}
-                          </span>
-                        </div>
-                        <div>
-                          {column.canFilter ? column.render("Filter") : null}
-                        </div>
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              
+              {headers.map((column) => (
+                <TableCell {...column.getHeaderProps()}>
+                  <div>
+                    <span
+                      {...column.getSortByToggleProps()}
+                      className={classes.headerTitle}
+                    >
+                      {column.render("Header")}
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <ArrowDropDown />
+                        ) : (
+                          <ArrowDropUp />
+                        )
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </div>
+                  <div>{column.canFilter ? column.render("Filter") : null}</div>
+                </TableCell>
+              ))}
             </MaterialTableHead>
             <TableBody>
               {page.map((row) => {
@@ -271,7 +294,11 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
                   >
                     {row.cells.map((cell) => {
                       return (
-                        <TableCell align="right" {...cell.getCellProps()}>
+                        <TableCell
+                          align="right"
+                          {...cell.getCellProps()}
+                          className={classes.cell}
+                        >
                           {cell.isGrouped ? (
                             <>
                               <span {...row.getToggleRowExpandedProps()}>
@@ -295,6 +322,10 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
           </MaterialTable>
         </TableContainer>
         <TablePagination
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}-${to} из ${count}`
+          }
+          labelRowsPerPage="Записей на странице:"
           rowsPerPageOptions={[10, 20, 30, 40, 50]}
           component="div"
           count={total}
@@ -318,9 +349,9 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
               expanded: expanded,
               filters,
               selectedRowIds: selectedRowIds,
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original
-              )
+              // 'selectedFlatRows[].original': selectedFlatRows.map(
+              //   d => d.original
+              // )
             },
             null,
             2

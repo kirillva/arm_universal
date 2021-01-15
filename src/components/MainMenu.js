@@ -83,8 +83,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
             <ExitToAppIcon />
           </ListItemIcon>
           <ListItemText primary={"Выход"} />
-        </ListItem>
-        <div className={classes.toolbar} />
+        </ListItem> 
     </>
   );
 
