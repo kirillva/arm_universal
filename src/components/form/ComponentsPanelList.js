@@ -17,9 +17,10 @@ const ComponentsPanelList = () => {
   const defaultList = {
     textfield: {
       id: GetGUID(),
-      getComponent: (item) => {
+      getComponent: (item, onClick) => {
         return (
           <TextField
+            onClick={onClick}
             name={item.name}
             classes={{ root: classes.textFieldRoot }}
             style={{ margin: item.margin }}
@@ -31,9 +32,10 @@ const ComponentsPanelList = () => {
     },
     numberfield: {
       id: GetGUID(),
-      getComponent: (item) => {
+      getComponent: (item, onClick) => {
         return (
           <TextField
+            onClick={onClick}
             name={item.name}
             classes={{ root: classes.textFieldRoot }}
             style={{ margin: item.margin }}
@@ -45,9 +47,10 @@ const ComponentsPanelList = () => {
     },
     combobox: {
       id: GetGUID(),
-      getComponent: (item) => {
+      getComponent: (item, onClick) => {
         return (
           <TextField
+            onClick={onClick}
             name={item.name}
             classes={{ root: classes.textFieldRoot }}
             style={{ margin: item.margin }}

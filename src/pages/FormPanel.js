@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 
 import { makeStyles } from "@material-ui/styles";
 import FormWrapper from "components/form/FormWrapper";
@@ -18,21 +18,21 @@ const useStyles = makeStyles((theme) => ({
 export const FormPanel = () => {
   const classes = useStyles();
 
-  const form = useSelector((state) => state.form);
-  const dispatch = useDispatch();
+  const { form } = useSelector((state) => state.form);
 
+  const dispatch = useDispatch();
 
   const assignFormContent = (props) => {
     dispatch({
       type: "form/setFormState",
-      props
+      props,
     });
   };
 
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <div>
+      {/* <div>
         <button
           onClick={() => {
             assignFormContent({
@@ -52,7 +52,7 @@ export const FormPanel = () => {
         >
           Сохранить форму
         </button>
-      </div>
+      </div> */}
       <FormWrapper items={form} updateLayout={assignFormContent} />
       <TextFieldOptions />
     </div>

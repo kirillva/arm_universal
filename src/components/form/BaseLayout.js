@@ -6,6 +6,9 @@ import { Button } from "@material-ui/core";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ComponentsPanelList from "./ComponentsPanelList";
+import { useDispatch } from "react-redux";
+
+  
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -40,7 +43,7 @@ const BaseLayout = ({
   horisontal,
 }) => {
   const classes = useStyles();
-
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -94,13 +97,22 @@ const BaseLayout = ({
     return () => {
       updateLayout({
         items: [...items, { xtype }],
-        id: droppableId
+        id: droppableId,
       });
     };
   };
 
   const toolsList = ComponentsPanelList();
 
+  const onClickComponent = (item, droppableId, index) => {
+    return () => {
+      dispatch({
+        type: "form/setSelectedComponent",
+        props: { item, containerId: droppableId, componentId: index },
+      });
+    };
+  };
+  
   return (
     <div className={classes.wrapper}>
       <div className={classes.tools}>
@@ -115,14 +127,23 @@ const BaseLayout = ({
           onClose={handleClose}
         >
           {[
-            { text: "Добавить горизонтальный контейнер", handler: addHorisontalLayout },
-            { text: "Добавить вертикальный контейнер", handler: addVerticalLayout },
+            {
+              text: "Добавить горизонтальный контейнер",
+              handler: addHorisontalLayout,
+            },
+            {
+              text: "Добавить вертикальный контейнер",
+              handler: addVerticalLayout,
+            },
             { text: "Изменить тип контейнера", handler: changeLayout },
             { text: "Переместить контейнер вверх", handler: moveUp },
             { text: "Переместить контейнер вниз", handler: moveDown },
             { text: "Добавить текстовое поле", handler: addItem("textfield") },
             { text: "Добавить числовое поле", handler: addItem("numberfield") },
-            { text: "Добавить поле с выбором опций", handler: addItem("combobox") },
+            {
+              text: "Добавить поле с выбором опций",
+              handler: addItem("combobox"),
+            },
           ].map((item) => (
             <MenuItem
               key={item.text}
@@ -151,7 +172,10 @@ const BaseLayout = ({
           {items.map((item, index) => {
             return (
               <div>
-                {toolsList.items[item.xtype].getComponent(item)}
+                {toolsList.items[item.xtype].getComponent(
+                  item,
+                  onClickComponent(item, droppableId, index)
+                )}
               </div>
             );
           })}

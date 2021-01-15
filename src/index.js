@@ -8,8 +8,7 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import { combineReducers } from "redux";
-import Form from "components/form/FormSlice";
+import rootReducer from "rootReducer";
 
 const outerTheme = createMuiTheme({
   palette: {
@@ -24,9 +23,7 @@ const outerTheme = createMuiTheme({
 });
 
 const store = configureStore({
-  reducer: combineReducers({
-    form: Form,
-  })
+  reducer: rootReducer
 });
 
 ReactDOM.render(
