@@ -90,19 +90,12 @@ const BaseLayout = ({
       moveDown: true,
     });
   };
-  const addItem = (name) => {
+  const addItem = (xtype) => {
     return () => {
-      switch (name) {
-        case "textfield":
-          break;
-        case "numberfield":
-          break;
-        case "combobox":
-          break;
-
-        default:
-          return "null";
-      }
+      updateLayout({
+        items: [...items, { xtype }],
+        id: droppableId
+      });
     };
   };
 
@@ -112,7 +105,7 @@ const BaseLayout = ({
     <div className={classes.wrapper}>
       <div className={classes.tools}>
         <Button color="primary" variant="contained" onClick={handleClick}>
-          ONCLICK
+          Действия
         </Button>
         <Menu
           id="simple-menu"
@@ -122,14 +115,14 @@ const BaseLayout = ({
           onClose={handleClose}
         >
           {[
-            { text: "HBOX", handler: addHorisontalLayout },
-            { text: "VBOX", handler: addVerticalLayout },
-            { text: "CHANGE", handler: changeLayout },
-            { text: "Вверх", handler: moveUp },
-            { text: "Вниз", handler: moveDown },
-            { text: "textfield", handler: addItem("textfield") },
-            { text: "numberfield", handler: addItem("numberfield") },
-            { text: "combobox", handler: addItem("combobox") },
+            { text: "Добавить горизонтальный контейнер", handler: addHorisontalLayout },
+            { text: "Добавить вертикальный контейнер", handler: addVerticalLayout },
+            { text: "Изменить тип контейнера", handler: changeLayout },
+            { text: "Переместить контейнер вверх", handler: moveUp },
+            { text: "Переместить контейнер вниз", handler: moveDown },
+            { text: "Добавить текстовое поле", handler: addItem("textfield") },
+            { text: "Добавить числовое поле", handler: addItem("numberfield") },
+            { text: "Добавить поле с выбором опций", handler: addItem("combobox") },
           ].map((item) => (
             <MenuItem
               key={item.text}
@@ -158,7 +151,7 @@ const BaseLayout = ({
           {items.map((item, index) => {
             return (
               <div>
-                {toolsList.items[item.xtype].content}
+                {toolsList.items[item.xtype].getComponent(item)}
               </div>
             );
           })}

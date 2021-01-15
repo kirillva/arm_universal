@@ -1,62 +1,11 @@
-import React, { useState } from "react";
-import {
-  getExtJSFromReactView,
-  // getExtJSFromReactView,
-  getReactFromExtJSView,
-  updateFormObject,
-} from "components/form/ComponentTreeHelpers";
+import React  from "react";
+
 import { makeStyles } from "@material-ui/styles";
 import FormWrapper from "components/form/FormWrapper";
 import { GetGUID } from "utils/helpers";
-
-const form = [
-  {
-    xtype: "components",
-    layout: "vbox",
-    items: [
-      {
-        layout: "hbox",
-        items: [
-          {
-            xtype: "textfield",
-            fieldLabel: "First Name",
-            name: "firstName",
-          },
-          {
-            xtype: "textfield",
-            fieldLabel: "Last Name",
-            name: "lastName",
-          },
-        ],
-      },
-      {
-        layout: "hbox",
-        items: [
-          {
-            xtype: "numberfield",
-            fieldLabel: "Date of Birth",
-            name: "birthDate",
-          },
-          {
-            xtype: "textfield",
-            fieldLabel: "Last Name",
-            name: "lastName1",
-          },
-        ],
-      },
-      {
-        xtype: "textfield",
-        fieldLabel: "Last Name",
-        name: "lastName2",
-      },
-      {
-        xtype: "combobox",
-        fieldLabel: "Last Name",
-        name: "lastName3",
-      },
-    ],
-  },
-];
+import { TextFieldOptions } from "components/form/TextFieldOptions";
+import { useDispatch, useSelector } from "react-redux";
+import { getExtJSFromReactView } from "components/form/ComponentTreeHelpers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -69,10 +18,15 @@ const useStyles = makeStyles((theme) => ({
 export const FormPanel = () => {
   const classes = useStyles();
 
-  const [formContent, setFormContent] = useState(getReactFromExtJSView(form));
+  const form = useSelector((state) => state.form);
+  const dispatch = useDispatch();
+
 
   const assignFormContent = (props) => {
-    setFormContent(updateFormObject({ ...props, formContent }));
+    dispatch({
+      type: "form/setFormState",
+      props
+    });
   };
 
   return (
@@ -92,15 +46,15 @@ export const FormPanel = () => {
         </button>
         <button
           onClick={() => {
-            const _form = getExtJSFromReactView(formContent);
-
+            const _form = getExtJSFromReactView(form);
             console.log(_form);
           }}
         >
           Сохранить форму
         </button>
       </div>
-      <FormWrapper items={formContent} updateLayout={assignFormContent} />
+      <FormWrapper items={form} updateLayout={assignFormContent} />
+      <TextFieldOptions />
     </div>
   );
 };

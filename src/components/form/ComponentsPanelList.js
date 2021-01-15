@@ -17,39 +17,45 @@ const ComponentsPanelList = () => {
   const defaultList = {
     textfield: {
       id: GetGUID(),
-      content: (
-        <TextField
-          name={"item.name"}
-          classes={{ root: classes.textFieldRoot }}
-          // style={{ margin: item.margin }}
-          label={"item.fieldLabel"}
-          variant="outlined"
-        />
-      ),
+      getComponent: (item) => {
+        return (
+          <TextField
+            name={item.name}
+            classes={{ root: classes.textFieldRoot }}
+            style={{ margin: item.margin }}
+            label={item.fieldLabel}
+            variant="outlined"
+          />
+        );
+      },
     },
     numberfield: {
       id: GetGUID(),
-      content: (
-        <TextField
-          name={"item.name"}
-          classes={{ root: classes.textFieldRoot }}
-          // style={{ margin: item.margin }}
-          label={"item.fieldLabel"}
-          variant="outlined"
-        />
-      ),
+      getComponent: (item) => {
+        return (
+          <TextField
+            name={item.name}
+            classes={{ root: classes.textFieldRoot }}
+            style={{ margin: item.margin }}
+            label={item.fieldLabel}
+            variant="outlined"
+          />
+        );
+      },
     },
     combobox: {
       id: GetGUID(),
-      content: (
-        <TextField
-          name={"item.name"}
-          classes={{ root: classes.textFieldRoot }}
-          // style={{ margin: item.margin }}
-          label={"item.fieldLabel"}
-          variant="outlined"
-        />
-      ),
+      getComponent: (item) => {
+        return (
+          <TextField
+            name={item.name}
+            classes={{ root: classes.textFieldRoot }}
+            style={{ margin: item.margin }}
+            label={item.fieldLabel}
+            variant="outlined"
+          />
+        );
+      },
     },
   };
   const [items] = useState(defaultList);

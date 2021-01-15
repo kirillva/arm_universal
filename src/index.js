@@ -6,14 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 import { HashRouter as Router } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
-// import { red } from "@material-ui/core/colors";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import { combineReducers } from "redux";
+import Form from "components/form/FormSlice";
 
 const outerTheme = createMuiTheme({
-  // palette: {
-  //   secondary: {
-  //     // main: red[200],
-  //   },
-  // },
   palette: {
     primary: {
       main: blue[900],
@@ -25,23 +23,20 @@ const outerTheme = createMuiTheme({
   typography: { useNextVariants: true },
 });
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <MuiThemeProvider theme={outerTheme}>
-//       <Router>
-//         <App />
-//       </Router>
-//     </MuiThemeProvider>
-//   </React.StrictMode>,
-//   document.getElementById("root")
-// );
+const store = configureStore({
+  reducer: combineReducers({
+    form: Form,
+  })
+});
 
 ReactDOM.render(
-  <MuiThemeProvider theme={outerTheme}>
-    <Router>
-      <App />
-    </Router>
-  </MuiThemeProvider>,
+  <Provider store={store}>
+    <MuiThemeProvider theme={outerTheme}>
+      <Router>
+        <App />
+      </Router>
+    </MuiThemeProvider>
+  </Provider>,
   document.getElementById("root")
 );
 
