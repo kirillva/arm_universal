@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
-    }
+    },
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   grow: {
-    flex: 1
-  }
+    flex: 1,
+  },
 }));
 
 export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
@@ -39,27 +39,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const drawer = (
     <>
       <div className={classes.toolbar}>
-
-      </div>
-      <Divider />
-      <List className={classes.grow}>
-        {data.map((item, index) => {
-          const { path, title, icon } = item;
-          return (
-            <ListItem
-              button
-              key={path}
-              component={Link}
-              to={path}
-              onClick={() => mobileOpen && handleDrawerToggle()}
-            >
-              <ListItemIcon>{React.createElement(icon)}</ListItemIcon>
-              <ListItemText primary={title} />
-            </ListItem>
-          );
-        })}
-      </List>
-      <ListItem
+        <ListItem
           button
           key={"/"}
           component={Link}
@@ -83,7 +63,26 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
             <ExitToAppIcon />
           </ListItemIcon>
           <ListItemText primary={"Выход"} />
-        </ListItem> 
+        </ListItem>
+      </div>
+      <Divider />
+      <List className={classes.grow}>
+        {data.map((item, index) => {
+          const { path, title, icon } = item;
+          return (
+            <ListItem
+              button
+              key={path}
+              component={Link}
+              to={path}
+              onClick={() => mobileOpen && handleDrawerToggle()}
+            >
+              <ListItemIcon>{React.createElement(icon)}</ListItemIcon>
+              <ListItemText primary={title} />
+            </ListItem>
+          );
+        })}
+      </List>
     </>
   );
 
@@ -117,4 +116,4 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
       </Hidden>
     </div>
   );
-}
+};

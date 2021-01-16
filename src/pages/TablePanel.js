@@ -2,13 +2,19 @@ import { Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { runRpc } from "utils/rpc";
-import { Table } from "components/Table";
+import { Table } from "components/table/Table";
+import { SelectFilter, StringFilter } from "components/table/Filters";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
     padding: theme.spacing(3),
+  },
+  table: {
+    flex: 1,
   },
 }));
 
@@ -63,12 +69,16 @@ export const TablePanel = () => {
 
   const columns = React.useMemo(
     () => [
-      { title: "id", accessor: "id" },
-      { title: "fn_user_point", accessor: "fn_user_point" },
-      { title: "fn_point", accessor: "fn_point" },
-      { title: "fn_type", accessor: "fn_type" },
-      { title: "fn_user", accessor: "fn_user" },
-      { title: "fn_route", accessor: "fn_route" },
+      { title: "id", accessor: "id", Filter: SelectFilter },
+      {
+        title: "fn_user_point",
+        accessor: "fn_user_point",
+        Filter: StringFilter,
+      },
+      { title: "fn_point", accessor: "fn_point", Filter: StringFilter },
+      { title: "fn_type", accessor: "fn_type", Filter: StringFilter },
+      { title: "fn_user", accessor: "fn_user", Filter: SelectFilter },
+      { title: "fn_route", accessor: "fn_route", Filter: SelectFilter },
     ],
     []
   );
@@ -78,7 +88,9 @@ export const TablePanel = () => {
       <div className={classes.toolbar} />
       {/* <Typography paragraph>Таблица</Typography>
       <pre>{JSON.stringify(results, null, 4)}</pre> */}
-      <Table columns={columns} action="cd_results" />
+      <div className={classes.table}>
+        <Table columns={columns} action="cd_results" />
+      </div>
     </div>
   );
 };

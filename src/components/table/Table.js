@@ -41,9 +41,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
   },
-  header: {
-    
-  },
+  header: {},
   table: {
     color: theme.palette.text.main,
   },
@@ -52,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.common.grey,
   },
   headerTitle: {
-    userSelect: 'none',
+    userSelect: "none",
     display: "flex",
     flexDirection: "row",
   },
   headerTitleText: {
-    flex: 1
+    flex: 1,
   },
   // header: {
   //   color: theme.palette.common.grey,
@@ -85,7 +83,6 @@ const IndeterminateCheckbox = React.forwardRef(
       resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
 
-    console.log(rest);
     return (
       <>
         <Checkbox ref={resolvedRef} {...rest} color={"primary"} />
@@ -104,16 +101,20 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     return (
       <TextField
         className={className}
-        value={filterValue || ""}
+        value={filterValue && filterValue.value ? filterValue.value : ""}
         onChange={(e) => {
-          column.setFilter(e.target.value);
+          column.setFilter({ value: e.target.value, operator: "like" });
         }}
       />
     );
   };
 
   const DefaultHeader = ({ column, className }) => {
-    return <Typography className={classes.headerTitleText}>{column.title}</Typography>;
+    return (
+      <Typography className={classes.headerTitleText}>
+        {column.title}
+      </Typography>
+    );
   };
 
   const defaultColumn = React.useMemo(
@@ -208,8 +209,8 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
           limit: pageSize,
           filter: filters.map((item) => ({
             property: item.id,
-            value: item.value,
-            operator: "like",
+            value: item.value.value,
+            operator: item.value.operator
           })),
         },
       ],
@@ -219,7 +220,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
         const _records = responce.result.records;
         setTotal(responce.result.total);
         setPageCount(Math.ceil(responce.result.total / pageSize));
-        setData(data.concat(_records));
+        setData(_records);
       } else {
         setData([]);
       }
@@ -284,18 +285,14 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
                 return (
                   <TableRow
                     hover
-                    // onClick={(event) => handleClick(event, row.name)}
                     role="checkbox"
-                    // aria-checked={isItemSelected}
                     tabIndex={-1}
                     {...row.getRowProps()}
-                    // key={row.name}
-                    // selected={isItemSelected}
                   >
                     {row.cells.map((cell) => {
                       return (
                         <TableCell
-                          align="right"
+                          align="left"
                           {...cell.getCellProps()}
                           className={classes.cell}
                         >
@@ -335,7 +332,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -357,7 +354,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       {/* <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
