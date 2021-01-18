@@ -1,9 +1,8 @@
-import { Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { runRpc } from "utils/rpc";
 import { Table } from "components/table/Table";
-import { SelectFilter, StringFilter } from "components/table/Filters";
+import { BoolFilter, DateFilter, NumberFilter, SelectFilter, StringFilter } from "components/table/Filters";
+import { BoolCell, DateCell, NumberCell, StringCell } from "components/table/Cell";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -20,65 +19,48 @@ const useStyles = makeStyles((theme) => ({
 
 export const TablePanel = () => {
   const classes = useStyles();
-  const [results, setResults] = useState([]);
-  const [selectedResult, setSelectedResult] = useState(null);
-
-  const loadResults = async () => {
-    const id = "1165f88e-3a1d-434d-92d3-c06f72271ab8";
-
-    let _cd_results = await runRpc({
-      action: "cd_results",
-      method: "Query",
-      data: [
-        {
-          select: [
-            "id",
-            "fn_user_point",
-            "fn_point",
-            "fn_user_point___id___fn_registr_pts",
-            "fn_type",
-            "fn_user",
-            "fn_route",
-            "d_date",
-            "c_notice",
-            "b_warning",
-            "jb_data",
-            "dx_created",
-          ].join(","),
-          filter: [
-            {
-              property: "fn_user_point___id___fn_registr_pts",
-              value: id,
-              operator: "=",
-            },
-          ],
-        },
-      ],
-      type: "rpc",
-    });
-    _cd_results = _cd_results ? _cd_results.result.records : [];
-    setResults(_cd_results);
-    if (_cd_results && _cd_results.length) {
-      setSelectedResult(_cd_results[0]);
-    }
-  };
-
-  useEffect(() => {
-    loadResults();
-  }, []);
-
-  const columns = React.useMemo(
+  
+  const cs_street = React.useMemo(
     () => [
-      { title: "id", accessor: "id", Filter: SelectFilter },
-      {
-        title: "fn_user_point",
-        accessor: "fn_user_point",
-        Filter: StringFilter,
-      },
-      { title: "fn_point", accessor: "fn_point", Filter: StringFilter },
-      { title: "fn_type", accessor: "fn_type", Filter: StringFilter },
-      { title: "fn_user", accessor: "fn_user", Filter: SelectFilter },
-      { title: "fn_route", accessor: "fn_route", Filter: SelectFilter },
+      { title: 'c_short_type', accessor: 'c_short_type', Filter: SelectFilter, Cell: StringCell },
+      { title: 'c_name', accessor: 'c_name', Filter: SelectFilter, Cell: StringCell },
+      { title: 'dx_date', accessor: 'dx_date', Filter: DateFilter, Cell: DateCell },
+      { title: 'b_disabled', accessor: 'b_disabled', Filter: BoolFilter, Cell: BoolCell },
+      { title: 'f_division', accessor: 'f_division', Filter: SelectFilter, Cell: StringCell },
+      { title: 'f_user', accessor: 'f_user', Filter: SelectFilter, Cell: StringCell },    
+    ],
+    []
+  );
+
+  const cs_house = React.useMemo(
+    () => [
+      { title: 'f_street', accessor: 'f_street', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'c_house_num', accessor: 'c_house_num', Filter: StringFilter, Cell: StringCell }, 
+      { title: 'c_build_num', accessor: 'c_build_num', Filter: StringFilter, Cell: StringCell }, 
+      { title: 'dx_date', accessor: 'dx_date', Filter: DateFilter, Cell: DateCell },
+      { title: 'b_disabled', accessor: 'b_disabled', Filter: BoolFilter, Cell: BoolCell }, 
+      { title: 'n_uik', accessor: 'n_uik', Filter: NumberFilter, Cell: NumberCell }, 
+      { title: 'c_floor', accessor: 'c_floor', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'c_porch', accessor: 'c_porch', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'f_subdivision', accessor: 'f_subdivision', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'f_user', accessor: 'f_user', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'f_candidate_users', accessor: 'f_candidate_users', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'b_correct_uik', accessor: 'b_correct_uik', Filter: BoolFilter, Cell: BoolCell }, 
+      { title: 'n_uik_correct', accessor: 'n_uik_correct', Filter: NumberFilter, Cell: NumberCell }
+    ],
+    []
+  );
+
+  const cs_appartament = React.useMemo(
+    () => [
+      { title: 'f_house', accessor: 'f_house', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'c_number', accessor: 'c_number', Filter: StringFilter, Cell: StringCell }, 
+      { title: 'n_number', accessor: 'n_number', Filter: StringFilter, Cell: StringCell }, 
+      { title: 'dx_date', accessor: 'dx_date', Filter: DateFilter, Cell: DateCell }, 
+      { title: 'b_disabled', accessor: 'b_disabled', Filter: BoolFilter, Cell: BoolCell }, 
+      { title: 'f_user', accessor: 'f_user', Filter: SelectFilter, Cell: StringCell }, 
+      { title: 'n_signature_2018', accessor: 'n_signature_2018', Filter: NumberFilter, Cell: NumberCell }, 
+      { title: 'f_main_user', accessor: 'f_main_user', Filter: SelectFilter, Cell: StringCell }
     ],
     []
   );
@@ -86,10 +68,14 @@ export const TablePanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      {/* <Typography paragraph>Таблица</Typography>
-      <pre>{JSON.stringify(results, null, 4)}</pre> */}
       <div className={classes.table}>
-        <Table columns={columns} action="cd_results" />
+        <Table columns={cs_street} action="cs_street" />
+      </div>
+      <div className={classes.table}>
+        <Table columns={cs_house} action="cs_house" />
+      </div>
+      <div className={classes.table}>
+        <Table columns={cs_appartament} action="cs_appartament" />
       </div>
     </div>
   );

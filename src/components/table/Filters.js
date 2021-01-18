@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, MenuItem } from '@material-ui/core';
 // import BaseDatePicker from 'base/components/ReactTable/BaseDatePicker';
 import { runRpc } from 'utils/rpc';
@@ -97,7 +97,6 @@ export const StringFilter = ({ column: { filterValue, setFilter }, className }) 
 
 export const SelectFilter = ({ column: { filterValue, setFilter }, className }) => {
 	const [value, setValue] = useState(filterValue ? filterValue.value : '');
-	debugger;
 	return (
 		<TextField
 			variant="outlined"
