@@ -6,9 +6,7 @@ import { Button } from "@material-ui/core";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ComponentsPanelList from "./ComponentsPanelList";
-import { useDispatch } from "react-redux";
-
-  
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -44,6 +42,7 @@ const BaseLayout = ({
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { edit: formEdit } = useSelector((state) => state.form);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -62,6 +61,7 @@ const BaseLayout = ({
       options: { horisontal: true },
     });
   };
+
   const addVerticalLayout = () => {
     updateLayout({
       items: [],
@@ -70,6 +70,7 @@ const BaseLayout = ({
       options: { horisontal: false },
     });
   };
+
   const changeLayout = () => {
     updateLayout({
       items: items,
@@ -79,6 +80,7 @@ const BaseLayout = ({
       },
     });
   };
+
   const moveUp = () => {
     updateLayout({
       items: items,
@@ -86,6 +88,7 @@ const BaseLayout = ({
       moveUp: true,
     });
   };
+
   const moveDown = () => {
     updateLayout({
       items: items,
@@ -93,6 +96,7 @@ const BaseLayout = ({
       moveDown: true,
     });
   };
+
   const addItem = (xtype) => {
     return () => {
       updateLayout({
@@ -105,22 +109,26 @@ const BaseLayout = ({
   const toolsList = ComponentsPanelList();
 
   const onClickComponent = (item, droppableId, index) => {
-    return () => {
-      dispatch({
-        type: "form/setSelectedComponent",
-        props: { item, containerId: droppableId, componentId: index },
-      });
-    };
+    if (formEdit) {
+      return () => {
+        dispatch({
+          type: "form/setSelectedComponent",
+          containerId: droppableId, 
+          componentId: index,
+        });
+      };
+    } else {
+      return () => { }
+    }
   };
-  
+
   return (
-    <div className={classes.wrapper}>
-      <div className={classes.tools}>
+    <div className={formEdit ? classes.wrapper : ''}>
+      {formEdit && <div className={classes.tools}>
         <Button color="primary" variant="contained" onClick={handleClick}>
           Действия
         </Button>
         <Menu
-          id="simple-menu"
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}
@@ -156,7 +164,7 @@ const BaseLayout = ({
             </MenuItem>
           ))}
         </Menu>
-      </div>
+      </div>}
       <div
         className={classNames({
           [classes.vertical]: !horisontal,

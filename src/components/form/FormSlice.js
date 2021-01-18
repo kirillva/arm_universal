@@ -1,11 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  // getExtJSFromReactView,
-  // getExtJSFromReactView,
   getReactFromExtJSView,
   updateFormObject,
 } from "components/form/ComponentTreeHelpers";
-// import _ from "lodash";
 
 const form = [
   {
@@ -62,8 +59,12 @@ const FormSlice = createSlice({
     form: getReactFromExtJSView(form),
     containerId: null,
     componentId: null,
+    edit: false,
   },
   reducers: {
+    setEdit: (state, payload) => {
+      state.edit = payload.edit;
+    },
     setFormState: (state, payload) => {
       state.form = updateFormObject({
         ...payload.props,
@@ -71,7 +72,7 @@ const FormSlice = createSlice({
       });
     },
     setSelectedComponent: (state, payload) => {
-      const { containerId, componentId } = payload.props;
+      const { containerId, componentId } = payload;
       state.containerId = containerId;
       state.componentId = componentId;
     },
@@ -87,7 +88,5 @@ const FormSlice = createSlice({
     },
   },
 });
-
-export const { setFormState } = FormSlice.actions;
 
 export default FormSlice.reducer;

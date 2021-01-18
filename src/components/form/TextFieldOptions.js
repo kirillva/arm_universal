@@ -4,6 +4,7 @@ import { Button, TextField } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
+import { AddNewField } from "./AddNewField";
 
 const useStyles = makeStyles((theme) => ({
   optionsContainer: {
@@ -14,13 +15,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialState = ['margin'];
+
 export const TextFieldOptions = () => {
   const classes = useStyles();
+  
 
   const { form, containerId, componentId } = useSelector((state) => state.form);
   const dispatch = useDispatch();
 
   const [selectedItem, setSelectedItem] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [keys, setKeys] = useState(initialState);
+
 
   const onChange = (name) => {
     return (e) => {
@@ -29,8 +36,11 @@ export const TextFieldOptions = () => {
   };
 
   useEffect(() => {
+    setKeys(initialState);
     if (containerId && componentId !== null && form[containerId].items) {
       setSelectedItem(_.cloneDeep(form[containerId].items[componentId]));
+    } else {
+      setSelectedItem(null);
     }
   }, [form, containerId, componentId]);
 
@@ -38,20 +48,22 @@ export const TextFieldOptions = () => {
 
   return (
     <div className={classes.optionsContainer}>
-      <TextField
-        name={"fieldLabel"}
-        onChange={onChange("fieldLabel")}
-        label={"fieldLabel"}
-        value={selectedItem.fieldLabel || ""}
-        variant="outlined"
-      />
-      <TextField
-        name={"margin"}
-        onChange={onChange("margin")}
-        label={"margin"}
-        value={selectedItem.margin || ""}
-        variant="outlined"
-      />
+      {_.uniqBy(Object.keys(selectedItem).concat(keys)).map(key => {
+        return <TextField
+          key={key}
+          name={key}
+          onChange={onChange(key)}
+          label={key}
+          value={selectedItem[key] || ""}
+          variant="outlined"
+        />
+      })}
+
+      <Button variant="outlined" color="primary" onClick={() => setOpen(!open)}>
+        +
+      </Button>
+
+      <AddNewField keys={keys} setKeys={setKeys} open={open} onClose={() => setOpen(false)} />
 
       <Button
         color="primary"
@@ -65,7 +77,13 @@ export const TextFieldOptions = () => {
       >
         Сохранить
       </Button>
-      <Button color="secondary" variant="contained">
+      <Button color="secondary" variant="contained" onClick={() => {
+        dispatch({
+          type: "form/setSelectedComponent",
+          containerId: null,
+          componentId: null,
+        });
+      }}>
         Отменить
       </Button>
     </div>

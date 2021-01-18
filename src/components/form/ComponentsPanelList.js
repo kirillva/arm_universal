@@ -1,10 +1,8 @@
 import { TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { GetGUID } from "utils/helpers";
-// import { GetGUID } from "../../utils/Helpers";
-// import TextField from "./Components/TextField";
-// import CheckboxField from "./Components/CheckboxField";
 import { makeStyles } from "@material-ui/styles";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   textFieldRoot: {
@@ -14,16 +12,20 @@ const useStyles = makeStyles((theme) => ({
 
 const ComponentsPanelList = () => {
   const classes = useStyles();
+
+  const { edit: formEdit } = useSelector((state) => state.form);
+
   const defaultList = {
     textfield: {
       id: GetGUID(),
       getComponent: (item, onClick) => {
         return (
           <TextField
+            disabled={formEdit}
             onClick={onClick}
             name={item.name}
             classes={{ root: classes.textFieldRoot }}
-            style={{ margin: item.margin }}
+            style={{ margin: item.margin, padding: item.padding }}
             label={item.fieldLabel}
             variant="outlined"
           />
@@ -35,10 +37,11 @@ const ComponentsPanelList = () => {
       getComponent: (item, onClick) => {
         return (
           <TextField
+            disabled={formEdit}
             onClick={onClick}
             name={item.name}
             classes={{ root: classes.textFieldRoot }}
-            style={{ margin: item.margin }}
+            style={{ margin: item.margin, padding: item.padding }}
             label={item.fieldLabel}
             variant="outlined"
           />
@@ -50,10 +53,11 @@ const ComponentsPanelList = () => {
       getComponent: (item, onClick) => {
         return (
           <TextField
+            disabled={formEdit}
             onClick={onClick}
             name={item.name}
             classes={{ root: classes.textFieldRoot }}
-            style={{ margin: item.margin }}
+            style={{ margin: item.margin, padding: item.padding }}
             label={item.fieldLabel}
             variant="outlined"
           />
