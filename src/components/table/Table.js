@@ -30,8 +30,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { TableHead, TextField } from "@material-ui/core";
-import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
+import { Button, TableHead, TextField } from "@material-ui/core";
+import {
+  ArrowDropDown,
+  ArrowDropUp,
+  TableChartOutlined,
+} from "@material-ui/icons";
 import classNames from "classnames";
 import { EnhancedTableHead } from "./EnhancedTableHead";
 
@@ -72,6 +76,10 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 20,
     width: 1,
+  },
+  iconButton: {
+    // color: theme.palette.primary.main,
+    margin: "0 0 0 auto",
   },
   highlight: {
     color: theme.palette.primary.main,
@@ -211,45 +219,62 @@ export const Table = ({
   const classes = useStyles();
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
-    const _filters = [];
+    return new Promise((resolve) => {
+      const _filters = [];
 
-    filters.forEach((item) => {
-      if (item.value && item.value.value) {
-        _filters.push({
-          property: item.id,
-          value: item.value.value,
-          operator: item.value.operator,
-        });
-      }
-    });
-    runRpc({
-      action: action,
-      method: "Query",
-      data: [
-        {
-          page: pageIndex,
-          start: pageIndex * pageSize,
-          limit: pageSize,
-          filter: _filters,
-        },
-      ],
-      type: "rpc",
-    }).then((responce) => {
-      if (responce.meta && responce.meta.success) {
-        const _records = responce.result.records;
-        setTotal(responce.result.total);
-        setPageCount(Math.ceil(responce.result.total / pageSize));
-        setData(_records);
-      } else {
-        setData([]);
-      }
+      filters.forEach((item) => {
+        if (item.value && item.value.value) {
+          _filters.push({
+            property: item.id,
+            value: item.value.value,
+            operator: item.value.operator,
+          });
+        }
+      });
+      runRpc({
+        action: action,
+        method: "Query",
+        data: [
+          {
+            select: (columns.map((item) => item.accessor) || [])
+              .concat([idProperty])
+              .join(","),
+            page: pageIndex,
+            start: pageIndex * pageSize,
+            limit: pageSize,
+            filter: _filters,
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        if (responce.meta && responce.meta.success) {
+          const _records = responce.result.records;
+          resolve({
+            total: responce.result.total,
+            pageCount: Math.ceil(responce.result.total / pageSize),
+            data: _records,
+          });
+        } else {
+          resolve({
+            total: 0,
+            pageCount: 0,
+            data: [],
+          });
+        }
+      });
     });
   };
 
   const onFetchDataDebounced = useAsyncDebounce(onFetchData, 100);
 
   useEffect(() => {
-    onFetchDataDebounced({ pageIndex, pageSize, sortBy, filters, action });
+    onFetchDataDebounced({ pageIndex, pageSize, sortBy, filters, action }).then(
+      ({ total, pageCount, data }) => {
+        setTotal(total);
+        setPageCount(pageCount);
+        setData(data);
+      }
+    );
   }, [onFetchDataDebounced, pageIndex, pageSize, sortBy, filters, action]);
 
   const handleChangeRowsPerPage = (event) => {
@@ -261,32 +286,57 @@ export const Table = ({
     gotoPage(newPage);
   };
 
+  const ExportToCsv = () => {
+    onFetchData({
+      pageIndex,
+      pageSize,
+      sortBy,
+      filters,
+      action,
+    }).then(({ data }) => {
+      if (!data || !data.length) return null;
+      const csv =
+        "data:text/csv;charset=utf-8,\uFEFF" +
+        Object.keys(data[0]).join(";") + "\n" + 
+        data
+          .map((e) =>
+            Object.keys(e)
+              .map((key) => e[key])
+              .join(";")
+          )
+          .join("\n");
+      global.window.open(encodeURI(csv));
+    });
+  };
+
   function EnhancedTableHead(props) {
-    const {
-      title = 'Таблица',
-      numSelected,
-      classes
-    } = props;
+    const { title = "Таблица", numSelected, classes } = props;
 
     return (
-        <Toolbar
-          className={classNames(classes.root, {
-            [classes.highlight]: numSelected > 0,
-          })}
-        >
-          {numSelected > 0 ? (
-            <Typography variant="subtitle1">Выбрано: {numSelected}</Typography>
-          ) : (
-            <Typography variant="h6">{title}</Typography>
-          )}
-        </Toolbar>
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: numSelected > 0,
+        })}
+      >
+        {numSelected > 0 ? (
+          <Typography variant="subtitle1">Выбрано: {numSelected}</Typography>
+        ) : (
+          <Typography variant="h6">{title}</Typography>
+        )}
+        <Button className={classes.iconButton} onClick={ExportToCsv}>
+          <TableChartOutlined />
+        </Button>
+      </Toolbar>
     );
   }
 
   return (
     <>
       <Paper className={classes.paper}>
-        <EnhancedTableHead classes={classes} numSelected={Object.keys(selectedRowIds).length} />
+        <EnhancedTableHead
+          classes={classes}
+          numSelected={Object.keys(selectedRowIds).length}
+        />
         <TableContainer {...getTableProps()} className={classes.container}>
           <MaterialTable
             stickyHeader
