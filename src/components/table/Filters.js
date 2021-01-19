@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, MenuItem } from '@material-ui/core';
 // import BaseDatePicker from 'base/components/ReactTable/BaseDatePicker';
 import { runRpc } from 'utils/rpc';
 // import defaultProps from './DefaultProps';
 // import styles from './Filter.module.css';
 import _ from 'lodash';
+import DatePicker from './DatePicker';
 // import useQueryRegistry from 'hooks/useQueryRegistry';
 
 export const Operators = {
@@ -97,7 +98,6 @@ export const StringFilter = ({ column: { filterValue, setFilter }, className }) 
 
 export const SelectFilter = ({ column: { filterValue, setFilter }, className }) => {
 	const [value, setValue] = useState(filterValue ? filterValue.value : '');
-	debugger;
 	return (
 		<TextField
 			variant="outlined"
@@ -148,20 +148,19 @@ export const UserFilter = ({ column: { filterValue, setFilter }, className }) =>
 };
 
 export const DateFilter = ({ column: { filterValue = { start: null, finish: null }, setFilter }, className }) => {
-	return null;
-	// return (
-	// 	<BaseDatePicker
-	// 		value={filterValue}
-	// 		className={className}
-	// 		InputProps={{
-	// 			className: styles.DateFilter
-	// 		}}
-	// 		onChange={props => setFilter({ ...filterValue, ...props, operator: Operators.date })}
-	// 		initialDateStart={filterValue.start}
-	// 		initialDateFinish={filterValue.finish}
-	// 	/>
-	// );
-};
+	return (
+		<DatePicker
+			value={filterValue}
+			className={className}
+			// InputProps={{
+			// 	className: styles.DateFilter
+			// }}
+			onChange={props => setFilter({ ...filterValue, ...props, operator: Operators.date })}
+			initialDateStart={filterValue.start}
+			initialDateFinish={filterValue.finish}
+		/>
+	);
+}
 
 export const BoolFilter = ({ column: { filterValue, setFilter }, className }) => {
 	const defaultProps = {

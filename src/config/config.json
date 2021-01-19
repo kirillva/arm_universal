@@ -1,7 +1,7 @@
 {
-  "BASE_URL": "http://kes.it-serv.ru/delivery/release",
+  "BASE_URL": "http://kes.it-serv.ru/vote/dev/",
   "WS_URL": "http://kes.it-serv.ru",
   "defaultNamespace": "PN",
-  "WS_PATH": "/delivery/release/socket.io",
+  "WS_PATH": "/vote/dev/socket.io",
   "dir": "test"
 }

@@ -57,10 +57,9 @@ const useStyles = makeStyles((theme) => ({
   headerTitleText: {
     flex: 1,
   },
-  // header: {
-  //   color: theme.palette.common.grey,
-  //   borderColor: theme.palette.common.grey,
-  // },
+  container: {
+    // maxHeight: "400px",
+  },
   visuallyHidden: {
     border: 0,
     clip: "rect(0 0 0 0)",
@@ -199,6 +198,17 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
   );
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
+    const _filters = [];
+
+    filters.forEach(item => {
+      if (item.value && item.value.value) {
+        _filters.push({
+          property: item.id,
+          value: item.value.value,
+          operator: item.value.operator,
+        });
+      }
+    })
     runRpc({
       action: action,
       method: "Query",
@@ -207,11 +217,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
           page: pageIndex,
           start: pageIndex * pageSize,
           limit: pageSize,
-          filter: filters.map((item) => ({
-            property: item.id,
-            value: item.value.value,
-            operator: item.value.operator
-          })),
+          filter: _filters,
         },
       ],
       type: "rpc",
@@ -247,8 +253,9 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     <>
       <Paper className={classes.paper}>
         {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
-        <TableContainer {...getTableProps()}>
+        <TableContainer {...getTableProps()} className={classes.container}>
           <MaterialTable
+            stickyHeader
             {...getTableBodyProps()}
             className={classes.table}
             aria-labelledby="tableTitle"
