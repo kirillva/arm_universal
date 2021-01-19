@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { AddNewField } from "./AddNewField";
+import { Add, ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   optionsContainer: {
@@ -13,13 +14,20 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    gap: theme.spacing(1),
+  },
+  buttonAdd: {
+    margin: "auto",
+  },
 }));
 
-const initialState = ['margin'];
+const initialState = ["xtype", "fieldLabel", "name", "margin"];
 
 export const TextFieldOptions = () => {
   const classes = useStyles();
-  
 
   const { form, containerId, componentId } = useSelector((state) => state.form);
   const dispatch = useDispatch();
@@ -27,7 +35,6 @@ export const TextFieldOptions = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState(false);
   const [keys, setKeys] = useState(initialState);
-
 
   const onChange = (name) => {
     return (e) => {
@@ -48,22 +55,60 @@ export const TextFieldOptions = () => {
 
   return (
     <div className={classes.optionsContainer}>
-      {_.uniqBy(Object.keys(selectedItem).concat(keys)).map(key => {
-        return <TextField
-          key={key}
-          name={key}
-          onChange={onChange(key)}
-          label={key}
-          value={selectedItem[key] || ""}
-          variant="outlined"
-        />
+      {_.uniqBy(Object.keys(selectedItem).concat(keys)).map((key) => {
+        return (
+          <TextField
+            key={key}
+            name={key}
+            onChange={onChange(key)}
+            label={key}
+            value={selectedItem[key] || ""}
+            variant="outlined"
+          />
+        );
       })}
 
-      <Button variant="outlined" color="primary" onClick={() => setOpen(!open)}>
-        +
-      </Button>
+      <div className={classes.buttons}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() =>
+            dispatch({
+              type: "form/changeComponentOrder",
+              toStart: true
+            })
+          }
+        >
+          <ArrowDropUp />
+        </Button>
+        <Button
+          className={classes.buttonAdd}
+          variant="outlined"
+          color="primary"
+          onClick={() => setOpen(!open)}
+        >
+          <Add />
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() =>
+            dispatch({
+              type: "form/changeComponentOrder",
+              toStart: false
+            })
+          }
+        >
+          <ArrowDropDown />
+        </Button>
+      </div>
 
-      <AddNewField keys={keys} setKeys={setKeys} open={open} onClose={() => setOpen(false)} />
+      <AddNewField
+        keys={keys}
+        setKeys={setKeys}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
 
       <Button
         color="primary"
@@ -77,13 +122,29 @@ export const TextFieldOptions = () => {
       >
         Сохранить
       </Button>
-      <Button color="secondary" variant="contained" onClick={() => {
-        dispatch({
-          type: "form/setSelectedComponent",
-          containerId: null,
-          componentId: null,
-        });
-      }}>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => {
+          dispatch({
+            type: "form/removeComponent"
+          });
+        }}
+      >
+        Удалить
+      </Button>
+      
+      <Button
+        color="secondary"
+        variant="contained"
+        onClick={() => {
+          dispatch({
+            type: "form/setSelectedComponent",
+            containerId: null,
+            componentId: null,
+          });
+        }}
+      >
         Отменить
       </Button>
     </div>

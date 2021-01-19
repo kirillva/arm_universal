@@ -6,8 +6,7 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  useTheme,
+  ListItemText
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
@@ -37,9 +36,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
-  debugger;
 
-  const theme = useTheme();
   const drawer = (
     <>
       <div className={classes.toolbar}>
@@ -70,11 +67,10 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
         </ListItem>
       </div>
       <Divider />
-      <List className={classes.grow}>
+      <List className={classes.grow} >
         {data.map((item, index) => {
           const { path, title, icon } = item;
           const active = location.pathname === path;
-          console.log(active);
           return (
             <ListItem
               button

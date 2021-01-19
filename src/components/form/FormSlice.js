@@ -3,6 +3,7 @@ import {
   getReactFromExtJSView,
   updateFormObject,
 } from "components/form/ComponentTreeHelpers";
+import _ from "lodash";
 
 const form = [
   {
@@ -86,6 +87,39 @@ const FormSlice = createSlice({
         
       }
     },
+    changeComponentOrder: (state, payload) => {
+      const { toStart } = payload;
+      if (state.containerId && state.componentId !== null) {
+        if (toStart && state.componentId >= 1) {
+          const temp = state.form[state.containerId].items[state.componentId - 1]
+          state.form[state.containerId].items[state.componentId - 1] = state.form[state.containerId].items[state.componentId];
+          state.form[state.containerId].items[state.componentId] = temp;
+
+          state.componentId = state.componentId - 1;
+        }
+        if (!toStart && state.componentId < state.form[state.containerId].items.length - 1) {
+          const temp = state.form[state.containerId].items[state.componentId + 1]
+          state.form[state.containerId].items[state.componentId + 1] = state.form[state.containerId].items[state.componentId];
+          state.form[state.containerId].items[state.componentId] = temp;
+          
+          state.componentId = state.componentId + 1;
+        }
+      }
+    },
+    removeComponent: (state) => {
+      if (state.containerId && state.componentId !== null) {
+          const [arr1, arr2] = _.chunk(state.form[state.containerId].items, state.componentId + 1);
+          arr1.pop();
+          state.form[state.containerId].items = arr1.concat(arr2 || []);
+
+          if (state.componentId === 0) {
+            state.componentId = null;
+          }
+          if (state.componentId > 0) {
+            state.componentId = state.componentId - 1;
+          }
+      }
+    }
   },
 });
 
