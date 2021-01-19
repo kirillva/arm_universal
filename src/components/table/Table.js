@@ -11,7 +11,7 @@ import {
 } from "react-table";
 import { runRpc } from "utils/rpc";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { lighten, makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-ui/core/Table";
 import MaterialTableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
@@ -30,8 +30,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { TextField } from "@material-ui/core";
+import { TableHead, TextField } from "@material-ui/core";
 import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
+import classNames from "classnames";
+import { EnhancedTableHead } from "./EnhancedTableHead";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,6 +73,10 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  highlight: {
+    color: theme.palette.primary.main,
+    backgroundColor: lighten(theme.palette.primary.main, 0.85),
+  },
 }));
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -90,7 +96,12 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 );
 
-export const Table = ({ columns, action, idProperty = "id" }) => {
+export const Table = ({
+  columns,
+  action,
+  idProperty = "id",
+  title = "Таблица",
+}) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
@@ -197,10 +208,12 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     }
   );
 
+  const classes = useStyles();
+
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     const _filters = [];
 
-    filters.forEach(item => {
+    filters.forEach((item) => {
       if (item.value && item.value.value) {
         _filters.push({
           property: item.id,
@@ -208,7 +221,7 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
           operator: item.value.operator,
         });
       }
-    })
+    });
     runRpc({
       action: action,
       method: "Query",
@@ -248,11 +261,32 @@ export const Table = ({ columns, action, idProperty = "id" }) => {
     gotoPage(newPage);
   };
 
-  const classes = useStyles();
+  function EnhancedTableHead(props) {
+    const {
+      title = 'Таблица',
+      numSelected,
+      classes
+    } = props;
+
+    return (
+        <Toolbar
+          className={classNames(classes.root, {
+            [classes.highlight]: numSelected > 0,
+          })}
+        >
+          {numSelected > 0 ? (
+            <Typography variant="subtitle1">Выбрано: {numSelected}</Typography>
+          ) : (
+            <Typography variant="h6">{title}</Typography>
+          )}
+        </Toolbar>
+    );
+  }
+
   return (
     <>
       <Paper className={classes.paper}>
-        {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
+        <EnhancedTableHead classes={classes} numSelected={Object.keys(selectedRowIds).length} />
         <TableContainer {...getTableProps()} className={classes.container}>
           <MaterialTable
             stickyHeader
