@@ -92,7 +92,7 @@ export const getExtJSView = (tree) => {
 
 export const getExtJSFromReactView = (tree) => {
   return getExtJSView(getComponentsTree(getComponentsArr(tree)));
-}
+};
 
 /**
  * Преобразовать extjs в дерево компонентов
@@ -122,7 +122,7 @@ export const getReactFromExtJSView = (extjs) => {
       horisontal: item.layout === "vbox" ? false : true,
       order: _order,
       items: components,
-      parent: item.parent || []
+      parent: item.parent || [],
     };
 
     if (childLayouts.length) {
@@ -142,12 +142,9 @@ export const getReactFromExtJSView = (extjs) => {
     _order++;
   }
 
-
-  return _items
+  return _items;
 };
 
-
-let order = 0;
 export const updateFormObject = ({
   items,
   id,
@@ -158,7 +155,10 @@ export const updateFormObject = ({
   moveDown = false,
   formContent,
 }) => {
-  const orderObject = {};
+  // const orderObject = {};
+  let order = Math.max(
+    ...Object.keys(formContent).map((key) => formContent[key].order)
+  );
   if (moveUp || moveDown) {
     const currentOrder = formContent[id].order;
     const searchingOrder = currentOrder + moveDown - moveUp;
@@ -171,29 +171,39 @@ export const updateFormObject = ({
         }
       });
 
-      orderObject[id] = {};
-      orderObject[id].order = searchingOrder;
-      orderObject[found.key] = {};
-      orderObject[found.key].order = currentOrder;
+      // formContent[id] = {};
+      formContent[id].order = searchingOrder;
+      // formContent[found.key] = {};
+      formContent[found.key].order = currentOrder;
     }
   } else {
-    orderObject[id] = {};
-    orderObject[id].order = formContent[id] ? formContent[id].order : ++order;
+    // orderObject[id] = {};
+    formContent[id].order = formContent[id] ? formContent[id].order : ++order;
   }
-  const newObject = merge.recursive(
-    formContent,
-    {
-      [id]: {
-        items: items,
-        parent: parentId || formContent[id].parent,
-        horisontal: options
-          ? options.horisontal
-          : formContent[id]
-          ? formContent[id].horisontal
-          : false,
-      },
-    },
-    { ...orderObject }
-  );
-  return { ...newObject };
+
+  formContent[id].horisontal = options
+    ? options.horisontal
+    : formContent[id]
+    ? formContent[id].horisontal
+    : false;
+
+  formContent[id].items = items;
+  formContent[id].parent = parentId || formContent[id].parent;
+  // const newObject = merge.recursive(
+  //   formContent,
+  //   {
+  //     [id]: {
+  //       items: items,
+  //       parent: parentId || formContent[id].parent,
+  //       horisontal: options
+  //         ? options.horisontal
+  //         : formContent[id]
+  //         ? formContent[id].horisontal
+  //         : false,
+  //     },
+  //   },
+  //   { ...orderObject }
+  // );
+  // return { ...newObject };
+  return formContent;
 };
