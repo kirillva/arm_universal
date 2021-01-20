@@ -295,17 +295,26 @@ export const Table = ({
       action,
     }).then(({ data }) => {
       if (!data || !data.length) return null;
-      const csv =
-        "data:text/csv;charset=utf-8,\uFEFF" +
-        Object.keys(data[0]).join(";") + "\n" + 
-        data
-          .map((e) =>
-            Object.keys(e)
-              .map((key) => e[key])
-              .join(";")
-          )
-          .join("\n");
-      global.window.open(encodeURI(csv));
+  
+      var textToSaveAsBlob = new Blob(['\uFEFF' + Object.keys(data[0]).join(";") + "\n" + data.map((e) =>
+        Object.keys(e)
+          .map((key) => e[key])
+          .join(";")
+      ).join("\n")], { type:"text/csv", charset: 'utf-8' });
+        
+      var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+   
+      var downloadLink = document.createElement("a");
+      downloadLink.download = `${title} ${action}.csv`;
+
+      downloadLink.href = textToSaveAsURL;
+      downloadLink.onclick = function (event) {
+          document.body.removeChild(event.target);
+      }
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+   
+      downloadLink.click();
     });
   };
 

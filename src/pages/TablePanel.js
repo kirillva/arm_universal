@@ -7,6 +7,7 @@ import { BoolCell, DateCell, NumberCell, StringCell } from "components/table/Cel
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
+    overflow: 'auto',
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
