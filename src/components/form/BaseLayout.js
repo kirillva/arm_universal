@@ -113,58 +113,74 @@ const BaseLayout = ({
       return () => {
         dispatch({
           type: "form/setSelectedComponent",
-          containerId: droppableId, 
+          containerId: droppableId,
           componentId: index,
         });
       };
     } else {
-      return () => { }
+      return () => {};
     }
   };
 
+  const onRemove = () => {
+    dispatch({
+      type: "form/removeContainer",
+      id: droppableId,
+    });
+  };
+
   return (
-    <div className={formEdit ? classes.wrapper : ''}>
-      {formEdit && <div className={classes.tools}>
-        <Button color="primary" variant="contained" onClick={handleClick}>
-          Действия
-        </Button>
-        <Menu
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          {[
-            {
-              text: "Добавить горизонтальный контейнер",
-              handler: addHorisontalLayout,
-            },
-            {
-              text: "Добавить вертикальный контейнер",
-              handler: addVerticalLayout,
-            },
-            { text: "Изменить тип контейнера", handler: changeLayout },
-            { text: "Переместить контейнер вверх", handler: moveUp },
-            { text: "Переместить контейнер вниз", handler: moveDown },
-            { text: "Добавить текстовое поле", handler: addItem("textfield") },
-            { text: "Добавить числовое поле", handler: addItem("numberfield") },
-            {
-              text: "Добавить поле с выбором опций",
-              handler: addItem("combobox"),
-            },
-          ].map((item) => (
-            <MenuItem
-              key={item.text}
-              onClick={() => {
-                handleClose();
-                item.handler();
-              }}
-            >
-              {item.text}
-            </MenuItem>
-          ))}
-        </Menu>
-      </div>}
+    <div className={formEdit ? classes.wrapper : ""}>
+      {formEdit && (
+        <div className={classes.tools}>
+          <Button color="primary" variant="contained" onClick={handleClick}>
+            Действия
+          </Button>
+          <Menu
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            {[
+              {
+                text: "Добавить горизонтальный контейнер",
+                handler: addHorisontalLayout,
+              },
+              {
+                text: "Добавить вертикальный контейнер",
+                handler: addVerticalLayout,
+              },
+              { text: "Изменить тип контейнера", handler: changeLayout },
+              // { text: "Переместить контейнер вверх", handler: moveUp },
+              { text: "Удалить контейнер", handler: onRemove },
+              // { text: "Переместить контейнер вниз", handler: moveDown },
+              {
+                text: "Добавить текстовое поле",
+                handler: addItem("textfield"),
+              },
+              {
+                text: "Добавить числовое поле",
+                handler: addItem("numberfield"),
+              },
+              {
+                text: "Добавить поле с выбором опций",
+                handler: addItem("combobox"),
+              },
+            ].map((item) => (
+              <MenuItem
+                key={item.text}
+                onClick={() => {
+                  handleClose();
+                  item.handler();
+                }}
+              >
+                {item.text}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
+      )}
       <div
         className={classNames({
           [classes.vertical]: !horisontal,

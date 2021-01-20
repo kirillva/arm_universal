@@ -84,42 +84,75 @@ const FormSlice = createSlice({
           ...state.form[state.containerId].items[state.componentId],
           ...props,
         };
+      }
+    },
+    removeContainer: (state, payload) => {
+      const { id } = payload;
+      debugger;
+      
+      if (id) {
+        const containers = [id];
         
+        while (containers.length) {
+          const lastId = containers.pop();
+          // const item = state.form[lastId];
+
+          Object.keys(state.form).forEach(key=>{
+            if (state.form[key].parent.find(item=>item === lastId)) {
+              containers.push(key);
+            }
+          });
+          
+          // if (item && item.parent) {
+          //   containers = containers.concat(item.parent)
+          // }
+          delete state.form[lastId];
+        }
       }
     },
     changeComponentOrder: (state, payload) => {
       const { toStart } = payload;
       if (state.containerId && state.componentId !== null) {
         if (toStart && state.componentId >= 1) {
-          const temp = state.form[state.containerId].items[state.componentId - 1]
-          state.form[state.containerId].items[state.componentId - 1] = state.form[state.containerId].items[state.componentId];
+          const temp =
+            state.form[state.containerId].items[state.componentId - 1];
+          state.form[state.containerId].items[state.componentId - 1] =
+            state.form[state.containerId].items[state.componentId];
           state.form[state.containerId].items[state.componentId] = temp;
 
           state.componentId = state.componentId - 1;
         }
-        if (!toStart && state.componentId < state.form[state.containerId].items.length - 1) {
-          const temp = state.form[state.containerId].items[state.componentId + 1]
-          state.form[state.containerId].items[state.componentId + 1] = state.form[state.containerId].items[state.componentId];
+        if (
+          !toStart &&
+          state.componentId < state.form[state.containerId].items.length - 1
+        ) {
+          const temp =
+            state.form[state.containerId].items[state.componentId + 1];
+          state.form[state.containerId].items[state.componentId + 1] =
+            state.form[state.containerId].items[state.componentId];
           state.form[state.containerId].items[state.componentId] = temp;
-          
+
           state.componentId = state.componentId + 1;
         }
       }
     },
     removeComponent: (state) => {
       if (state.containerId && state.componentId !== null) {
-          const [arr1, arr2] = _.chunk(state.form[state.containerId].items, state.componentId + 1);
-          arr1.pop();
-          state.form[state.containerId].items = arr1.concat(arr2 || []);
+        const [arr1, arr2] = _.chunk(
+          state.form[state.containerId].items,
+          state.componentId + 1
+        );
+        arr1.pop();
+        state.form[state.containerId].items = arr1.concat(arr2 || []);
 
-          if (state.componentId === 0) {
-            state.componentId = null;
-          }
-          if (state.componentId > 0) {
-            state.componentId = state.componentId - 1;
-          }
+        if (state.componentId === 0) {
+          state.componentId = null;
+        }
+        if (state.componentId > 0) {
+          state.componentId = state.componentId - 1;
+        }
       }
-    }
+    },
   },
 });
 

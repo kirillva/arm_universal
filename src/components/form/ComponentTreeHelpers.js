@@ -207,3 +207,53 @@ export const updateFormObject = ({
   // return { ...newObject };
   return formContent;
 };
+
+// export const updateFormObject = ({
+//   items,
+//   id,
+//   parentId,
+//   options,
+//   sort,
+//   moveUp = false,
+//   moveDown = false,
+//   formContent,
+// }) => {
+//   // const orderObject = {};
+//   let order =
+//     Math.max(
+//       ...Object.keys(formContent).map((key) => formContent[key].order)
+//     ) || 1;
+//   if (moveUp || moveDown) {
+//     const currentOrder = formContent[id].order;
+//     const searchingOrder = currentOrder + moveDown - moveUp;
+//     if (searchingOrder <= order && searchingOrder > 0) {
+//       let found = null;
+//       Object.keys(formContent).forEach((key) => {
+//         if (formContent[key].order === searchingOrder) {
+//           found = { key: key, ...formContent[key] };
+//           return;
+//         }
+//       });
+
+//       if (found) {
+//         // formContent[id] = {};
+//         formContent[id].order = searchingOrder;
+//         // formContent[found.key] = {};
+//         formContent[found.key].order = currentOrder;
+
+//         formContent[id].horisontal = options
+//           ? options.horisontal
+//           : formContent[id]
+//           ? formContent[id].horisontal
+//           : false;
+//       }
+//     }
+//   } else {
+//     formContent[id] = { order: order + 1 };
+//   }
+
+//   formContent[id].items = items || [];
+//   formContent[id].parent = parentId || formContent[id].parent || [];
+
+//   return formContent;
+// };
