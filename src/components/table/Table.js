@@ -221,7 +221,6 @@ export const Table = ({
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
       const _filters = [];
-
       filters.forEach((item) => {
         if (item.value && item.value.value) {
           _filters.push({
@@ -231,6 +230,7 @@ export const Table = ({
           });
         }
       });
+
       runRpc({
         action: action,
         method: "Query",
@@ -243,6 +243,7 @@ export const Table = ({
             start: pageIndex * pageSize,
             limit: pageSize,
             filter: _filters,
+            sort: sortBy.map(item=>({property: item.id, direction: item.desc ? 'DESC' : 'ASC'})),
           },
         ],
         type: "rpc",
@@ -366,9 +367,9 @@ export const Table = ({
                       {column.render("Header")}
                       {column.isSorted ? (
                         column.isSortedDesc ? (
-                          <ArrowDropDown />
-                        ) : (
                           <ArrowDropUp />
+                        ) : (
+                          <ArrowDropDown />
                         )
                       ) : (
                         ""
