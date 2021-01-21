@@ -1,7 +1,7 @@
 import { TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useDispatch } from "react-redux";
-import classNames from 'classnames';
+import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -47,12 +47,12 @@ const BreadcrumbsComponent = ({
       type: "reduxForm/setBreadcrumbs",
       breadcrumbs,
     });
-    console.log('breadcrumbs', breadcrumbs);
+    // console.log('breadcrumbs', breadcrumbs);
   };
 
   const onSelectContainer = () => {
-    console.log('breadcrumbs', breadcrumbs);
-  }
+    // console.log('breadcrumbs', breadcrumbs);
+  };
 
   switch (xtype) {
     case "textfield":
@@ -108,14 +108,14 @@ const BreadcrumbsComponent = ({
 };
 
 export const getElementByBreadcrumbs = (form, breadcrumbs) => {
-    let item = form;
-    debugger;
-    breadcrumbs.forEach((index) => {
-      item = item.items[index];
-    });
+  let item = form;
+  debugger;
+  breadcrumbs.forEach((index) => {
+    item = item.items[index];
+  });
 
-    return item;
-}
+  return item;
+};
 
 export const renderForm = (form) => {
   const renderComponent = (_form, breadcrumbs) => {

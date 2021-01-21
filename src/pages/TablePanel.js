@@ -36,7 +36,7 @@ export const TablePanel = () => {
 
   const cs_house = React.useMemo(
     () => [
-      { title: 'f_street', accessor: 'f_street', Filter: props => <SelectFilter {...props} table="cs_street" />, Cell: StringCell }, 
+      { title: 'f_street', accessor: 'f_street', Filter: props => <SelectFilter {...props} idProperty="id" nameProperty="c_name" table="cs_street" />, Cell: StringCell }, 
       { title: 'c_house_num', accessor: 'c_house_num', Filter: StringFilter, Cell: StringCell }, 
       { title: 'c_build_num', accessor: 'c_build_num', Filter: StringFilter, Cell: StringCell }, 
       { title: 'dx_date', accessor: 'dx_date', Filter: DateFilter, Cell: DateCell },

@@ -221,6 +221,7 @@ export const Table = ({
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
       const _filters = [];
+      debugger;
       filters.forEach((item) => {
         if (item.value && item.value.value) {
           _filters.push({
