@@ -76,10 +76,12 @@ const getExtJSNode = (node) => {
     newNode.items = newNode.items.concat(node.items.map(getExtJSNode));
   }
 
-  if (node) {
-    newNode = node;
-  }
+  // if (node) {
+  //   newNode = node;
+  // }
+  newNode.xtype = newNode.xtype || node.xtype;
   return { ...newNode, ...node.props };
+  // return { ...newNode, ...node };
 };
 
 /**
@@ -91,7 +93,10 @@ export const getExtJSView = (tree) => {
 };
 
 export const getExtJSFromReactView = (tree) => {
-  return getExtJSView(getComponentsTree(getComponentsArr(tree)));
+  const componentArr = getComponentsArr(tree);
+  const componentTree = getComponentsTree(componentArr);
+  const extjsView = getExtJSView(componentTree);
+  return extjsView;
 }
 
 /**
