@@ -21,62 +21,24 @@ export function SelectFilter({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
-
-  // const [value, setValue] = useState("");
+  
   const [inputValue, setInputValue] = useState("");
 
   const classes = useStyles();
 
-  // const loadData = (value) => {
-  //   const filter = [];
-  //   if (nameProperty) {
-  //     filter.push({
-  //       property: nameProperty,
-  //       value: value,
-  //       operator: "like",
-  //     });
-  //   }
-  //   runRpc({
-  //     action: table,
-  //     method: "Query",
-  //     data: [
-  //       {
-  //         limit: 50,
-  //         select: [idProperty, nameProperty].filter((item) => item).join(","),
-  //         filter: filter,
-  //       },
-  //     ],
-  //     type: "rpc",
-  //   }).then((responce) => {
-  //     setLoading(false);
-  //     setOptions(responce.result.records);
-  //   });
-  // };
-
-  // const onChange = (e) => {
-  //   const value = e.target.value;
-  //   setLoading(false);
-  //   setOptions([]);
-  //   if (value) {
-  //     setLoading(true);
-  //     loadData(value)
-  //   }
-  // }
-
   const onChange = (event, newValue) => {
     if (newValue) {
-      setFilter({value: newValue[idProperty], operator: '='});
+      setFilter({ value: newValue[idProperty], operator: "=" });
     } else {
       setFilter(null);
     }
-  }
+  };
+
   const onInputChange = (event, newInputValue) => {
     setInputValue(newInputValue);
-  }
+  };
 
-  const onInputChangeDebounced = _.debounce(onInputChange, 1000);
-
-  useEffect(() => {
+  const loadData = () => {
     if (open && inputValue) {
       const filter = [];
       if (nameProperty) {
@@ -106,7 +68,14 @@ export function SelectFilter({
       setLoading(false);
       setOptions([]);
     }
-  }, [open, inputValue, table]);
+  };
+
+  const onInputChangeDebounce = _.debounce(onInputChange, 1000);
+
+  useEffect(() => {
+    loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, inputValue]);
 
   return (
     <Autocomplete
@@ -127,12 +96,7 @@ export function SelectFilter({
       getOptionLabel={(option) => option[nameProperty]}
       options={options}
       loading={loading}
-      // value={filterValue || ''}
-      // inputValue={inputValue}
-      onInputChange={(...props)=>{
-        setLoading(true);
-        onInputChangeDebounced(...props);
-      }}
+      onInputChange={onInputChangeDebounce}
       onChange={onChange}
       renderInput={(params) => (
         <TextField
@@ -141,7 +105,7 @@ export function SelectFilter({
           margin="dense"
           InputProps={{
             ...params.InputProps,
-            endAdornment: params.InputProps.endAdornment
+            endAdornment: params.InputProps.endAdornment,
           }}
         />
       )}
