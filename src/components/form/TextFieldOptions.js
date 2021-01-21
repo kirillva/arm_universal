@@ -6,6 +6,7 @@ import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { AddNewField } from "./AddNewField";
 import { Add, ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
+import { getElementByBreadcrumbs } from "components/reduxForm/ReduxFormHelpers";
 
 const useStyles = makeStyles((theme) => ({
   optionsContainer: {
@@ -29,7 +30,9 @@ const initialState = ["xtype", "fieldLabel", "name", "margin"];
 export const TextFieldOptions = () => {
   const classes = useStyles();
 
-  const { form, containerId, componentId } = useSelector((state) => state.form);
+  const { form, breadcrumbs } = useSelector((state) => state.reduxForm);
+
+  // const { form, containerId, componentId } = useSelector((state) => state.form);
   const dispatch = useDispatch();
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -44,12 +47,14 @@ export const TextFieldOptions = () => {
 
   useEffect(() => {
     setKeys(initialState);
-    if (containerId && componentId !== null && form[containerId].items) {
-      setSelectedItem(_.cloneDeep(form[containerId].items[componentId]));
+    // debugger;
+    // console.log(breadcrumbs);
+    if (form && breadcrumbs) {
+      setSelectedItem(getElementByBreadcrumbs(form, breadcrumbs));
     } else {
       setSelectedItem(null);
     }
-  }, [form, containerId, componentId]);
+  }, [form, breadcrumbs]);
 
   if (!selectedItem) return null;
 
@@ -68,14 +73,14 @@ export const TextFieldOptions = () => {
         );
       })}
 
-      <div className={classes.buttons}>
+      {/* <div className={classes.buttons}>
         <Button
           variant="outlined"
           color="primary"
           onClick={() =>
             dispatch({
               type: "form/changeComponentOrder",
-              toStart: true
+              toStart: true,
             })
           }
         >
@@ -95,13 +100,13 @@ export const TextFieldOptions = () => {
           onClick={() =>
             dispatch({
               type: "form/changeComponentOrder",
-              toStart: false
+              toStart: false,
             })
           }
         >
           <ArrowDropDown />
         </Button>
-      </div>
+      </div> */}
 
       <AddNewField
         keys={keys}
@@ -115,8 +120,8 @@ export const TextFieldOptions = () => {
         variant="contained"
         onClick={() => {
           dispatch({
-            type: "form/updateSelectedComponent",
-            props: selectedItem,
+            type: "reduxForm/updateByBreadcrumbs",
+            selectedItem,
           });
         }}
       >
@@ -127,13 +132,13 @@ export const TextFieldOptions = () => {
         variant="contained"
         onClick={() => {
           dispatch({
-            type: "form/removeComponent"
+            type: "form/removeComponent",
           });
         }}
       >
         Удалить
       </Button>
-      
+
       <Button
         color="secondary"
         variant="contained"
