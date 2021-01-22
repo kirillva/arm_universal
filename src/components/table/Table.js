@@ -30,7 +30,15 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button, TableHead, TextField } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TableHead,
+  TextField,
+} from "@material-ui/core";
 import {
   ArrowDropDown,
   ArrowDropUp,
@@ -38,6 +46,7 @@ import {
 } from "@material-ui/icons";
 import classNames from "classnames";
 import { EnhancedTableHead } from "./EnhancedTableHead";
+import { EditRowForm } from "./EditRowForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,6 +122,7 @@ export const Table = ({
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const DefaultColumnFilter = ({ column, className }) => {
     const { filterValue } = column;
@@ -221,7 +231,6 @@ export const Table = ({
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
       const _filters = [];
-      debugger;
       filters.forEach((item) => {
         if (item.value && item.value.value) {
           _filters.push({
@@ -244,7 +253,10 @@ export const Table = ({
             start: pageIndex * pageSize,
             limit: pageSize,
             filter: _filters,
-            sort: sortBy.map(item=>({property: item.id, direction: item.desc ? 'DESC' : 'ASC'})),
+            sort: sortBy.map((item) => ({
+              property: item.id,
+              direction: item.desc ? "DESC" : "ASC",
+            })),
           },
         ],
         type: "rpc",
@@ -297,25 +309,35 @@ export const Table = ({
       action,
     }).then(({ data }) => {
       if (!data || !data.length) return null;
-  
-      var textToSaveAsBlob = new Blob(['\uFEFF' + Object.keys(data[0]).join(";") + "\n" + data.map((e) =>
-        Object.keys(e)
-          .map((key) => e[key])
-          .join(";")
-      ).join("\n")], { type:"text/csv", charset: 'utf-8' });
-        
+
+      var textToSaveAsBlob = new Blob(
+        [
+          "\uFEFF" +
+            Object.keys(data[0]).join(";") +
+            "\n" +
+            data
+              .map((e) =>
+                Object.keys(e)
+                  .map((key) => e[key])
+                  .join(";")
+              )
+              .join("\n"),
+        ],
+        { type: "text/csv", charset: "utf-8" }
+      );
+
       var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-   
+
       var downloadLink = document.createElement("a");
       downloadLink.download = `${title} ${action}.csv`;
 
       downloadLink.href = textToSaveAsURL;
       downloadLink.onclick = function (event) {
-          document.body.removeChild(event.target);
-      }
+        document.body.removeChild(event.target);
+      };
       downloadLink.style.display = "none";
       document.body.appendChild(downloadLink);
-   
+
       downloadLink.click();
     });
   };
@@ -343,6 +365,14 @@ export const Table = ({
 
   return (
     <>
+      <EditRowForm
+        title={title}
+        action={action}
+        idProperty={idProperty}
+        setSelectedRow={setSelectedRow}
+        selectedRow={selectedRow}
+        columns={columns}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableHead
           classes={classes}
@@ -394,6 +424,11 @@ export const Table = ({
                     {row.cells.map((cell) => {
                       return (
                         <TableCell
+                          onClick={() => {
+                            if (cell.column.id !== "selection") {
+                              setSelectedRow(row);
+                            }
+                          }}
                           align="left"
                           {...cell.getCellProps()}
                           className={classes.cell}
