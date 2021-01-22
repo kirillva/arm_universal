@@ -67,6 +67,27 @@ const ReduxFormSlice = createSlice({
       let item = getElementByBreadcrumbs(state.form, state.breadcrumbs)
       item = _.merge(item, payload.selectedItem);
     },
+    addElement: (state, payload) => {
+      let item = getElementByBreadcrumbs(state.form, payload.breadcrumbs);
+      if (!item.items) {
+        item.items = [];
+      }
+      item.items.push(payload.item)
+    },
+    moveElement: (state, payload) => {
+      let originItem = getElementByBreadcrumbs(state.form, state.breadcrumbs);
+      const position = payload.breadcrumbs.pop();
+      let targetItem = getElementByBreadcrumbs(state.form, payload.breadcrumbs);
+      
+      targetItem.items.splice(position, 0, originItem);
+
+      const containerBreadcrumbs = _.clone(state.breadcrumbs)
+      containerBreadcrumbs.pop();
+
+      let originContainer = getElementByBreadcrumbs(state.form, containerBreadcrumbs);
+      let _position = state.breadcrumbs;
+      originContainer.items.splice(_position, 1);
+    }
   },
 });
 

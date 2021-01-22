@@ -1,7 +1,8 @@
-import { TextField } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useDispatch } from "react-redux";
 import classNames from "classnames";
+import { Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -47,12 +48,24 @@ const BreadcrumbsComponent = ({
       type: "reduxForm/setBreadcrumbs",
       breadcrumbs,
     });
-    // console.log('breadcrumbs', breadcrumbs);
+    console.log('breadcrumbs', breadcrumbs);
   };
 
   const onSelectContainer = () => {
-    // console.log('breadcrumbs', breadcrumbs);
+    dispatch({
+      type: "reduxForm/setBreadcrumbs",
+      breadcrumbs,
+    });
+    console.log('breadcrumbs', breadcrumbs);
   };
+
+  const addContainer = () => {
+    dispatch({
+      type: "reduxForm/addElement",
+      breadcrumbs
+    });
+    console.log('addContainer');
+  }
 
   switch (xtype) {
     case "textfield":
@@ -95,21 +108,29 @@ const BreadcrumbsComponent = ({
   }
 
   return (
-    <div
-      className={classNames(classes.wrapper, {
-        [classes.vertical]: layout === "vbox",
-        [classes.horisontal]: layout === "hbox",
-      })}
-      onClick={onSelectContainer}
-    >
-      {children}
+    <div className={classes.wrapper}>
+      <div className={classes.tools}>
+        <Button color="primary" variant="contained" onClick={onSelectContainer}>
+          Выбрать
+        </Button>
+        <Button color="primary" variant="contained" onClick={addContainer}>
+          <Add />
+        </Button>
+      </div>
+      <div
+        className={classNames(classes.wrapper, {
+          [classes.vertical]: layout === "vbox",
+          [classes.horisontal]: layout === "hbox",
+        })}
+      >
+        {children}
+      </div>
     </div>
   );
 };
 
 export const getElementByBreadcrumbs = (form, breadcrumbs) => {
   let item = form;
-  debugger;
   breadcrumbs.forEach((index) => {
     item = item.items[index];
   });
