@@ -4,6 +4,7 @@ import { Table } from "components/table/Table";
 import { BoolFilter, DateFilter, NumberFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, DateCell, NumberCell, StringCell } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
+import { StringEditor } from "components/table/Editors";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -24,8 +25,8 @@ export const TablePanel = () => {
   
   const cs_street = React.useMemo(
     () => [
-      { title: 'c_short_type', accessor: 'c_short_type', Filter: StringFilter, Cell: StringCell },
-      { title: 'c_name', accessor: 'c_name', Filter: StringFilter, Cell: StringCell },
+      { title: 'c_short_type', accessor: 'c_short_type', Filter: StringFilter, Cell: StringCell, Editor: StringEditor },
+      { title: 'c_name', accessor: 'c_name', Filter: StringFilter, Cell: StringCell, Editor: StringEditor },
       { title: 'dx_date', accessor: 'dx_date', Filter: DateFilter, Cell: DateCell },
       { title: 'b_disabled', accessor: 'b_disabled', Filter: BoolFilter, Cell: BoolCell },
       { title: 'f_division', accessor: 'f_division', Filter: props => <SelectFilter {...props} table="" />, Cell: StringCell },

@@ -42,10 +42,9 @@ import {
 import {
   ArrowDropDown,
   ArrowDropUp,
-  TableChartOutlined,
+  Description,
 } from "@material-ui/icons";
 import classNames from "classnames";
-import { EnhancedTableHead } from "./EnhancedTableHead";
 import { EditRowForm } from "./EditRowForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +86,6 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   iconButton: {
-    // color: theme.palette.primary.main,
     margin: "0 0 0 auto",
   },
   highlight: {
@@ -356,8 +354,8 @@ export const Table = ({
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
-        <Button className={classes.iconButton} onClick={ExportToCsv}>
-          <TableChartOutlined />
+        <Button  title={'Экспорт в эксель'} className={classes.iconButton} onClick={ExportToCsv}>
+          <Description />
         </Button>
       </Toolbar>
     );
@@ -469,129 +467,6 @@ export const Table = ({
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <pre>
-        <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-              sortBy,
-              groupBy,
-              expanded: expanded,
-              filters,
-              selectedRowIds: selectedRowIds,
-              // 'selectedFlatRows[].original': selectedFlatRows.map(
-              //   d => d.original
-              // )
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre> */}
-      {/* <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>
-                  <div>
-                    {column.canGroupBy ? (
-                      <span {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? "🛑 " : "👊 "}
-                      </span>
-                    ) : null}
-                    <span {...column.getSortByToggleProps()}>
-                      {column.render("Header")}
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
-                    </span>
-                  </div>
-                  <div>{column.canFilter ? column.render("Filter") : null}</div>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()}>
-                      {cell.isGrouped ? (
-                        <>
-                          <span {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? "👇" : "👉"}
-                          </span>
-                          {cell.render("Cell", { editable: false })} (
-                          {row.subRows.length})
-                        </>
-                      ) : cell.isAggregated ? (
-                        cell.render("Aggregated")
-                      ) : cell.isPlaceholder ? null : (
-                        cell.render("Cell", { editable: true })
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {"<<"}
-        </button>
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {"<"}
-        </button>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {">"}
-        </button>
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {">>"}
-        </button>
-        <span>
-          Page
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>
-        </span>
-        <span>
-          | Go to page:
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              gotoPage(page);
-            }}
-            style={{ width: "100px" }}
-          />
-        </span>
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div> */}
     </>
   );
 };
