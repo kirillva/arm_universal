@@ -14,7 +14,7 @@ import {
   StringCell,
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
-import { BoolEditor, SelectEditor, StringEditor } from "components/table/Editors";
+import { BoolEditor, SelectEditor, StringEditor, DateEditor } from "components/table/Editors";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -103,12 +103,13 @@ export const TablePanel = () => {
       //   Filter: StringFilter,
       //   Cell: StringCell,
       // },
-      // {
-      //   title: "dx_date",
-      //   accessor: "dx_date",
-      //   Filter: DateFilter,
-      //   Cell: DateCell,
-      // },
+      {
+        title: "dx_date",
+        accessor: "dx_date",
+        Filter: DateFilter,
+        Cell: DateCell,
+        Editor: DateEditor,
+      },
       // {
       //   title: "b_disabled",
       //   accessor: "b_disabled",

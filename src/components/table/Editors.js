@@ -6,6 +6,13 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import MenuItem from "@material-ui/core/MenuItem";
 // import Select from '@material-ui/core/Select';
+import moment from "moment";
+import MomentUtils from "@date-io/moment";
+
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
 export const StringEditor = ({ fieldProps, ...props }) => {
   return <TextField {...props} />;
@@ -17,6 +24,38 @@ export const BoolEditor = ({ fieldProps, ...props }) => {
       <MenuItem value={true}>Да</MenuItem>
       <MenuItem value={false}>Нет</MenuItem>
     </TextField>
+  );
+};
+
+export const DateEditor = ({
+  fieldProps,
+  value,
+  name,
+  label,
+  setFieldValue,
+}) => {
+  const dataInputOptions = {
+    variant: "inline",
+    invalidDateMessage: "Некорректный формат даты",
+    inputVariant: "outlined",
+    format: "DD.MM.YYYY",
+  };
+
+  return (
+    <MuiPickersUtilsProvider
+      libInstance={moment}
+      utils={MomentUtils}
+      locale={"ru"}
+    >
+      <KeyboardDatePicker
+        {...dataInputOptions}
+        label={label}
+        value={value}
+        onChange={(value) => setFieldValue(name, value ? value.toISOString(true) : null)}
+        margin="dense"
+        autoOk
+      />
+    </MuiPickersUtilsProvider>
   );
 };
 
