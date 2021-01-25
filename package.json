@@ -15,7 +15,7 @@
     "@testing-library/user-event": "^12.2.2",
     "classnames": "^2.2.6",
     "csv": "^5.3.2",
-    "formik": "^2.2.5",
+    "formik": "^2.2.6",
     "merge": "^2.1.0",
     "moment": "^2.24.0",
     "react": "^17.0.1",

@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { TextField, MenuItem } from "@material-ui/core";
-// import BaseDatePicker from 'base/components/ReactTable/BaseDatePicker';
 import { runRpc } from "utils/rpc";
-// import defaultProps from './DefaultProps';
-// import styles from './Filter.module.css';
 import _ from "lodash";
 import DatePicker from "./DatePicker";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-// import useQueryRegistry from 'hooks/useQueryRegistry';
 
 export const Operators = {
   number: "number",
@@ -36,9 +31,7 @@ export const NumberFilter = ({
   allowNegative = true,
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
-  const InputProps = {
-    // className: styles.baseField
-  };
+  const InputProps = {};
 
   const inputProps = {};
   if (!allowNegative) {
@@ -99,11 +92,6 @@ export const StringFilter = ({
       margin="dense"
       value={value}
       className={className}
-      InputProps={
-        {
-          // className: styles.baseField
-        }
-      }
       onChange={(e) => {
         setValue(e.target.value);
         applyFilterDebounced(filterValue, e.target.value, setFilter, "like");
@@ -118,53 +106,6 @@ export const StringFilter = ({
   );
 };
 
-// export const SelectFilter = ({
-//   column: { filterValue, setFilter },
-//   className,
-//   table = "",
-// }) => {
-//   const [value, setValue] = useState(filterValue ? filterValue.value : "");
-//   const [options, setOptions] = useState([]);
-
-//   const loadData = () => {
-
-//   }
-	
-//   const applyLoadDataDebounced = _.debounce(loadData, 1000);
-// //   console.log("table", table);
-//   return (
-//     <Autocomplete
-//       options={options}
-//       getOptionLabel={(option) => option.title}
-//     //   style={{ width: 300 }}
-//       renderInput={(params) => (
-//         <TextField
-//           {...params}
-//           variant="outlined"
-//           margin="dense"
-//           value={value}
-//           className={className}
-//         //   InputProps={
-//         //     {
-//         //       // className: styles.baseField
-//         //     }
-//         //   }
-//           onChange={(e) => {
-//             setValue(e.target.value);
-//             applyLoadDataDebounced(filterValue, e.target.value, setFilter, "=");
-//           }}
-//           onKeyDown={(e) => {
-//             if (e.key === "Enter") {
-//             //   applyFilter(filterValue, e.target.value, setFilter, "=");
-//               applyLoadDataDebounced.cancel();
-//             }
-//           }}
-//         />
-//       )}
-//     />
-//   );
-// };
-
 export const UserFilter = ({
   column: { filterValue, setFilter },
   className,
@@ -177,11 +118,6 @@ export const UserFilter = ({
       margin="dense"
       value={value}
       className={className}
-      InputProps={
-        {
-          // className: styles.baseField
-        }
-      }
       onChange={(e) => {
         setValue(e.target.value);
         applyFilterDebounced(
@@ -209,9 +145,6 @@ export const DateFilter = ({
     <DatePicker
       value={filterValue}
       className={className}
-      // InputProps={{
-      // 	className: styles.DateFilter
-      // }}
       onChange={(props) =>
         setFilter({ ...filterValue, ...props, operator: Operators.date })
       }
@@ -237,9 +170,6 @@ export const BoolFilter = ({
       variant="outlined"
       margin="dense"
       className={className}
-      // InputProps={{
-      // 	className: styles.baseField
-      // }}
       onChange={(e) =>
         setFilter({ value: e.target.value, operator: Operators.bool })
       }
@@ -251,96 +181,53 @@ export const BoolFilter = ({
   );
 };
 
-export const StatusFilter = ({
-  column: { filterValue, setFilter },
-  className,
-}) => {
-  const [statuses, setStatuses] = useState([]);
-  useEffect(() => {
-    runRpc({
-      action: "cs_route_statuses",
-      method: "Query",
-      data: [
-        {
-          limit: 10000,
-          filter: [
-            {
-              property: "b_disabled",
-              value: false,
-              operator: "is",
-            },
-          ],
-        },
-      ],
-      type: "rpc",
-    }).then((response) => {
-      setStatuses(response.result.records);
-    });
-  }, []);
-  return (
-    <TextField
-      select
-      value={filterValue ? filterValue.value : ""}
-      variant="outlined"
-      margin="dense"
-      className={className}
-      // InputProps={{
-      // 	className: styles.baseField
-      // }}
-      onChange={(e) => {
-        console.log(" e.target.value", e.target.value);
-        console.log("filterValue", filterValue);
-        setFilter({ value: e.target.value, operator: Operators.status });
-      }}
-    >
-      <MenuItem value={""}>Все</MenuItem>
-      {statuses.map((el, index) => {
-        return (
-          <MenuItem key={index} value={el.c_name}>
-            {el.c_name}
-          </MenuItem>
-        );
-      })}
-    </TextField>
-  );
-};
-
-// export const RegistryFilter = (props) => {
-// 	const { column: { regAccessor, reg, regItemMapper, regOperator = Operators.number }, state, setFilter, className } = props;
-
-// 	const { registry } = useQueryRegistry(reg);
-
-// 	const filter = useMemo(() => {
-// 		return state.filters.find((item) => item.id === regAccessor);
-// 	}, [state.filters]);
-
-// 	const menuItems = useMemo(() => {
-// 		return registry.map((item) => regItemMapper(item));
-// 	}, [registry]);
-
-// 	return (
-// 		<TextField
-// 			select
-// 			value={filter ? filter.value.value : ''}
-// 			variant="outlined"
-// 			margin="dense"
-// 			className={className}
-// 			InputProps={{
-// 				className: styles.baseField
-// 			}}
-// 			disabled={menuItems.length === 0}
-// 			onChange={e => {
-// 				setFilter(regAccessor, { value: `${e.target.value}`, operator: regOperator });
-// 			}}
-// 		>
-// 			<MenuItem id='' value=''>Все</MenuItem>
-// 			{menuItems.map((item, index) => {
-// 				return (
-// 					<MenuItem key={item.id} value={item.value}>
-// 						{item.description}
-// 					</MenuItem>
-// 				);
-// 			})}
-// 		</TextField>
-// 	);
-// }
+// export const StatusFilter = ({
+//   column: { filterValue, setFilter },
+//   className,
+// }) => {
+//   const [statuses, setStatuses] = useState([]);
+//   useEffect(() => {
+//     runRpc({
+//       action: "cs_route_statuses",
+//       method: "Query",
+//       data: [
+//         {
+//           limit: 10000,
+//           filter: [
+//             {
+//               property: "b_disabled",
+//               value: false,
+//               operator: "is",
+//             },
+//           ],
+//         },
+//       ],
+//       type: "rpc",
+//     }).then((response) => {
+//       setStatuses(response.result.records);
+//     });
+//   }, []);
+//   return (
+//     <TextField
+//       select
+//       value={filterValue ? filterValue.value : ""}
+//       variant="outlined"
+//       margin="dense"
+//       className={className}
+//       onChange={(e) => {
+//         console.log(" e.target.value", e.target.value);
+//         console.log("filterValue", filterValue);
+//         setFilter({ value: e.target.value, operator: Operators.status });
+//       }}
+//     >
+//       <MenuItem value={""}>Все</MenuItem>
+//       {statuses.map((el, index) => {
+//         return (
+//           <MenuItem key={index} value={el.c_name}>
+//             {el.c_name}
+//           </MenuItem>
+//         );
+//       })}
+//     </TextField>
+//   );
+// };

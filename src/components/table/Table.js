@@ -30,14 +30,22 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button, TableHead, TextField } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TableHead,
+  TextField,
+} from "@material-ui/core";
 import {
   ArrowDropDown,
   ArrowDropUp,
-  TableChartOutlined,
+  Description,
 } from "@material-ui/icons";
 import classNames from "classnames";
-import { EnhancedTableHead } from "./EnhancedTableHead";
+import { EditRowForm } from "./EditRowForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,7 +86,6 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   iconButton: {
-    // color: theme.palette.primary.main,
     margin: "0 0 0 auto",
   },
   highlight: {
@@ -113,6 +120,7 @@ export const Table = ({
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const DefaultColumnFilter = ({ column, className }) => {
     const { filterValue } = column;
@@ -221,7 +229,6 @@ export const Table = ({
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
       const _filters = [];
-      debugger;
       filters.forEach((item) => {
         if (item.value && item.value.value) {
           _filters.push({
@@ -244,7 +251,10 @@ export const Table = ({
             start: pageIndex * pageSize,
             limit: pageSize,
             filter: _filters,
-            sort: sortBy.map(item=>({property: item.id, direction: item.desc ? 'DESC' : 'ASC'})),
+            sort: sortBy.map((item) => ({
+              property: item.id,
+              direction: item.desc ? "DESC" : "ASC",
+            })),
           },
         ],
         type: "rpc",
@@ -297,25 +307,35 @@ export const Table = ({
       action,
     }).then(({ data }) => {
       if (!data || !data.length) return null;
-  
-      var textToSaveAsBlob = new Blob(['\uFEFF' + Object.keys(data[0]).join(";") + "\n" + data.map((e) =>
-        Object.keys(e)
-          .map((key) => e[key])
-          .join(";")
-      ).join("\n")], { type:"text/csv", charset: 'utf-8' });
-        
+
+      var textToSaveAsBlob = new Blob(
+        [
+          "\uFEFF" +
+            Object.keys(data[0]).join(";") +
+            "\n" +
+            data
+              .map((e) =>
+                Object.keys(e)
+                  .map((key) => e[key])
+                  .join(";")
+              )
+              .join("\n"),
+        ],
+        { type: "text/csv", charset: "utf-8" }
+      );
+
       var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-   
+
       var downloadLink = document.createElement("a");
       downloadLink.download = `${title} ${action}.csv`;
 
       downloadLink.href = textToSaveAsURL;
       downloadLink.onclick = function (event) {
-          document.body.removeChild(event.target);
-      }
+        document.body.removeChild(event.target);
+      };
       downloadLink.style.display = "none";
       document.body.appendChild(downloadLink);
-   
+
       downloadLink.click();
     });
   };
@@ -334,8 +354,8 @@ export const Table = ({
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
-        <Button className={classes.iconButton} onClick={ExportToCsv}>
-          <TableChartOutlined />
+        <Button  title={'Экспорт в эксель'} className={classes.iconButton} onClick={ExportToCsv}>
+          <Description />
         </Button>
       </Toolbar>
     );
@@ -343,6 +363,14 @@ export const Table = ({
 
   return (
     <>
+      <EditRowForm
+        title={title}
+        action={action}
+        idProperty={idProperty}
+        setSelectedRow={setSelectedRow}
+        selectedRow={selectedRow}
+        columns={columns}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableHead
           classes={classes}
@@ -394,6 +422,11 @@ export const Table = ({
                     {row.cells.map((cell) => {
                       return (
                         <TableCell
+                          onClick={() => {
+                            if (cell.column.id !== "selection") {
+                              setSelectedRow(row);
+                            }
+                          }}
                           align="left"
                           {...cell.getCellProps()}
                           className={classes.cell}
@@ -434,129 +467,6 @@ export const Table = ({
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <pre>
-        <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-              sortBy,
-              groupBy,
-              expanded: expanded,
-              filters,
-              selectedRowIds: selectedRowIds,
-              // 'selectedFlatRows[].original': selectedFlatRows.map(
-              //   d => d.original
-              // )
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre> */}
-      {/* <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>
-                  <div>
-                    {column.canGroupBy ? (
-                      <span {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? "🛑 " : "👊 "}
-                      </span>
-                    ) : null}
-                    <span {...column.getSortByToggleProps()}>
-                      {column.render("Header")}
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
-                    </span>
-                  </div>
-                  <div>{column.canFilter ? column.render("Filter") : null}</div>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()}>
-                      {cell.isGrouped ? (
-                        <>
-                          <span {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? "👇" : "👉"}
-                          </span>
-                          {cell.render("Cell", { editable: false })} (
-                          {row.subRows.length})
-                        </>
-                      ) : cell.isAggregated ? (
-                        cell.render("Aggregated")
-                      ) : cell.isPlaceholder ? null : (
-                        cell.render("Cell", { editable: true })
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {"<<"}
-        </button>
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {"<"}
-        </button>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {">"}
-        </button>
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {">>"}
-        </button>
-        <span>
-          Page
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>
-        </span>
-        <span>
-          | Go to page:
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              gotoPage(page);
-            }}
-            style={{ width: "100px" }}
-          />
-        </span>
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div> */}
     </>
   );
 };
