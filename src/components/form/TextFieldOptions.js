@@ -72,7 +72,9 @@ export const TextFieldOptions = () => {
     const _breadcrumbs = _.clone(breadcrumbs);
     const value = _breadcrumbs[_breadcrumbs.length - 1];
 
-    const _containerBreadcrumbs = _.clone(breadcrumbs).splice(breadcrumbs.length - 1, 1);
+    const _containerBreadcrumbs = _.clone(breadcrumbs);
+    _containerBreadcrumbs.pop();
+    
     const element = getElementByBreadcrumbs(form, _containerBreadcrumbs);
 
     if (value + 1 < element.items.length) {

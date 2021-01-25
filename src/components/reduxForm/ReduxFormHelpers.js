@@ -60,11 +60,14 @@ const BreadcrumbsComponent = ({
   };
 
   const addContainer = () => {
+    // TODO: лобавление элемента
     dispatch({
       type: "reduxForm/addElement",
-      breadcrumbs
+      breadcrumbs,
+      item: {
+        xtype: 'textfield'
+      }
     });
-    console.log('addContainer');
   }
 
   switch (xtype) {
