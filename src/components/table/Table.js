@@ -405,7 +405,7 @@ export const Table = ({
                       )}
                     </span>
                   </div>
-                  <div>{column.canFilter ? column.render("Filter") : null}</div>
+                  <div>{column.canFilter ? column.render("Filter", column.fieldProps || {}) : null}</div>
                 </TableCell>
               ))}
             </MaterialTableHead>

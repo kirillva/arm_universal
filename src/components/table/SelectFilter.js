@@ -70,7 +70,7 @@ export function SelectFilter({
     }
   };
 
-  const onInputChangeDebounce = _.debounce(onInputChange, 1000);
+  const onInputChangeDebounce = _.debounce(onInputChange, 2000);
 
   useEffect(() => {
     loadData();

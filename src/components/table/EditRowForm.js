@@ -20,22 +20,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditField = ({ label, ...props }) => {
-  const [field, meta, helpers] = useField();
+// const EditField = ({ label, ...props }) => {
+//   const [field, meta, helpers] = useField();
 
-  const { value } = meta;
-  const { setValue } = helpers;
+//   const { value } = meta;
+//   const { setValue } = helpers;
 
-  return (
-    <TextField
-      variant="outlined"
-      margin="dense"
-      label={label}
-      value={value}
-      onChange={setValue}
-    />
-  );
-};
+//   return (
+//     <TextField
+//       variant="outlined"
+//       margin="dense"
+//       label={label}
+//       value={value}
+//       onChange={setValue}
+//     />
+//   );
+// };
 
 export const EditRowForm = ({
   title,
@@ -69,7 +69,6 @@ export const EditRowForm = ({
   return (
     <Dialog onClose={() => setSelectedRow(null)} open={Boolean(selectedRow)}>
       <DialogTitle>Редактирование</DialogTitle>
-      {selectedRow ? selectedRow.original[idProperty] : ""}
       <Formik
         initialValues={selectedRow ? selectedRow.original : {}}
         onSubmit={updateSelectedRow}
@@ -77,6 +76,7 @@ export const EditRowForm = ({
         {(props) => (
           <form onSubmit={props.handleSubmit}>
             <DialogContent className={classes.dialogContent}>
+              <input hidden name={idProperty} value={selectedRow ? selectedRow.original[idProperty] : ""}/>
               {columns.map((item) => {
                 const options = {
                   label: item.title,
@@ -86,6 +86,7 @@ export const EditRowForm = ({
                   name: item.accessor,
                   variant: "outlined",
                   margin: "dense",
+                  fieldProps: item.fieldProps || {}
                 };
                 if (item.Editor) {
                   return React.createElement(item.Editor, options);
