@@ -14,7 +14,7 @@ import {
   StringCell,
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
-import { SelectEditor, StringEditor } from "components/table/Editors";
+import { BoolEditor, SelectEditor, StringEditor } from "components/table/Editors";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -156,6 +156,7 @@ export const TablePanel = () => {
         accessor: "b_correct_uik",
         Filter: BoolFilter,
         Cell: BoolCell,
+        Editor: BoolEditor
       },
       {
         title: "n_uik_correct",

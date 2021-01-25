@@ -4,17 +4,25 @@ import _ from "lodash";
 import { runRpc } from "utils/rpc";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-export const StringEditor = ({ ...props }) => {
+import MenuItem from "@material-ui/core/MenuItem";
+// import Select from '@material-ui/core/Select';
+
+export const StringEditor = ({ fieldProps, ...props }) => {
   return <TextField {...props} />;
 };
 
-export function SelectEditor ({
-  fieldProps,
-  value,
-  ...rest
-}) {
-  const { idProperty, nameProperty, table } = fieldProps
-  const [_value, _setValue] = useState('');
+export const BoolEditor = ({ fieldProps, ...props }) => {
+  return (
+    <TextField select {...props} variant="outlined" margin="dense">
+      <MenuItem value={true}>Да</MenuItem>
+      <MenuItem value={false}>Нет</MenuItem>
+    </TextField>
+  );
+};
+
+export function SelectEditor({ fieldProps, value, ...rest }) {
+  const { idProperty, nameProperty, table } = fieldProps;
+  const [_value, _setValue] = useState("");
 
   useEffect(() => {
     if (value) {
@@ -36,7 +44,13 @@ export function SelectEditor ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  return _value ? <SelectEditorField {...rest} fieldProps={fieldProps} value={{[idProperty]: value, [nameProperty]: _value}} /> : null
+  return _value ? (
+    <SelectEditorField
+      {...rest}
+      fieldProps={fieldProps}
+      value={{ [idProperty]: value, [nameProperty]: _value }}
+    />
+  ) : null;
 }
 
 export function SelectEditorField({
@@ -44,19 +58,19 @@ export function SelectEditorField({
   value,
   setFieldValue,
   name,
-  label
+  label,
 }) {
   const setFilter = (newValue) => {
-    console.log('setFilter');
+    console.log("setFilter");
     setFieldValue(name, newValue);
-  }
+  };
 
-  const { idProperty, nameProperty, table } = fieldProps
+  const { idProperty, nameProperty, table } = fieldProps;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
-  
-  const [inputValue, setInputValue] = useState('');
+
+  const [inputValue, setInputValue] = useState("");
 
   const onChange = (event, newValue) => {
     if (newValue) {
@@ -106,7 +120,7 @@ export function SelectEditorField({
 
   useEffect(() => {
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, inputValue]);
 
   return (

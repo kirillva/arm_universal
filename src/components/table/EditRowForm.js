@@ -87,7 +87,7 @@ export const EditRowForm = ({
                   name: item.accessor,
                   variant: "outlined",
                   margin: "dense",
-                  fieldProps: item.fieldProps || {}
+                  fieldProps: item.fieldProps || null
                 };
                 if (item.Editor) {
                   return React.createElement(item.Editor, options);
