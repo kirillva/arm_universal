@@ -75,7 +75,6 @@ const ReduxFormSlice = createSlice({
       item.items.push(payload.item)
     },
     moveElement: (state, payload) => {
-      debugger;
       const originItem = _.cloneDeep(getElementByBreadcrumbs(state.form, state.breadcrumbs));
       const originBreadcrumbs = _.clone(state.breadcrumbs);
       const originPosition = originBreadcrumbs.pop();

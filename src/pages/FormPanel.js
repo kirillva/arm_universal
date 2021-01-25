@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { renderForm } from "components/reduxForm/ReduxFormHelpers";
-import { TextFieldOptions } from "components/form/TextFieldOptions";
+import { TextFieldOptions } from "components/reduxForm/TextFieldOptions";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 
