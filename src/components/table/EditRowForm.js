@@ -82,6 +82,7 @@ export const EditRowForm = ({
                   label: item.title,
                   onChange: props.handleChange,
                   onBlur: props.handleBlur,
+                  setFieldValue: props.setFieldValue,
                   value: props.values[item.accessor],
                   name: item.accessor,
                   variant: "outlined",
