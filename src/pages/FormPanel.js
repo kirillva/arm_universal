@@ -37,14 +37,16 @@ export const FormPanel = () => {
     console.log(form);
   };
 
-  const onAddContainer = () => {};
-
-  const onChangeMode = () => {
-    dispatch({
-      type: "reduxForm/setEdit",
-      edit: !formEdit,
-    });
+  const onAddContainer = () => {
+    debugger;
   };
+
+  // const onChangeMode = () => {
+  //   dispatch({
+  //     type: "reduxForm/setEdit",
+  //     edit: !formEdit,
+  //   });
+  // };
 
   return (
     <div className={classes.content}>
@@ -52,19 +54,19 @@ export const FormPanel = () => {
       <div className={classes.formWrapper}>
         <div className={classes.form}>
           <div className={classes.buttons}>
-            <Button
+            {/* <Button
               color="primary"
               variant="contained"
               onClick={onAddContainer}
             >
               Добавить контейнер
-            </Button>
+            </Button> */}
             <Button color="primary" variant="contained" onClick={onSaveForm}>
               Сохранить форму
             </Button>
-            <Button color="primary" variant="contained" onClick={onChangeMode}>
+            {/* <Button color="primary" variant="contained" onClick={onChangeMode}>
               {formEdit ? "Режим просмотра" : "Режим редактирования"}
-            </Button>
+            </Button> */}
           </div>
           {renderForm(form)}
         </div>

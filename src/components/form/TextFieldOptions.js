@@ -27,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
 
 const initialState = ["xtype", "fieldLabel", "name", "margin"];
 
+const disabledProps = ["items"];
+
 export const TextFieldOptions = () => {
   const classes = useStyles();
 
   const { form, breadcrumbs } = useSelector((state) => state.reduxForm);
 
-  // const { form, containerId, componentId } = useSelector((state) => state.form);
   const dispatch = useDispatch();
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -47,8 +48,6 @@ export const TextFieldOptions = () => {
 
   useEffect(() => {
     setKeys(initialState);
-    // debugger;
-    // console.log(breadcrumbs);
     if (form && breadcrumbs) {
       setSelectedItem(getElementByBreadcrumbs(form, breadcrumbs));
     } else {
@@ -56,33 +55,59 @@ export const TextFieldOptions = () => {
     }
   }, [form, breadcrumbs]);
 
+  const moveUp = () => {
+    const _breadcrumbs = _.clone(breadcrumbs);
+    const value = _breadcrumbs[breadcrumbs.length - 1];
+    if (value - 1 >= 0) {
+      _breadcrumbs[_breadcrumbs.length - 1] = value - 1;
+      dispatch({
+        type: 'reduxForm/moveElement',
+        breadcrumbs: _breadcrumbs,
+      })
+    }
+
+  }
+
+  const moveDown = () => {
+    const _breadcrumbs = _.clone(breadcrumbs);
+    const value = _breadcrumbs[_breadcrumbs.length - 1];
+
+    const _containerBreadcrumbs = _.clone(breadcrumbs).splice(breadcrumbs.length - 1, 1);
+    const element = getElementByBreadcrumbs(form, _containerBreadcrumbs);
+
+    if (value + 1 < element.items.length) {
+      _breadcrumbs[_breadcrumbs.length - 1] = value + 1;
+      dispatch({
+        type: 'reduxForm/moveElement',
+        breadcrumbs: _breadcrumbs,
+      })
+    }
+  }
+
   if (!selectedItem) return null;
 
   return (
     <div className={classes.optionsContainer}>
-      {_.uniqBy(Object.keys(selectedItem).concat(keys)).map((key) => {
-        return (
-          <TextField
-            key={key}
-            name={key}
-            onChange={onChange(key)}
-            label={key}
-            value={selectedItem[key] || ""}
-            variant="outlined"
-          />
-        );
-      })}
+      {_.uniqBy(Object.keys(selectedItem).concat(keys))
+        .filter((item) => !(disabledProps.indexOf(item) + 1))
+        .map((key) => {
+          return (
+            <TextField
+              key={key}
+              name={key}
+              onChange={onChange(key)}
+              label={key}
+              value={selectedItem[key] || ""}
+              variant="outlined"
+            />
+          );
+        })}
 
-      {/* <div className={classes.buttons}>
+      <div className={classes.buttons}>
         <Button
           variant="outlined"
           color="primary"
-          onClick={() =>
-            dispatch({
-              type: "form/changeComponentOrder",
-              toStart: true,
-            })
-          }
+          onClick={moveUp}
         >
           <ArrowDropUp />
         </Button>
@@ -97,17 +122,12 @@ export const TextFieldOptions = () => {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() =>
-            dispatch({
-              type: "form/changeComponentOrder",
-              toStart: false,
-            })
-          }
+          onClick={moveDown}
         >
           <ArrowDropDown />
         </Button>
-      </div> */}
-
+      </div>
+      
       <AddNewField
         keys={keys}
         setKeys={setKeys}
@@ -132,7 +152,8 @@ export const TextFieldOptions = () => {
         variant="contained"
         onClick={() => {
           dispatch({
-            type: "form/removeComponent",
+            type: "reduxForm/setBreadcrumbs",
+            breadcrumbs: [],
           });
         }}
       >
@@ -144,9 +165,8 @@ export const TextFieldOptions = () => {
         variant="contained"
         onClick={() => {
           dispatch({
-            type: "form/setSelectedComponent",
-            containerId: null,
-            componentId: null,
+            type: "reduxForm/setBreadcrumbs",
+            breadcrumbs: [],
           });
         }}
       >

@@ -36,16 +36,16 @@ const form = {
         },
       ],
     },
-    {
-      xtype: "textfield",
-      fieldLabel: "Last Name",
-      name: "lastName2",
-    },
-    {
-      xtype: "combobox",
-      fieldLabel: "Last Name",
-      name: "lastName3",
-    },
+    // {
+    //   xtype: "textfield",
+    //   fieldLabel: "Last Name",
+    //   name: "lastName2",
+    // },
+    // {
+    //   xtype: "combobox",
+    //   fieldLabel: "Last Name",
+    //   name: "lastName3",
+    // },
   ],
 };
 
@@ -53,7 +53,7 @@ const ReduxFormSlice = createSlice({
   name: "reduxForm",
   initialState: {
     form: form,
-    edit: false,
+    edit: true,
     breadcrumbs: [],
   },
   reducers: {
@@ -75,18 +75,19 @@ const ReduxFormSlice = createSlice({
       item.items.push(payload.item)
     },
     moveElement: (state, payload) => {
-      let originItem = getElementByBreadcrumbs(state.form, state.breadcrumbs);
-      const position = payload.breadcrumbs.pop();
-      let targetItem = getElementByBreadcrumbs(state.form, payload.breadcrumbs);
+      debugger;
+      const originItem = _.cloneDeep(getElementByBreadcrumbs(state.form, state.breadcrumbs));
+      const originBreadcrumbs = _.clone(state.breadcrumbs);
+      const originPosition = originBreadcrumbs.pop();
+      let originContainer = getElementByBreadcrumbs(state.form, originBreadcrumbs);
       
-      targetItem.items.splice(position, 0, originItem);
-
-      const containerBreadcrumbs = _.clone(state.breadcrumbs)
-      containerBreadcrumbs.pop();
-
-      let originContainer = getElementByBreadcrumbs(state.form, containerBreadcrumbs);
-      let _position = state.breadcrumbs;
-      originContainer.items.splice(_position, 1);
+      const targetBreadcrumbs = payload.breadcrumbs;
+      const targerPosition = targetBreadcrumbs.pop();
+      let targetContainer = getElementByBreadcrumbs(state.form, targetBreadcrumbs);
+      const targetItem = _.cloneDeep(targetContainer.items[targerPosition]);
+      
+      targetContainer.items[targerPosition] = originItem;
+      originContainer.items[originPosition] = targetItem;
     }
   },
 });
