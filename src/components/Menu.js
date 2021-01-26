@@ -14,6 +14,18 @@ export const menuItems = [
   //   path: "/auth",
   //   title: "Авторизация",
   // },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: PhotoCameraIcon,
+  //   path: "/",
+  //   title: "Сканировать",
+  // },
   {
     claims: [
       "manual_edit",
@@ -22,9 +34,9 @@ export const menuItems = [
       "manager_candidate",
       "division",
     ],
-    icon: PhotoCameraIcon,
-    path: "/",
-    title: "Сканировать",
+    icon: AssignmentIcon,
+    path: "/routes",
+    title: "Маршруты",
   },
   {
     claims: [

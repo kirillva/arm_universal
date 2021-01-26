@@ -3,13 +3,13 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import _ from "lodash";
 import { runRpc } from "utils/rpc";
-import { makeStyles } from "@material-ui/styles";
+// import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles((theme) => ({
-  field: {
-    minWidth: "200px",
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   field: {
+//     minWidth: "200px",
+//   },
+// }));
 
 export function SelectFilter({
   column: { filterValue, setFilter },
@@ -17,6 +17,7 @@ export function SelectFilter({
   idProperty = "",
   nameProperty = "",
   table = "",
+  hidden,
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export function SelectFilter({
   
   const [inputValue, setInputValue] = useState("");
 
-  const classes = useStyles();
+  // const classes = useStyles();
 
   const onChange = (event, newValue) => {
     if (newValue) {
@@ -70,7 +71,7 @@ export function SelectFilter({
     }
   };
 
-  const onInputChangeDebounce = _.debounce(onInputChange, 2000);
+  const onInputChangeDebounce = _.debounce(onInputChange, 1000);
 
   useEffect(() => {
     loadData();
@@ -79,7 +80,8 @@ export function SelectFilter({
 
   return (
     <Autocomplete
-      className={classes.field}
+      hidden={hidden}
+      // className={classes.field}
       noOptionsText="Нет данных"
       loadingText="Загрузка..."
       open={open}

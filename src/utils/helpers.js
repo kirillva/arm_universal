@@ -167,3 +167,21 @@ export const ArrayToObjByUID = (array, name) => {
   }
   return obj;
 };
+
+export const getSelectByColumns = (columns) => {
+  if (columns && columns.length) {
+    const items = [];
+    columns.forEach(column => {
+      if (column.accessor) {
+        items.push(column.accessor);
+      }
+      if (column.mapAccessor) {
+        items.push(column.mapAccessor);
+      }
+    });
+    return items.join(',');
+  } else {
+    return null;
+  }
+};
+

@@ -48,7 +48,12 @@ export const EditRowForm = ({
   const classes = useStyles();
 
   function updateSelectedRow(values, props) {
-    console.log("values", values, props);
+    const record = {};
+    columns.forEach(item=>{
+      record[item.accessor] = values[item.accessor]
+    });
+    record[idProperty] = values[idProperty];
+    console.log("record", record);
     // runRpc({
     //   action: action,
     //   method: "Update",

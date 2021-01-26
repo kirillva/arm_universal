@@ -3,6 +3,7 @@ import { ResultPanel } from "pages/ResultPanel";
 import { SigninForm } from "pages/SigninForm";
 import { TablePanel } from "pages/TablePanel";
 import { FormPanel } from "pages/FormPanel";
+import { RoutesPanel } from "pages/RoutesPanel";
 
 export const routeItems = [
   {
@@ -16,6 +17,12 @@ export const routeItems = [
     exact: true,
     path: "/result",
     component: ResultPanel,
+  },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/routes",
+    component: RoutesPanel,
   },
   {
     claims: ["manager"],

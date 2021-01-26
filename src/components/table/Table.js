@@ -39,13 +39,10 @@ import {
   TableHead,
   TextField,
 } from "@material-ui/core";
-import {
-  ArrowDropDown,
-  ArrowDropUp,
-  Description,
-} from "@material-ui/icons";
+import { ArrowDropDown, ArrowDropUp, Description, Filter, FilterList, LensTwoTone } from "@material-ui/icons";
 import classNames from "classnames";
 import { EditRowForm } from "./EditRowForm";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,6 +113,12 @@ export const Table = ({
   action,
   idProperty = "id",
   title = "Таблица",
+  method = "Query",
+  params = null,
+  select = null,
+  editable = false,
+  selectable = false,
+  handleClick = null,
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -150,6 +153,8 @@ export const Table = ({
     }),
     []
   );
+
+  const [filterHidden, setFilterHidden] = useState(true);
 
   const {
     getTableProps,
@@ -230,33 +235,60 @@ export const Table = ({
     return new Promise((resolve) => {
       const _filters = [];
       filters.forEach((item) => {
-        if (item.value && item.value.value) {
-          _filters.push({
-            property: item.id,
-            value: item.value.value,
-            operator: item.value.operator,
-          });
+        switch (item.value.operator) {
+          case "date":
+            if (item.value.start) {
+              _filters.push({
+                property: item.id,
+                value: moment(item.value.start).toISOString(true),
+                operator: "gt",
+              });
+            }
+            
+            if (item.value.finish) {
+              _filters.push({
+                property: item.id,
+                value: moment( item.value.finish).toISOString(true),
+                operator: "lt",
+              });
+            }
+            break;
+
+          default:
+            if (item.value && item.value.value) {
+              _filters.push({
+                property: item.id,
+                value: item.value.value,
+                operator: item.value.operator,
+              });
+            }
+            break;
         }
       });
 
+      const data = {
+        page: pageIndex,
+        start: pageIndex * pageSize,
+        limit: pageSize,
+        filter: _filters,
+        sort: sortBy.map((item) => ({
+          property: item.id,
+          direction: item.desc ? "DESC" : "ASC",
+        })),
+      };
+
+      if (params) {
+        data.params = params;
+      }
+
+      if (select) {
+        data.select = select;
+      }
+
       runRpc({
         action: action,
-        method: "Query",
-        data: [
-          {
-            select: (columns.map((item) => item.accessor) || [])
-              .concat([idProperty])
-              .join(","),
-            page: pageIndex,
-            start: pageIndex * pageSize,
-            limit: pageSize,
-            filter: _filters,
-            sort: sortBy.map((item) => ({
-              property: item.id,
-              direction: item.desc ? "DESC" : "ASC",
-            })),
-          },
-        ],
+        method: method,
+        data: [data],
         type: "rpc",
       }).then((responce) => {
         if (responce.meta && responce.meta.success) {
@@ -296,6 +328,22 @@ export const Table = ({
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
+  };
+
+  const onEdit = (cell, row) => {
+    return () => {
+      if (cell.column.id !== "selection") {
+        setSelectedRow(row);
+      }
+    };
+  };
+
+  const onClick = (cell, row) => {
+    return () => {
+      if (handleClick) {
+        handleClick(cell, row);
+      }
+    };
   };
 
   const ExportToCsv = () => {
@@ -341,7 +389,7 @@ export const Table = ({
   };
 
   function EnhancedTableHead(props) {
-    const { title = "Таблица", numSelected, classes } = props;
+    const { title, numSelected, classes, setFilterHidden, filters } = props;
 
     return (
       <Toolbar
@@ -354,7 +402,19 @@ export const Table = ({
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
-        <Button  title={'Экспорт в эксель'} className={classes.iconButton} onClick={ExportToCsv}>
+        <Button
+          title={"Фильтры"}
+          className={classes.iconButton}
+          color={filters && filters.length ? "primary" : "black"}
+          onClick={()=>setFilterHidden(!filterHidden)}
+        >
+          <FilterListIcon />
+        </Button>
+        <Button
+          title={"Экспорт в эксель"}
+          // className={classes.iconButton}
+          onClick={ExportToCsv}
+        >
           <Description />
         </Button>
       </Toolbar>
@@ -373,6 +433,9 @@ export const Table = ({
       />
       <Paper className={classes.paper}>
         <EnhancedTableHead
+          filters={filters}
+          setFilterHidden={setFilterHidden}
+          title={title}
           classes={classes}
           numSelected={Object.keys(selectedRowIds).length}
         />
@@ -386,28 +449,40 @@ export const Table = ({
             aria-label="enhanced table"
           >
             <MaterialTableHead>
-              {headers.map((column) => (
-                <TableCell {...column.getHeaderProps()}>
-                  <div>
-                    <span
-                      {...column.getSortByToggleProps()}
-                      className={classes.headerTitle}
-                    >
-                      {column.render("Header")}
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <ArrowDropUp />
+              {headers.map((column) => {
+                let filterProps = { hidden: filterHidden };
+                if (column.fieldProps) {
+                  filterProps = Object.assign(filterProps, column.fieldProps)
+                }
+                if (!selectable && column.id === "selection") {
+                  return null
+                } else {
+                  return <TableCell {...column.getHeaderProps()}>
+                    <div>
+                      <span
+                        {...column.getSortByToggleProps()}
+                        className={classes.headerTitle}
+                      >
+                        {column.render("Header")}
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <ArrowDropUp />
+                          ) : (
+                            <ArrowDropDown />
+                          )
                         ) : (
-                          <ArrowDropDown />
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </span>
-                  </div>
-                  <div>{column.canFilter ? column.render("Filter", column.fieldProps || {}) : null}</div>
-                </TableCell>
-              ))}
+                          ""
+                        )}
+                      </span>
+                    </div>
+                    <div>
+                      {column.canFilter
+                        ? column.render("Filter", filterProps)
+                        : null}
+                    </div>
+                  </TableCell>
+                }
+              })}
             </MaterialTableHead>
             <TableBody>
               {page.map((row) => {
@@ -420,32 +495,22 @@ export const Table = ({
                     {...row.getRowProps()}
                   >
                     {row.cells.map((cell) => {
-                      return (
-                        <TableCell
-                          onClick={() => {
-                            if (cell.column.id !== "selection") {
-                              setSelectedRow(row);
+                      if (!selectable && cell.column.id === "selection") {
+                        return null
+                      } else {
+                        return (
+                          <TableCell
+                            onClick={
+                              editable ? onEdit(cell, row) : onClick(cell, row)
                             }
-                          }}
-                          align="left"
-                          {...cell.getCellProps()}
-                          className={classes.cell}
-                        >
-                          {cell.isGrouped ? (
-                            <>
-                              <span {...row.getToggleRowExpandedProps()}>
-                                {row.isExpanded ? "👇" : "👉"}
-                              </span>
-                              {cell.render("Cell", { editable: false })} (
-                              {row.subRows.length})
-                            </>
-                          ) : cell.isAggregated ? (
-                            cell.render("Aggregated")
-                          ) : cell.isPlaceholder ? null : (
-                            cell.render("Cell", { editable: true })
-                          )}
-                        </TableCell>
-                      );
+                            align="left"
+                            {...cell.getCellProps()}
+                            className={classes.cell}
+                          >
+                            {cell.render("Cell", { editable: false })}
+                          </TableCell>
+                        );
+                      }
                     })}
                   </TableRow>
                 );

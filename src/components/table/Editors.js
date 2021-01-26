@@ -3,6 +3,7 @@ import { TextField } from "@material-ui/core";
 import _ from "lodash";
 import { runRpc } from "utils/rpc";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import MenuItem from "@material-ui/core/MenuItem";
 // import Select from '@material-ui/core/Select';
@@ -89,7 +90,7 @@ export function SelectEditor({ fieldProps, value, ...rest }) {
       fieldProps={fieldProps}
       value={{ [idProperty]: value, [nameProperty]: _value }}
     />
-  ) : null;
+  ) : <CircularProgress />;
 }
 
 export function SelectEditorField({
@@ -155,7 +156,7 @@ export function SelectEditorField({
     }
   };
 
-  const onInputChangeDebounce = _.debounce(onInputChange, 2000);
+  const onInputChangeDebounce = _.debounce(onInputChange, 1000);
 
   useEffect(() => {
     loadData();
@@ -177,7 +178,7 @@ export function SelectEditorField({
       getOptionSelected={(option, value) =>
         option[idProperty] === value[idProperty]
       }
-      value={value}
+      defaultValue={value}
       getOptionLabel={(option) => option[nameProperty]}
       options={options}
       loading={loading}

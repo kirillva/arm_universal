@@ -9,19 +9,32 @@ import { TextField, IconButton } from "@material-ui/core";
 import Popover from "@material-ui/core/Popover";
 import DateRangeOutlined from "@material-ui/icons/DateRangeOutlined";
 import "moment/locale/ru";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  filterWrapper: {
+    display: "flex",
+    flexDirection: 'column',
+    margin: theme.spacing(2),
+  }
+}));
 
 const DatePicker = ({
-  value = {},
+  // value = {},
   className,
   onChange,
-  DialogProps = {},
-  error = false,
-  errorText = "",
-  label = "",
+  style,
+  // DialogProps = {},
+  // error = false,
+  // errorText = "",
+  // label = "",
+  hidden,
   InputProps,
   initialDateStart = null,
   initialDateFinish = null,
 }) => {
+  const classes = useStyles();
+  
   const [startDate, setStartDate] = useState(initialDateStart);
   const [endDate, setEndDate] = useState(initialDateFinish);
 
@@ -83,6 +96,8 @@ const DatePicker = ({
       locale={"ru"}
     >
       <TextField
+        style={style}
+        hidden={hidden}
         margin="dense"
         variant="outlined"
         value={renderPeriod()}
@@ -111,7 +126,7 @@ const DatePicker = ({
           horizontal: "center",
         }}
       >
-        <div>
+        <div className={classes.filterWrapper}>
           <KeyboardDatePicker
             label={"Больше"}
             value={startDate}

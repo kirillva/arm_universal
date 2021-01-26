@@ -15,6 +15,11 @@ export const StringCell = ({ cell, ...props }) => {
 	return <div>{value ? value : ''}</div>;
 };
 
+export const SelectCell = ({ cell, ...props }) => {
+	const value = cell.row.original[cell.column.mapAccessor];
+	return <div>{value ? value : ''}</div>;
+};
+
 export const BoolCell = ({ cell, ...props }) => {
 	const value = cell.value;
 	return <div>{value ? 'Да' : value === false ? 'Нет' : ''}</div>;

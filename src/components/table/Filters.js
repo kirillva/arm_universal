@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TextField, MenuItem } from "@material-ui/core";
-import { runRpc } from "utils/rpc";
 import _ from "lodash";
 import DatePicker from "./DatePicker";
+import Hidden from '@material-ui/core/Hidden';
 
 export const Operators = {
   number: "number",
@@ -28,7 +28,7 @@ const applyFilterDebounced = _.debounce(applyFilter, 1000);
 export const NumberFilter = ({
   column: { filterValue, setFilter },
   className,
-  allowNegative = true,
+  allowNegative = true
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   const InputProps = {};
@@ -84,10 +84,12 @@ export const NumberFilter = ({
 export const StringFilter = ({
   column: { filterValue, setFilter },
   className,
+  hidden
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   return (
     <TextField
+      style={{ display: hidden ? 'none' : 'unset'}}
       variant="outlined"
       margin="dense"
       value={value}
@@ -108,7 +110,7 @@ export const StringFilter = ({
 
 export const UserFilter = ({
   column: { filterValue, setFilter },
-  className,
+  className
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   return (
@@ -140,14 +142,16 @@ export const UserFilter = ({
 export const DateFilter = ({
   column: { filterValue = { start: null, finish: null }, setFilter },
   className,
+  hidden
 }) => {
   return (
     <DatePicker
+      style={{ display: hidden ? 'none' : 'unset'}}
       value={filterValue}
       className={className}
-      onChange={(props) =>
+      onChange={(props) => {
         setFilter({ ...filterValue, ...props, operator: Operators.date })
-      }
+      }}
       initialDateStart={filterValue.start}
       initialDateFinish={filterValue.finish}
     />
@@ -157,6 +161,7 @@ export const DateFilter = ({
 export const BoolFilter = ({
   column: { filterValue, setFilter },
   className,
+  hidden
 }) => {
   const defaultProps = {
     BOOL_TRUE: "Да",
@@ -166,6 +171,7 @@ export const BoolFilter = ({
   return (
     <TextField
       select
+      style={{ display: hidden ? 'none' : 'unset'}}
       value={filterValue ? filterValue.value : ""}
       variant="outlined"
       margin="dense"
@@ -180,54 +186,3 @@ export const BoolFilter = ({
     </TextField>
   );
 };
-
-// export const StatusFilter = ({
-//   column: { filterValue, setFilter },
-//   className,
-// }) => {
-//   const [statuses, setStatuses] = useState([]);
-//   useEffect(() => {
-//     runRpc({
-//       action: "cs_route_statuses",
-//       method: "Query",
-//       data: [
-//         {
-//           limit: 10000,
-//           filter: [
-//             {
-//               property: "b_disabled",
-//               value: false,
-//               operator: "is",
-//             },
-//           ],
-//         },
-//       ],
-//       type: "rpc",
-//     }).then((response) => {
-//       setStatuses(response.result.records);
-//     });
-//   }, []);
-//   return (
-//     <TextField
-//       select
-//       value={filterValue ? filterValue.value : ""}
-//       variant="outlined"
-//       margin="dense"
-//       className={className}
-//       onChange={(e) => {
-//         console.log(" e.target.value", e.target.value);
-//         console.log("filterValue", filterValue);
-//         setFilter({ value: e.target.value, operator: Operators.status });
-//       }}
-//     >
-//       <MenuItem value={""}>Все</MenuItem>
-//       {statuses.map((el, index) => {
-//         return (
-//           <MenuItem key={index} value={el.c_name}>
-//             {el.c_name}
-//           </MenuItem>
-//         );
-//       })}
-//     </TextField>
-//   );
-// };
