@@ -56,12 +56,14 @@ export const AddressPanel = () => {
         accessor: "dx_date",
         Filter: DateFilter,
         Cell: DateCell,
+        Editor: DateEditor,
       },
       {
         title: "Удалена",
         accessor: "b_disabled",
         Filter: BoolFilter,
         Cell: BoolCell,
+        Editor: BoolEditor,
       },
       // {
       //   title: "f_division",
@@ -197,18 +199,20 @@ export const AddressPanel = () => {
         accessor: "dx_date",
         Filter: DateFilter,
         Cell: DateCell,
+        Editor: DateEditor,
       },
-      {
-        title: "Создана в 2018",
-        accessor: "n_signature_2018",
-        Filter: NumberFilter,
-        Cell: NumberCell,
-      },
+      // {
+      //   title: "Создана в 2018",
+      //   accessor: "n_signature_2018",
+      //   Filter: NumberFilter,
+      //   Cell: NumberCell,
+      // },
       {
         title: "Удалена",
         accessor: "b_disabled",
         Filter: BoolFilter,
         Cell: BoolCell,
+        Editor: BoolEditor,
       },
       // {
       //   title: "f_user",
@@ -231,13 +235,13 @@ export const AddressPanel = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.table}>
-        <Table title={'Улицы'} columns={cs_street} select={`${getSelectByColumns(cs_street)},id`} action="cs_street" />
+        <Table title={'Улицы'} editable columns={cs_street} select={`${getSelectByColumns(cs_street)},id`} action="cs_street" />
       </div>
       <div className={classes.table}>
-        <Table title={'Дома'}  columns={cs_house} select={`${getSelectByColumns(cs_house)},id`} action="cs_house" />
+        <Table title={'Дома'}  editable columns={cs_house} select={`${getSelectByColumns(cs_house)},id`} action="cs_house" />
       </div>
       <div className={classes.table}>
-        <Table title={'Квартиры'} columns={cs_appartament} action="cs_appartament" />
+        <Table title={'Квартиры'} editable columns={cs_appartament} action="cs_appartament" />
       </div>
     </div>
   );
