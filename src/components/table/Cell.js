@@ -1,26 +1,25 @@
-import React from 'react';
-
 export const DateCell = ({ cell, ...props }) => {
 	const value = cell.value;
-	return <div>{value ? new Date(value).toLocaleDateString() : ''}</div>;
+	return value ? new Date(value).toLocaleDateString() : '';
 };
 
 export const NumberCell = ({ cell, ...props }) => {
 	const value = cell.value;
-	return <div>{value ? value : ''}</div>;
+	return value ? value : '';
 };
 
 export const StringCell = ({ cell, ...props }) => {
 	const value = cell.value;
-	return <div>{value ? value : ''}</div>;
+	return value ? value : '';
 };
 
 export const SelectCell = ({ cell, ...props }) => {
+	debugger;
 	const value = cell.row.original[cell.column.mapAccessor];
-	return <div>{value ? value : ''}</div>;
+	return value ? value : '';
 };
 
 export const BoolCell = ({ cell, ...props }) => {
 	const value = cell.value;
-	return <div>{value ? 'Да' : value === false ? 'Нет' : ''}</div>;
+	return value ? 'Да' : value === false ? 'Нет' : '';
 };

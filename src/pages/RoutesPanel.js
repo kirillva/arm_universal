@@ -38,7 +38,7 @@ export const RoutesPanel = () => {
   const cs_street = React.useMemo(
     () => [
       {
-        title: "f_type",
+        title: "Тип",
         mapAccessor: "f_type___c_name",
         accessor: 'f_type',
         fieldProps: {
@@ -51,14 +51,14 @@ export const RoutesPanel = () => {
         Editor: SelectEditor,
       },
       {
-        title: "c_number",
+        title: "Номер",
         accessor: "c_number",
         Filter: StringFilter,
         Cell: StringCell,
         Editor: StringEditor,
       },
       {
-        title: "d_date",
+        title: "Дата",
         accessor: "d_date",
         Filter: DateFilter,
         Cell: DateCell,

@@ -50,7 +50,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
           <ListItemIcon>
             <AccountCircleIcon />
           </ListItemIcon>
-          <ListItemText primary={getUsername()} />
+          <ListItemText primary={getUsername() || 'Без имени'} />
         </ListItem>
         <ListItem
           button

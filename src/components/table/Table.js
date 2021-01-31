@@ -59,6 +59,10 @@ const useStyles = makeStyles((theme) => ({
   cell: {
     color: theme.palette.common.grey,
     borderColor: theme.palette.common.grey,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '200px'
   },
   headerTitle: {
     userSelect: "none",

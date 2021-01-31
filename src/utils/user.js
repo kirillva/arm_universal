@@ -39,7 +39,7 @@ export const getClaims = () => {
 };
 
 export const authenticate = ({ userName, token, userId, claims, persist }) => {
-  setItem("userName", userName, persist);
+  setItem("userName", userName ? userName : '', persist);
   setItem("token", token, persist);
   setItem("userid", userId, persist);
   setItem("claims", claims, persist);

@@ -28,7 +28,8 @@ const applyFilterDebounced = _.debounce(applyFilter, 1000);
 export const NumberFilter = ({
   column: { filterValue, setFilter },
   className,
-  allowNegative = true
+  allowNegative = true,
+  hidden
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   const InputProps = {};
@@ -46,6 +47,7 @@ export const NumberFilter = ({
   return (
     <TextField
       type="number"
+      style={{ display: hidden ? 'none' : 'unset'}}
       variant="outlined"
       margin="dense"
       value={value}

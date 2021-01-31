@@ -1,16 +1,23 @@
-import { ScanPanel } from "pages/ScanPanel";
+// import { ScanPanel } from "pages/ScanPanel";
 import { ResultPanel } from "pages/ResultPanel";
 import { SigninForm } from "pages/SigninForm";
-import { TablePanel } from "pages/TablePanel";
-import { FormPanel } from "pages/FormPanel";
+import { AddressPanel } from "pages/AddressPanel";
 import { RoutesPanel } from "pages/RoutesPanel";
+import { AdminPanel } from "pages/AdminPanel";
 
 export const routeItems = [
   {
     claims: ["manager"],
     exact: true,
+    public: true,
+    path: "/auth",
+    component: SigninForm,
+  },
+  {
+    claims: ["manager"],
+    exact: true,
     path: "/",
-    component: ScanPanel,
+    component: RoutesPanel,
   },
   {
     claims: ["manager"],
@@ -27,22 +34,19 @@ export const routeItems = [
   {
     claims: ["manager"],
     exact: true,
-    public: true,
-    path: "/auth",
-    component: SigninForm,
+    path: "/result",
+    component: ResultPanel,
   },
   {
     claims: ["manager"],
     exact: true,
-    public: true,
-    path: "/table",
-    component: TablePanel,
+    path: "/users",
+    component: AdminPanel,
   },
   {
     claims: ["manager"],
     exact: true,
-    public: true,
-    path: "/form",
-    component: FormPanel,
+    path: "/address",
+    component: AddressPanel,
   }
 ];

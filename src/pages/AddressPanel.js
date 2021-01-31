@@ -11,10 +11,12 @@ import {
   BoolCell,
   DateCell,
   NumberCell,
+  SelectCell,
   StringCell,
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { BoolEditor, SelectEditor, StringEditor, DateEditor } from "components/table/Editors";
+import { getSelectByColumns } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -30,33 +32,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const TablePanel = () => {
+export const AddressPanel = () => {
   const classes = useStyles();
 
   const cs_street = React.useMemo(
     () => [
       {
-        title: "c_short_type",
+        title: "Тип",
         accessor: "c_short_type",
         Filter: StringFilter,
         Cell: StringCell,
         Editor: StringEditor,
       },
       {
-        title: "c_name",
+        title: "Наименование",
         accessor: "c_name",
         Filter: StringFilter,
         Cell: StringCell,
         Editor: StringEditor,
       },
       {
-        title: "dx_date",
+        title: "Дата",
         accessor: "dx_date",
         Filter: DateFilter,
         Cell: DateCell,
       },
       {
-        title: "b_disabled",
+        title: "Удалена",
         accessor: "b_disabled",
         Filter: BoolFilter,
         Cell: BoolCell,
@@ -80,8 +82,9 @@ export const TablePanel = () => {
   const cs_house = React.useMemo(
     () => [
       {
-        title: "f_street",
+        title: "Улица",
         accessor: "f_street",
+        mapAccessor: "f_street___c_name",
         fieldProps: {
           idProperty: "id",
           nameProperty: "c_name",
@@ -89,22 +92,22 @@ export const TablePanel = () => {
         },
         Filter: SelectFilter,
         Editor: SelectEditor,
-        Cell: StringCell,
+        Cell: SelectCell,
       },
       {
-        title: "c_house_num",
+        title: "Дом",
         accessor: "c_house_num",
         Filter: StringFilter,
         Cell: StringCell,
       },
-      // {
-      //   title: "c_build_num",
-      //   accessor: "c_build_num",
-      //   Filter: StringFilter,
-      //   Cell: StringCell,
-      // },
       {
-        title: "dx_date",
+        title: "Корпус",
+        accessor: "c_build_num",
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
+      {
+        title: "Дата создания",
         accessor: "dx_date",
         Filter: DateFilter,
         Cell: DateCell,
@@ -153,17 +156,17 @@ export const TablePanel = () => {
       //   Cell: StringCell,
       // },
       {
-        title: "b_correct_uik",
+        title: "УИК",
+        accessor: "n_uik_correct",
+        Filter: NumberFilter,
+        Cell: NumberCell,
+      },
+      {
+        title: "Корректный УИК",
         accessor: "b_correct_uik",
         Filter: BoolFilter,
         Cell: BoolCell,
         Editor: BoolEditor
-      },
-      {
-        title: "n_uik_correct",
-        accessor: "n_uik_correct",
-        Filter: NumberFilter,
-        Cell: NumberCell,
       },
     ],
     []
@@ -178,25 +181,31 @@ export const TablePanel = () => {
       //   Cell: StringCell,
       // },
       {
-        title: "c_number",
+        title: "Номер квартиры",
         accessor: "c_number",
         Filter: StringFilter,
         Cell: StringCell,
       },
+      // {
+      //   title: "n_number",
+      //   accessor: "n_number",
+      //   Filter: StringFilter,
+      //   Cell: StringCell,
+      // },
       {
-        title: "n_number",
-        accessor: "n_number",
-        Filter: StringFilter,
-        Cell: StringCell,
-      },
-      {
-        title: "dx_date",
+        title: "Дата создания",
         accessor: "dx_date",
         Filter: DateFilter,
         Cell: DateCell,
       },
       {
-        title: "b_disabled",
+        title: "Создана в 2018",
+        accessor: "n_signature_2018",
+        Filter: NumberFilter,
+        Cell: NumberCell,
+      },
+      {
+        title: "Удалена",
         accessor: "b_disabled",
         Filter: BoolFilter,
         Cell: BoolCell,
@@ -207,12 +216,7 @@ export const TablePanel = () => {
       //   Filter: (props) => <SelectFilter {...props} table="" />,
       //   Cell: StringCell,
       // },
-      {
-        title: "n_signature_2018",
-        accessor: "n_signature_2018",
-        Filter: NumberFilter,
-        Cell: NumberCell,
-      },
+      
       // {
       //   title: "f_main_user",
       //   accessor: "f_main_user",
@@ -227,13 +231,13 @@ export const TablePanel = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.table}>
-        <Table columns={cs_street} action="cs_street" />
+        <Table title={'Улицы'} columns={cs_street} select={`${getSelectByColumns(cs_street)},id`} action="cs_street" />
       </div>
       <div className={classes.table}>
-        <Table columns={cs_house} action="cs_house" />
+        <Table title={'Дома'}  columns={cs_house} select={`${getSelectByColumns(cs_house)},id`} action="cs_house" />
       </div>
       <div className={classes.table}>
-        <Table columns={cs_appartament} action="cs_appartament" />
+        <Table title={'Квартиры'} columns={cs_appartament} action="cs_appartament" />
       </div>
     </div>
   );
