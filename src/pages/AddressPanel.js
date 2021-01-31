@@ -15,7 +15,12 @@ import {
   StringCell,
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
-import { BoolEditor, SelectEditor, StringEditor, DateEditor } from "components/table/Editors";
+import {
+  BoolEditor,
+  SelectEditor,
+  StringEditor,
+  DateEditor,
+} from "components/table/Editors";
 import { getSelectByColumns } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
@@ -163,13 +168,13 @@ export const AddressPanel = () => {
         Filter: NumberFilter,
         Cell: NumberCell,
       },
-      {
-        title: "Корректный УИК",
-        accessor: "b_correct_uik",
-        Filter: BoolFilter,
-        Cell: BoolCell,
-        Editor: BoolEditor
-      },
+      // {
+      //   title: "Корректный УИК",
+      //   accessor: "b_correct_uik",
+      //   Filter: BoolFilter,
+      //   Cell: BoolCell,
+      //   Editor: BoolEditor,
+      // },
     ],
     []
   );
@@ -220,7 +225,7 @@ export const AddressPanel = () => {
       //   Filter: (props) => <SelectFilter {...props} table="" />,
       //   Cell: StringCell,
       // },
-      
+
       // {
       //   title: "f_main_user",
       //   accessor: "f_main_user",
@@ -235,13 +240,33 @@ export const AddressPanel = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.table}>
-        <Table title={'Улицы'} editable columns={cs_street} select={`${getSelectByColumns(cs_street)},id`} action="cs_street" />
+        <Table
+          title={"Улицы"}
+          selectable
+          editable
+          columns={cs_street}
+          select={`${getSelectByColumns(cs_street)},id`}
+          action="cs_street"
+        />
       </div>
       <div className={classes.table}>
-        <Table title={'Дома'}  editable columns={cs_house} select={`${getSelectByColumns(cs_house)},id`} action="cs_house" />
+        <Table
+          title={"Дома"}
+          selectable
+          editable
+          columns={cs_house}
+          select={`${getSelectByColumns(cs_house)},id`}
+          action="cs_house"
+        />
       </div>
       <div className={classes.table}>
-        <Table title={'Квартиры'} editable columns={cs_appartament} action="cs_appartament" />
+        <Table
+          title={"Квартиры"}
+          selectable
+          editable
+          columns={cs_appartament}
+          action="cs_appartament"
+        />
       </div>
     </div>
   );
