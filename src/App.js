@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   appBar: {
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
+    // [theme.breakpoints.up("sm")]: {
+    //   width: `calc(100% - ${drawerWidth}px)`,
+    //   marginLeft: drawerWidth,
+    // },
     backgroundColor: theme.palette.primary
   },
   menuButton: {
@@ -90,16 +90,16 @@ function ResponsiveDrawer() {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap>
+              <MainMenu
+                mobileOpen={mobileOpen}
+                data={menuItems}
+                handleDrawerToggle={handleDrawerToggle}
+              />
+              {/* <Typography variant="h6" noWrap>
                 {currentMenuItem.title}
-              </Typography>
+              </Typography> */}
             </Toolbar>
           </AppBar>
-          <MainMenu
-            mobileOpen={mobileOpen}
-            data={menuItems}
-            handleDrawerToggle={handleDrawerToggle}
-          />
         </>
       )}
       <Switch>
