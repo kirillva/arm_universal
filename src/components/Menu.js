@@ -14,18 +14,18 @@ export const menuItems = [
   //   path: "/auth",
   //   title: "Авторизация",
   // },
-  {
-    claims: [
-      "manual_edit",
-      "admin",
-      "food_kit",
-      "manager_candidate",
-      "division",
-    ],
-    icon: MapIcon,
-    path: "/",
-    title: "Карта",
-  },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: MapIcon,
+  //   path: "/",
+  //   title: "Карта",
+  // },
   // {
   //   claims: [
   //     "manual_edit",
@@ -38,18 +38,18 @@ export const menuItems = [
   //   path: "/",
   //   title: "Сканировать",
   // },
-  {
-    claims: [
-      "manual_edit",
-      "admin",
-      "food_kit",
-      "manager_candidate",
-      "division",
-    ],
-    icon: AssignmentIcon,
-    path: "/routes",
-    title: "Маршруты",
-  },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: AssignmentIcon,
+  //   path: "/routes",
+  //   title: "Маршруты",
+  // },
   // {
   //   claims: [
   //     "manual_edit",
@@ -71,7 +71,7 @@ export const menuItems = [
       "division",
     ],
     icon: AssignmentIcon,
-    path: "/users",
+    path: "/",
     title: "Пользователи",
   },
   {
@@ -85,6 +85,18 @@ export const menuItems = [
     icon: AssignmentIcon,
     path: "/address",
     title: "Адреса",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/voters",
+    title: "Избиратели",
   },
   // {
   //   claims: [

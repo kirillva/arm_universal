@@ -103,13 +103,7 @@ export const AddressPanel = () => {
       },
       {
         title: "Дом",
-        accessor: "c_house_num",
-        Filter: StringFilter,
-        Cell: StringCell,
-      },
-      {
-        title: "Корпус",
-        accessor: "c_build_num",
+        accessor: "c_full_number",
         Filter: StringFilter,
         Cell: StringCell,
       },
@@ -164,7 +158,7 @@ export const AddressPanel = () => {
       // },
       {
         title: "УИК",
-        accessor: "n_uik_correct",
+        accessor: "n_uik",
         Filter: NumberFilter,
         Cell: NumberCell,
       },

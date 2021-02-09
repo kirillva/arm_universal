@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Button,
   Dialog,
@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   makeStyles,
-  TableHead,
   TextField,
 } from "@material-ui/core";
 import { runRpc } from "utils/rpc";
@@ -20,23 +19,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const EditField = ({ label, ...props }) => {
-//   const [field, meta, helpers] = useField();
-
-//   const { value } = meta;
-//   const { setValue } = helpers;
-
-//   return (
-//     <TextField
-//       variant="outlined"
-//       margin="dense"
-//       label={label}
-//       value={value}
-//       onChange={setValue}
-//     />
-//   );
-// };
-
 export const EditRowForm = ({
   title,
   action,
@@ -44,13 +26,14 @@ export const EditRowForm = ({
   setSelectedRow,
   selectedRow,
   columns,
+  editForm,
 }) => {
   const classes = useStyles();
 
   function updateSelectedRow(values, props) {
     const record = {};
-    columns.forEach(item=>{
-      record[item.accessor] = values[item.accessor]
+    columns.forEach((item) => {
+      record[item.accessor] = values[item.accessor];
     });
     record[idProperty] = values[idProperty];
     console.log("record", record);
@@ -81,25 +64,31 @@ export const EditRowForm = ({
         {(props) => (
           <form onSubmit={props.handleSubmit}>
             <DialogContent className={classes.dialogContent}>
-              <input hidden name={idProperty} value={selectedRow ? selectedRow.original[idProperty] : ""}/>
-              {columns.map((item) => {
-                const options = {
-                  label: item.title,
-                  onChange: props.handleChange,
-                  onBlur: props.handleBlur,
-                  setFieldValue: props.setFieldValue,
-                  value: props.values[item.accessor],
-                  name: item.accessor,
-                  variant: "outlined",
-                  margin: "dense",
-                  fieldProps: item.fieldProps || null
-                };
-                if (item.Editor) {
-                  return React.createElement(item.Editor, options);
-                } else {
-                  return <TextField {...options} />;
-                }
-              })}
+              <input
+                hidden
+                name={idProperty}
+                value={selectedRow ? selectedRow.original[idProperty] : ""}
+              />
+              {editForm
+                ? editForm(selectedRow ? selectedRow.original : null)
+                : columns.map((item) => {
+                    const options = {
+                      label: item.title,
+                      onChange: props.handleChange,
+                      onBlur: props.handleBlur,
+                      setFieldValue: props.setFieldValue,
+                      value: props.values[item.accessor],
+                      name: item.accessor,
+                      variant: "outlined",
+                      margin: "dense",
+                      fieldProps: item.fieldProps || null,
+                    };
+                    if (item.Editor) {
+                      return React.createElement(item.Editor, options);
+                    } else {
+                      return <TextField {...options} />;
+                    }
+                  })}
             </DialogContent>
             <DialogActions>
               <Button color="primary" variant="contained" type="submit">

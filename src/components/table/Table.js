@@ -32,11 +32,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TableHead,
   TextField,
 } from "@material-ui/core";
 import { ArrowDropDown, ArrowDropUp, Description, Filter, FilterList, LensTwoTone } from "@material-ui/icons";
@@ -123,6 +118,7 @@ export const Table = ({
   editable = false,
   selectable = false,
   handleClick = null,
+  editForm
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -434,6 +430,7 @@ export const Table = ({
         setSelectedRow={setSelectedRow}
         selectedRow={selectedRow}
         columns={columns}
+        editForm={editForm}
       />
       <Paper className={classes.paper}>
         <EnhancedTableHead
