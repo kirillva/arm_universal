@@ -14,7 +14,6 @@ export const StringCell = ({ cell, ...props }) => {
 };
 
 export const SelectCell = ({ cell, ...props }) => {
-	debugger;
 	const value = cell.row.original[cell.column.mapAccessor];
 	return value ? value : '';
 };

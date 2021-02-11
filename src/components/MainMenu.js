@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const SimpleMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const history = useHistory();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -83,7 +84,11 @@ export const SimpleMenu = () => {
           key={"/"}
           component={Link}
           to={"/"}
-          onClick={handleClose}
+          onClick={()=> {
+            logout();
+            history.push("/");
+            handleClose()
+          }}
         >
           Выход
         </MenuItem>
