@@ -22,6 +22,7 @@ import {
 } from "components/table/Editors";
 import { getSelectByColumns } from "utils/helpers";
 import { getUserId } from "utils/user";
+import { StreetTable } from "./StreetTable";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -40,45 +41,7 @@ const useStyles = makeStyles((theme) => ({
 export const AddressPanel = () => {
   const classes = useStyles();
   const userId = 180101; //getUserId();
-  const cs_street = React.useMemo(
-    () => [
-      {
-        title: "Улица",
-        Filter: StringFilter,
-        accessor: "c_name",
-        Cell: ({ cell }) => {
-          const { c_short_type, c_name } = cell.row.original;
-          return `${c_short_type} ${c_name}`;
-        },
-      },
-      {
-        title: "Район",
-        accessor: "f_division",
-        mapAccessor: "c_division",
-        fieldProps: {
-          idProperty: "id",
-          nameProperty: "c_name",
-          table: "sd_divisions",
-        },
-        Filter: SelectFilter,
-        Editor: SelectEditor,
-        Cell: SelectCell,
-      },
-      {
-        title: "Удалена",
-        Filter: BoolFilter,
-        Cell: BoolCell,
-        accessor: "b_disabled",
-      },
-      {
-        title: "Автор",
-        Filter: StringFilter,
-        Cell: StringCell,
-        accessor: "c_first_name",
-      }
-    ],
-    []
-  );
+  
 
   const cs_house = React.useMemo(
     () => [
@@ -225,14 +188,15 @@ export const AddressPanel = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.table}>
-        <Table
+        {/* <Table
           title={"Улицы"}
           selectable
           method="Select"
           params={[userId]}
           columns={cs_street}
-          action="cf_arm_cs_street"
-        />
+          action="cf_bss_cs_street"
+        /> */}
+        <StreetTable id={180101} />
       </div>
       <div className={classes.table}>
         <Table
@@ -240,7 +204,7 @@ export const AddressPanel = () => {
           selectable
           columns={cs_house}
           params={[180101, 'c0c21675-3691-4ecd-bb5f-727a9ffdc7d9']}
-          action="cf_arm_cs_house"
+          action="cf_bss_cs_house"
         />
       </div>
       <div className={classes.table}>
@@ -250,7 +214,7 @@ export const AddressPanel = () => {
           idProperty={'c_people_types'}
           columns={cs_house_info}
           params={['c0c21675-3691-4ecd-bb5f-727a9ffdc7d9', '8c3c6638-5c0a-43f6-b236-c829431e8af2']}
-          action="cf_arm_cs_house_info"
+          action="cf_bss_cs_house_info"
         />
       </div>
       <div className={classes.table}>
@@ -260,7 +224,7 @@ export const AddressPanel = () => {
           idProperty={'n_year'}
           columns={cs_house_loyalty}
           params={['c0c21675-3691-4ecd-bb5f-727a9ffdc7d9', '8c3c6638-5c0a-43f6-b236-c829431e8af2']}
-          action="cf_arm_cs_house_loyalty"
+          action="cf_bss_cs_house_loyalty"
         />
       </div>
       {/* <div className={classes.table}>

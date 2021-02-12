@@ -1,7 +1,7 @@
 // import { ScanPanel } from "pages/ScanPanel";
 import { ResultPanel } from "pages/ResultPanel";
 import { SigninForm } from "pages/SigninForm";
-import { AddressPanel } from "pages/AddressPanel";
+import { AddressPanel } from "pages/address/AddressPanel";
 import { RoutesPanel } from "pages/RoutesPanel";
 import { AdminPanel } from "pages/AdminPanel";
 import { VotersPanel } from "pages/VotersPanel";
