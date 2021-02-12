@@ -183,7 +183,7 @@ export const AddressPanel = () => {
     ], 
     []
   );
-
+  
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
@@ -227,15 +227,6 @@ export const AddressPanel = () => {
           action="cf_bss_cs_house_loyalty"
         />
       </div>
-      {/* <div className={classes.table}>
-        <Table
-          title={"Квартиры"}
-          selectable
-          editable
-          columns={cs_appartament}
-          action="cs_appartament"
-        />
-      </div> */}
     </div>
   );
 };
