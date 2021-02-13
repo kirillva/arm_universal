@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 // import { Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
 import { Table } from "components/table/Table";
-import { getSelectByColumns } from "utils/helpers";
 import { StringFilter } from "components/table/Filters";
-import { SelectCell, StringCell } from "components/table/Cell";
-import { SelectEditor, StringEditor } from "components/table/Editors";
-import { SelectFilter } from "components/table/SelectFilter";
-import { Button, Drawer } from "@material-ui/core";
-import { useLocation } from "react-router-dom";
+import { StringCell } from "components/table/Cell";
+import { Drawer } from "@material-ui/core";
+import { useHistory, useLocation } from "react-router-dom";
 import { parse } from "query-string";
+import { VoterEditForm } from "./VoterEditForm";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -21,27 +19,19 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   drawer: {
-    width: 300,
+    width: 500,
   },
 }));
-
-const EditForm = ({ className, selectedRow }) => {
-  return (
-    <div className={className}>
-      {JSON.stringify(selectedRow && selectedRow.original, null, 4)}
-    </div>
-  );
-};
 
 export const VotersPanel = () => {
   const classes = useStyles();
   const location = useLocation();
-  
+
   const { id } = parse(location.search);
 
   const [selectedRow, setSelectedRow] = useState(id);
 
-  const cs_appartament = React.useMemo(
+  const cs_appartament = useMemo(
     () => [
       {
         title: "Улица",
@@ -71,20 +61,36 @@ export const VotersPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <Table
-        title={"Избиратели"}
-        method="Select"
-        columns={cs_appartament}
-        handleClick={(cell, row) => setSelectedRow(row.id)}
-        params={[180101, null, null]}
-        action="cf_bss_cs_appartament"
-      />
+      {useMemo(() => {
+        return (
+          <Table
+            title={"Избиратели"}
+            method="Select"
+            columns={cs_appartament}
+            handleClick={(cell, row) => {
+              setSelectedRow(row.id);
+              // history.push({
+              //   pathname: "/voters",
+              //   search: `?id=${row.id}`,
+              // });
+            }}
+            params={[180101, null, null]}
+            action="cf_bss_cs_appartament"
+          />
+        );
+      }, [])}
+
       <Drawer
         anchor={"right"}
         open={Boolean(selectedRow)}
-        onClose={() => setSelectedRow(null)}
+        onClose={() => {
+          setSelectedRow(null);
+          // history.push({
+          //   pathname: "/voters",
+          // });
+        }}
       >
-        <EditForm className={classes.drawer} selectedRow={selectedRow} />
+        <VoterEditForm className={classes.drawer} selectedRow={selectedRow} />
       </Drawer>
     </div>
   );

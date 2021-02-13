@@ -52,7 +52,7 @@ export const routeItems = [
   },
   {
     claims: ["manager"],
-    exact: true,
+    exact: false,
     path: "/voters",
     component: VotersPanel,
   }
