@@ -3,7 +3,7 @@ import { TextField } from "@material-ui/core";
 import _ from "lodash";
 import { runRpc } from "utils/rpc";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import MenuItem from "@material-ui/core/MenuItem";
 // import Select from '@material-ui/core/Select';
@@ -52,7 +52,9 @@ export const DateEditor = ({
         {...dataInputOptions}
         label={label}
         value={value}
-        onChange={(value) => setFieldValue(name, value ? value.toISOString(true) : null)}
+        onChange={(value) =>
+          setFieldValue(name, value ? value.toISOString(true) : null)
+        }
         margin="dense"
         autoOk
       />
@@ -90,7 +92,9 @@ export function SelectEditor({ fieldProps, value, ...rest }) {
       fieldProps={fieldProps}
       value={{ [idProperty]: value, [nameProperty]: _value }}
     />
-  ) : <CircularProgress />;
+  ) : (
+    <CircularProgress />
+  );
 }
 
 export function SelectEditorField({
@@ -98,14 +102,14 @@ export function SelectEditorField({
   value,
   setFieldValue,
   name,
-  label,
+  label
 }) {
   const setFilter = (newValue) => {
     console.log("setFilter");
     setFieldValue(name, newValue);
   };
 
-  const { idProperty, nameProperty, table } = fieldProps;
+  const { idProperty, nameProperty, table, params, filter: propFilter, method = 'Query', sortBy } = fieldProps;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
@@ -125,26 +129,39 @@ export function SelectEditorField({
   };
 
   const loadData = () => {
-    if (open && inputValue) {
-      const filter = [];
-      if (nameProperty) {
+    if (open) {
+      let filter = [];
+
+      if (nameProperty && inputValue) {
         filter.push({
           property: nameProperty,
           value: inputValue,
           operator: "like",
         });
       }
+      if (propFilter) {
+        filter = filter.concat(propFilter);
+      }
+      const rpcData = {
+        limit: 50,
+        select: [idProperty, nameProperty, sortBy].filter((item) => item).join(","),
+        filter: filter,
+      };
+      if (params) {
+        rpcData.params = params;
+      }
+      if (sortBy) {
+        rpcData.sort = [{
+          property: sortBy,
+          direction: "ASC",
+        }]
+      }
+      
       setLoading(true);
       runRpc({
         action: table,
-        method: "Query",
-        data: [
-          {
-            limit: 50,
-            select: [idProperty, nameProperty].filter((item) => item).join(","),
-            filter: filter,
-          },
-        ],
+        method: method,
+        data: [rpcData],
         type: "rpc",
       }).then((responce) => {
         setLoading(false);

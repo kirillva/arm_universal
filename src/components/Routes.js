@@ -5,6 +5,8 @@ import { AddressPanel } from "pages/address/AddressPanel";
 import { RoutesPanel } from "pages/RoutesPanel";
 import { AdminPanel } from "pages/AdminPanel";
 import { VotersPanel } from "pages/VotersPanel";
+import { StreetDetailTable } from "pages/address/StreetDetailTable";
+import { VoterEditForm } from "pages/VoterEditForm";
 
 export const routeItems = [
   {
@@ -52,8 +54,14 @@ export const routeItems = [
   },
   {
     claims: ["manager"],
-    exact: false,
+    exact: true,
     path: "/voters",
-    component: VotersPanel,
+    component: VoterEditForm,
+  },
+  {
+    claims: ["manager"],
+    exact: false,
+    path: "/streetDetail",
+    component: StreetDetailTable,
   }
 ];

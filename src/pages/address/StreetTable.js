@@ -13,9 +13,12 @@ import { SelectFilter } from "components/table/SelectFilter";
 import {
   SelectEditor,
 } from "components/table/Editors";
+import { useHistory } from "react-router-dom";
 
 
 export const StreetTable = ({ id }) => {
+  const history = useHistory();
+   
   const cs_street = React.useMemo(
     () => [
       {
@@ -58,7 +61,7 @@ export const StreetTable = ({ id }) => {
   return (
     <Table
       title={"Улицы"}
-      selectable
+      handleClick={(cell, row)=>history.push(`/streetDetail?id=${row.id}`)}
       method="Select"
       params={[id]}
       columns={cs_street}

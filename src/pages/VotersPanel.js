@@ -8,9 +8,10 @@ import { Table } from "components/table/Table";
 import { StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
 import { Drawer } from "@material-ui/core";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { parse } from "query-string";
 import { VoterEditForm } from "./VoterEditForm";
+import { getUserId } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -74,7 +75,7 @@ export const VotersPanel = () => {
               //   search: `?id=${row.id}`,
               // });
             }}
-            params={[180101, null, null]}
+            params={[getUserId(), null, null]}
             action="cf_bss_cs_appartament"
           />
         );
