@@ -65,9 +65,6 @@ function ResponsiveDrawer() {
   const filteredMenu = menuItems.filter(filter);
   const filteredRoute = routeItems.filter(filter);
 
-  console.log("filteredMenu", filteredMenu);
-  console.log("filteredRoute", filteredRoute);
-
   const PrivateRoute = ({ component: Component, ...rest }) => {
     return isAuthorized() ? <Route {...rest} /> : <Redirect to="/auth" />;
   };

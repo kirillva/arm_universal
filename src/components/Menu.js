@@ -62,6 +62,18 @@ export const menuItems = [
   //   path: "/result",
   //   title: "Результаты",
   // },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: AssignmentIcon,
+  //   path: "/",
+  //   title: "Пользователи",
+  // },
   {
     claims: [
       "manual_edit",
@@ -72,7 +84,7 @@ export const menuItems = [
     ],
     icon: AssignmentIcon,
     path: "/",
-    title: "Пользователи",
+    title: "Просмотр адресов",
   },
   {
     claims: [
@@ -83,8 +95,8 @@ export const menuItems = [
       "division",
     ],
     icon: AssignmentIcon,
-    path: "/address",
-    title: "Адреса",
+    path: "/votersList",
+    title: "Список квартир",
   },
   {
     claims: [
@@ -96,7 +108,7 @@ export const menuItems = [
     ],
     icon: AssignmentIcon,
     path: "/voters",
-    title: "Избиратели",
+    title: "Поиск избирателей",
   },
   // {
   //   claims: [

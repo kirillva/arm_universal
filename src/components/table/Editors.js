@@ -105,7 +105,6 @@ export function SelectEditorField({
   label
 }) {
   const setFilter = (newValue) => {
-    console.log("setFilter");
     setFieldValue(name, newValue);
   };
 
@@ -124,8 +123,12 @@ export function SelectEditorField({
     }
   };
 
-  const onInputChange = (event, newInputValue) => {
-    setInputValue(newInputValue);
+  const onInputChange = (event, newInputValue, reason) => {
+    if (reason === 'reset') {
+      setInputValue('')
+    } else {
+      setInputValue(newInputValue);
+    }
   };
 
   const loadData = () => {
@@ -156,7 +159,6 @@ export function SelectEditorField({
           direction: "ASC",
         }]
       }
-      
       setLoading(true);
       runRpc({
         action: table,

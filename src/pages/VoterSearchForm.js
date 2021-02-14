@@ -15,6 +15,8 @@ import { useFormik } from "formik";
 import { DateEditor, SelectEditorField } from "components/table/Editors";
 import { DatePicker } from "@material-ui/pickers";
 import { getUserId } from "utils/user";
+import { parse } from "query-string";
+import { useLocation } from "react-router-dom";
 // import { getUserId } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,22 +53,26 @@ const AddNewItem = ({ loadData, appartament }) => {
       runRpc({
         action: "cd_people",
         method: "Add",
-        data: [{
-          ...values,
-          // f_street: street,
-          // f_house: house,
-          f_user: getUserId(),
-          f_type: 1,
-          f_appartament: appartament,
-        }],
+        data: [
+          {
+            ...values,
+            // f_street: street,
+            // f_house: house,
+            f_user: getUserId(),
+            f_type: 1,
+            f_appartament: appartament,
+          },
+        ],
         type: "rpc",
-      }).then((responce) => {
-        setSubmitting(false);
-        loadData();
-        resetForm();
-      }).catch(()=>{
-        setSubmitting(false);
-      });
+      })
+        .then((responce) => {
+          setSubmitting(false);
+          loadData();
+          resetForm();
+        })
+        .catch(() => {
+          setSubmitting(false);
+        });
     },
   });
 
@@ -112,13 +118,16 @@ const AddNewItem = ({ loadData, appartament }) => {
   );
 };
 
-export const VoterEditForm = ({ className }) => {
+export const VoterSearchForm = ({ className }) => {
   const [data, setData] = useState([]);
+  const location = useLocation();
+  const { f_house, f_street, f_appartment } = parse(location.search);
+
   const [loading, setLoading] = useState(false);
-  const [street, setStreet] = useState(null);
-  const [house, setHouse] = useState(null);
-  const [appartament, setappartament] = useState(null);
-  const userId = null; // getUserId();
+  const [street, setStreet] = useState(f_house);
+  const [house, setHouse] = useState(f_street);
+  const [appartament, setAppartament] = useState(f_appartment);
+  const userId = null;
 
   const classes = useStyles();
 
@@ -165,14 +174,14 @@ export const VoterEditForm = ({ className }) => {
         setFieldValue={(name, value) => {
           setStreet(value);
           setHouse(null);
-          setappartament(null);
+          setAppartament(null);
         }}
         label="Улица"
       />
       {street && (
         <SelectEditorField
           fieldProps={{
-            sortBy: "c_full_number",
+            sortBy: "n_number",
             params: [userId, street],
             method: "Select",
             idProperty: "id",
@@ -182,7 +191,7 @@ export const VoterEditForm = ({ className }) => {
           value={house}
           setFieldValue={(name, value) => {
             setHouse(value);
-            setappartament(null);
+            setAppartament(null);
           }}
           label="Дом"
         />
@@ -199,7 +208,7 @@ export const VoterEditForm = ({ className }) => {
           }}
           value={house}
           setFieldValue={(name, value) => {
-            setappartament(value);
+            setAppartament(value);
           }}
           label="Квартира"
         />
@@ -237,10 +246,7 @@ export const VoterEditForm = ({ className }) => {
 
         {appartament && (
           <ListItem>
-            <AddNewItem
-              loadData={loadData}
-              appartament={appartament}
-            />
+            <AddNewItem loadData={loadData} appartament={appartament} />
           </ListItem>
         )}
       </List>

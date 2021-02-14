@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 // import { Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,10 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
-import { Drawer } from "@material-ui/core";
-import { useLocation } from "react-router-dom";
-import { parse } from "query-string";
-import { VoterEditForm } from "./VoterEditForm";
+import { useHistory } from "react-router-dom";
 import { getUserId } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,13 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const VotersPanel = () => {
+export const VotersList = () => {
   const classes = useStyles();
-  const location = useLocation();
-
-  const { id } = parse(location.search);
-
-  const [selectedRow, setSelectedRow] = useState(id);
+  const history = useHistory();
 
   const cs_appartament = useMemo(
     () => [
@@ -69,19 +62,20 @@ export const VotersPanel = () => {
             method="Select"
             columns={cs_appartament}
             handleClick={(cell, row) => {
-              setSelectedRow(row.id);
-              // history.push({
-              //   pathname: "/voters",
-              //   search: `?id=${row.id}`,
-              // });
+              const { f_house, f_street, id } = row.original;
+              history.push({
+                pathname: "/voters",
+                search: `?f_house=${f_house}&f_street=${f_street}&f_appartment=${id}`,
+              });
             }}
             params={[getUserId(), null, null]}
             action="cf_bss_cs_appartament"
           />
         );
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])}
 
-      <Drawer
+      {/* <Drawer
         anchor={"right"}
         open={Boolean(selectedRow)}
         onClose={() => {
@@ -91,8 +85,8 @@ export const VotersPanel = () => {
           // });
         }}
       >
-        <VoterEditForm className={classes.drawer} selectedRow={selectedRow} />
-      </Drawer>
+        <VoterSearchForm className={classes.drawer} selectedRow={selectedRow} />
+      </Drawer> */}
     </div>
   );
 };
