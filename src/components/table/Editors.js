@@ -65,9 +65,11 @@ export const DateEditor = ({
 export function SelectEditor({ fieldProps, value, ...rest }) {
   const { idProperty, nameProperty, table } = fieldProps;
   const [_value, _setValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (value) {
+      setLoading(true);
       runRpc({
         action: table,
         method: "Query",
@@ -80,13 +82,14 @@ export function SelectEditor({ fieldProps, value, ...rest }) {
         ],
         type: "rpc",
       }).then((responce) => {
+        setLoading(false);
         _setValue(responce.result.records[0][nameProperty]);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  return _value ? (
+  return !loading ? (
     <SelectEditorField
       {...rest}
       fieldProps={fieldProps}
@@ -102,13 +105,23 @@ export function SelectEditorField({
   value,
   setFieldValue,
   name,
-  label
+  label,
 }) {
   const setFilter = (newValue) => {
     setFieldValue(name, newValue);
   };
 
-  const { idProperty, nameProperty, table, params, filter: propFilter, method = 'Query', sortBy } = fieldProps;
+  const {
+    idProperty,
+    nameProperty,
+    table,
+    params,
+    filter: propFilter,
+    method = "Query",
+    sortBy,
+    error,
+    helperText,
+  } = fieldProps;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
@@ -124,8 +137,8 @@ export function SelectEditorField({
   };
 
   const onInputChange = (event, newInputValue, reason) => {
-    if (reason === 'reset') {
-      setInputValue('')
+    if (reason === "reset") {
+      setInputValue("");
     } else {
       setInputValue(newInputValue);
     }
@@ -147,17 +160,21 @@ export function SelectEditorField({
       }
       const rpcData = {
         limit: 50,
-        select: [idProperty, nameProperty, sortBy].filter((item) => item).join(","),
+        select: [idProperty, nameProperty, sortBy]
+          .filter((item) => item)
+          .join(","),
         filter: filter,
       };
       if (params) {
         rpcData.params = params;
       }
       if (sortBy) {
-        rpcData.sort = [{
-          property: sortBy,
-          direction: "ASC",
-        }]
+        rpcData.sort = [
+          {
+            property: sortBy,
+            direction: "ASC",
+          },
+        ];
       }
       setLoading(true);
       runRpc({
@@ -205,6 +222,8 @@ export function SelectEditorField({
       onChange={onChange}
       renderInput={(params) => (
         <TextField
+          error={error}
+          helperText={helperText}
           label={label}
           {...params}
           variant="outlined"

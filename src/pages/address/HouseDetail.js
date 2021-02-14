@@ -12,8 +12,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
 import { makeStyles } from "@material-ui/core/styles";
+import { EditHouse } from "./EditHouse";
 
-export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
+export const HouseDetail = ({
+  refreshTable,
+  street,
+  selectedHouse,
+  setSelectedHouse,
+}) => {
   const useStyles = makeStyles((theme) => ({
     drawer: {
       width: 400,
@@ -35,7 +41,7 @@ export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
       width: 60,
       height: 60,
       display: "flex",
-      margin: "auto",
+      // margin: "auto",
     },
     textPaper: {
       margin: "auto",
@@ -62,6 +68,9 @@ export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
 
   const classes = useStyles();
 
+  const { c_short_type, c_name, c_full_number, b_disabled, id } = selectedHouse
+    ? selectedHouse.original
+    : {};
   // useEffect(() => {
   //   if (street && selectedHouse) {
   //     setHouseInfo([]);
@@ -114,7 +123,7 @@ export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
               direction: "asc",
             },
           ],
-          params: [null, street, selectedHouse.id],
+          params: [null, street, id],
           limit: 1000,
         },
       ],
@@ -129,10 +138,8 @@ export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
     if (selectedHouse) {
       loadData();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHouse]);
-
-  const { c_short_type, c_name } = selectedHouse ? selectedHouse.original : {};
 
   return (
     <Drawer
@@ -144,9 +151,43 @@ export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
     >
       <div className={classes.drawer}>
         {selectedHouse && (
-          <Typography className={classes.text}>
-            {c_short_type} {c_name}
-          </Typography>
+          <div className={classes.text}>
+            {/* <Typography>
+              {c_short_type} {c_name} {c_full_number}
+            </Typography> */}
+            <EditHouse
+              id={id}
+              refreshPage={() => {
+                refreshTable();
+                setSelectedHouse(null);
+              }}
+            />
+            {/* <Button
+              className={classes.button}
+              // disabled={!Boolean(appartamentNumber) || error}
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                runRpc({
+                  action: "cs_house",
+                  method: "Update",
+                  data: [
+                    {
+                      id,
+                      b_disabled: !b_disabled,
+                    },
+                  ],
+                  type: "rpc",
+                }).then(() => {
+                  // setLoading(false);
+                  setSelectedHouse(null);
+                  refreshTable();
+                });
+              }}
+            >
+              {b_disabled ? "Включить" : "Выключить"}
+            </Button> */}
+          </div>
         )}
         {loading ? (
           <CircularProgress />
@@ -170,7 +211,7 @@ export const HouseDetail = ({ street, selectedHouse, setSelectedHouse }) => {
                   }
                   setAppartamentNumber(value);
                 }}
-                label="Номер дома"
+                label="Номер квартиры"
               />
               <Button
                 className={classes.button}

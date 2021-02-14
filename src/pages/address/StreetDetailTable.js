@@ -10,6 +10,8 @@ import { HouseDetail } from "./HouseDetail";
 import { parse } from "query-string";
 
 import { useLocation } from "react-router-dom";
+import { EditStreet } from "./EditStreet";
+import { AddHouse } from "./AddHouse";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -23,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   table: {
     flex: 1,
   },
+  formWrapper: {
+    gap:  theme.spacing(3),
+    display: 'flex'
+  }
 }));
 
 export const StreetDetailTable = () => {
@@ -31,6 +37,7 @@ export const StreetDetailTable = () => {
 
   const { id } = parse(location.search);
 
+  const [params, setParams] = useState([null, id]);
   const [selectedHouse, setSelectedHouse] = useState(null);
 
   const cs_house = React.useMemo(
@@ -94,17 +101,22 @@ export const StreetDetailTable = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
+      <div className={classes.formWrapper}>
+        <EditStreet id={id} refreshPage={()=>setParams([...params])} />
+        <AddHouse street={id} refreshPage={()=>setParams([...params])}/>
+      </div>
       <div className={classes.table}>
         <Table
           title={"Дома"}
           method="Select"
           columns={cs_house}
           handleClick={(cell, row) => setSelectedHouse(row)}
-          params={[getUserId(), id]}
+          params={params}
           action="cf_bss_cs_house"
         />
       </div>
       <HouseDetail
+        refreshTable={() => setParams([...params])}
         street={id}
         selectedHouse={selectedHouse}
         setSelectedHouse={setSelectedHouse}

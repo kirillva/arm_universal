@@ -319,7 +319,7 @@ export const Table = ({
         setData(data);
       }
     );
-  }, [onFetchDataDebounced, pageIndex, pageSize, sortBy, filters, action]);
+  }, [onFetchDataDebounced, pageIndex, pageSize, sortBy, filters, action, params]);
 
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
