@@ -501,6 +501,7 @@ export const Table = ({
                       } else {
                         return (
                           <TableCell
+                            title={cell.value}
                             onClick={
                               editable ? onEdit(cell, row) : onClick(cell, row)
                             }

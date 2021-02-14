@@ -84,7 +84,7 @@ export const menuItems = [
     ],
     icon: AssignmentIcon,
     path: "/",
-    title: "Просмотр адресов",
+    title: "Улицы",
   },
   {
     claims: [

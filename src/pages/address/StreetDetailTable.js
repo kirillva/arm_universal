@@ -31,7 +31,7 @@ export const StreetDetailTable = () => {
 
   const { id } = parse(location.search);
 
-  const [selectedHouse, setSelectedHouse] = useState(false);
+  const [selectedHouse, setSelectedHouse] = useState(null);
 
   const cs_house = React.useMemo(
     () => [
@@ -70,6 +70,12 @@ export const StreetDetailTable = () => {
         accessor: "b_disabled",
       },
       {
+        title: "Причина",
+        Filter: StringFilter,
+        Cell: StringCell,
+        accessor: "c_disabled",
+      },
+      {
         title: "УИК",
         Filter: StringFilter,
         Cell: StringCell,
@@ -93,7 +99,7 @@ export const StreetDetailTable = () => {
           title={"Дома"}
           method="Select"
           columns={cs_house}
-          handleClick={(cell, row) => setSelectedHouse(row.id)}
+          handleClick={(cell, row) => setSelectedHouse(row)}
           params={[getUserId(), id]}
           action="cf_bss_cs_house"
         />

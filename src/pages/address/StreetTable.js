@@ -50,6 +50,12 @@ export const StreetTable = ({ id }) => {
         accessor: "b_disabled",
       },
       {
+        title: "Причина",
+        Filter: StringFilter,
+        Cell: StringCell,
+        accessor: "c_disabled",
+      },
+      {
         title: "Автор",
         Filter: StringFilter,
         Cell: StringCell,

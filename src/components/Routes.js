@@ -4,7 +4,7 @@ import { SigninForm } from "pages/SigninForm";
 import { AddressPanel } from "pages/address/AddressPanel";
 import { RoutesPanel } from "pages/RoutesPanel";
 import { AdminPanel } from "pages/AdminPanel";
-import { VotersList } from "pages/VotersListl";
+import { VotersList } from "pages/VotersList";
 import { StreetDetailTable } from "pages/address/StreetDetailTable";
 import { VoterSearchForm } from "pages/VoterSearchForm";
 

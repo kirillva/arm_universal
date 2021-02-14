@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemText,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
@@ -30,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  searchForm: {
+    margin: theme.spacing(2),
+  }
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {
@@ -56,8 +60,6 @@ const AddNewItem = ({ loadData, appartament }) => {
         data: [
           {
             ...values,
-            // f_street: street,
-            // f_house: house,
             f_user: getUserId(),
             f_type: 1,
             f_appartament: appartament,
@@ -78,6 +80,7 @@ const AddNewItem = ({ loadData, appartament }) => {
 
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
+      <Typography>Добавить нового избирателя</Typography>
       <TextField
         label="Фамилия"
         value={values.c_first_name}
@@ -100,7 +103,7 @@ const AddNewItem = ({ loadData, appartament }) => {
         name="c_middle_name"
       />
       <TextField
-        label="Год"
+        label="Год рождения"
         value={values.n_birth_year}
         onChange={handleChange}
         variant="outlined"
@@ -141,6 +144,12 @@ export const VoterSearchForm = ({ className }) => {
           {
             limit: 1000,
             params: [appartament],
+            sort: [
+              { property: "c_first_name", direction: "asc" },
+              { property: "c_last_name", direction: "asc" },
+              { property: "c_middle_name", direction: "asc" },
+              { property: "c_name", direction: "asc" },
+            ],
           },
         ],
         type: "rpc",
@@ -161,58 +170,60 @@ export const VoterSearchForm = ({ className }) => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <SelectEditorField
-        fieldProps={{
-          sortBy: "c_name",
-          params: [userId],
-          method: "Select",
-          idProperty: "id",
-          table: "cf_bss_cs_street",
-          nameProperty: "c_name",
-        }}
-        value={street}
-        setFieldValue={(name, value) => {
-          setStreet(value);
-          setHouse(null);
-          setAppartament(null);
-        }}
-        label="Улица"
-      />
-      {street && (
+      <div className={classes.searchForm}>
         <SelectEditorField
           fieldProps={{
-            sortBy: "n_number",
-            params: [userId, street],
+            sortBy: "c_name",
+            params: [userId],
             method: "Select",
             idProperty: "id",
-            table: "cf_bss_cs_house",
-            nameProperty: "c_full_number",
+            table: "cf_bss_cs_street",
+            nameProperty: "c_name",
           }}
-          value={house}
+          value={street}
           setFieldValue={(name, value) => {
-            setHouse(value);
+            setStreet(value);
+            setHouse(null);
             setAppartament(null);
           }}
-          label="Дом"
+          label="Улица"
         />
-      )}
-      {house && (
-        <SelectEditorField
-          fieldProps={{
-            sortBy: "c_number",
-            params: [userId, street, house],
-            method: "Select",
-            idProperty: "id",
-            table: "cf_bss_cs_appartament",
-            nameProperty: "c_number",
-          }}
-          value={house}
-          setFieldValue={(name, value) => {
-            setAppartament(value);
-          }}
-          label="Квартира"
-        />
-      )}
+        {street && (
+          <SelectEditorField
+            fieldProps={{
+              sortBy: "n_number",
+              params: [userId, street],
+              method: "Select",
+              idProperty: "id",
+              table: "cf_bss_cs_house",
+              nameProperty: "c_full_number",
+            }}
+            value={house}
+            setFieldValue={(name, value) => {
+              setHouse(value);
+              setAppartament(null);
+            }}
+            label="Дом"
+          />
+        )}
+        {house && (
+          <SelectEditorField
+            fieldProps={{
+              sortBy: "n_number",
+              params: [userId, street, house],
+              method: "Select",
+              idProperty: "id",
+              table: "cf_bss_cs_appartament",
+              nameProperty: "c_number",
+            }}
+            value={house}
+            setFieldValue={(name, value) => {
+              setAppartament(value);
+            }}
+            label="Квартира"
+          />
+        )}
+      </div>
       <List className={className}>
         {loading ? (
           <div className={className}>
@@ -232,9 +243,9 @@ export const VoterSearchForm = ({ className }) => {
             return (
               <ListItem>
                 <ListItemText primary={primaryText} secondary={c_name} />
-                <Button color="primary" variant="contained">
+                {/* <Button color="primary" variant="contained">
                   <DeleteIcon /> Удалить
-                </Button>
+                </Button> */}
               </ListItem>
             );
           })
