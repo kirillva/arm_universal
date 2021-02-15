@@ -14,7 +14,7 @@ const setItem = (name, value, persist) => {
   }
 };
 
-const getItem = (name) => {
+export const getItem = (name) => {
   return sessionStorage.getItem(name) || localStorage.getItem(name);
 };
 
@@ -38,9 +38,10 @@ export const getClaims = () => {
   return getItem("claims") || "";
 };
 
-export const authenticate = ({ userName, token, userId, claims, persist }) => {
+export const authenticate = ({ userName, token, userId, claims, login, persist }) => {
   setItem("userName", userName ? userName : '', persist);
   setItem("token", token, persist);
+  setItem("login", login, persist);
   setItem("userid", userId, persist);
   setItem("claims", claims, persist);
   
@@ -80,6 +81,7 @@ export const auth = async ({
         userId: responce.user.userId,
         persist: persist,
         claims: responce.user.claims,
+        login: login
       });
       onSuccess();
     }
@@ -97,11 +99,13 @@ export const logout = () => {
   setItem("token", "");
   setItem("userid", "");
   setItem("claims", "");
+  setItem("login", "");
 
   setItem("userName", "", true);
   setItem("token", "", true);
   setItem("userid", "", true);
   setItem("claims", "", true);
+  setItem("login", "", true);
   dispatchEvent();
 };
 

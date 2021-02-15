@@ -154,7 +154,7 @@ export const Table = ({
     []
   );
 
-  const [filterHidden, setFilterHidden] = useState(true);
+  const [filterHidden, setFilterHidden] = useState(false);
 
   const {
     getTableProps,

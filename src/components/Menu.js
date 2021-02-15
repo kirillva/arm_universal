@@ -74,6 +74,18 @@ export const menuItems = [
   //   path: "/",
   //   title: "Пользователи",
   // },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: AssignmentIcon,
+  //   path: "/",
+  //   title: "Улицы",
+  // },
   {
     claims: [
       "manual_edit",
@@ -84,32 +96,32 @@ export const menuItems = [
     ],
     icon: AssignmentIcon,
     path: "/",
-    title: "Улицы",
+    title: "История домов",
   },
-  {
-    claims: [
-      "manual_edit",
-      "admin",
-      "food_kit",
-      "manager_candidate",
-      "division",
-    ],
-    icon: AssignmentIcon,
-    path: "/votersList",
-    title: "Список квартир",
-  },
-  {
-    claims: [
-      "manual_edit",
-      "admin",
-      "food_kit",
-      "manager_candidate",
-      "division",
-    ],
-    icon: AssignmentIcon,
-    path: "/voters",
-    title: "Поиск избирателей",
-  },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: AssignmentIcon,
+  //   path: "/votersList",
+  //   title: "Список квартир",
+  // },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: AssignmentIcon,
+  //   path: "/voters",
+  //   title: "Поиск избирателей",
+  // },
   // {
   //   claims: [
   //     "manual_edit",

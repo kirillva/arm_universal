@@ -7,6 +7,7 @@ import { AdminPanel } from "pages/AdminPanel";
 import { VotersList } from "pages/VotersList";
 import { StreetDetailTable } from "pages/address/StreetDetailTable";
 import { VoterSearchForm } from "pages/VoterSearchForm";
+import { HouseHistoryPanel } from "pages/HouseHistoryPanel";
 
 export const routeItems = [
   {
@@ -40,34 +41,40 @@ export const routeItems = [
   //   path: "/result",
   //   component: ResultPanel,
   // },
-  {
-    claims: ["manager"],
-    exact: true,
-    path: "/",
-    component: AddressPanel,
-  },
+  // {
+  //   claims: ["manager"],
+  //   exact: true,
+  //   path: "/",
+  //   component: AddressPanel,
+  // },
   // {
   //   claims: ["manager"],
   //   exact: true,
   //   path: "/address",
   //   component: AddressPanel,
   // },
-  {
-    claims: ["manager"],
-    exact: true,
-    path: "/voters",
-    component: VoterSearchForm,
-  },
-  {
-    claims: ["manager"],
-    exact: true,
-    path: "/votersList",
-    component: VotersList,
-  },
+  // {
+  //   claims: ["manager"],
+  //   exact: true,
+  //   path: "/voters",
+  //   component: VoterSearchForm,
+  // },
+  // {
+  //   claims: ["manager"],
+  //   exact: true,
+  //   path: "/votersList",
+  //   component: VotersList,
+  // },
+  // {
+  //   claims: ["manager"],
+  //   exact: false,
+  //   path: "/streetDetail",
+  //   component: StreetDetailTable,
+  // },
   {
     claims: ["manager"],
     exact: false,
-    path: "/streetDetail",
-    component: StreetDetailTable,
+    path: "/",
+    component: HouseHistoryPanel,
   }
 ];

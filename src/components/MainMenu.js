@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { getUsername, logout } from "utils/user";
+import { getItem, getUsername, logout } from "utils/user";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
@@ -61,7 +61,7 @@ export const SimpleMenu = () => {
         <ListItemIcon>
           <AccountCircleIcon />
         </ListItemIcon>
-        <ListItemText primary={getUsername() || "Без имени"} />
+        <ListItemText primary={getUsername() || getItem('login')} />
       </ListItem>
       <Menu
         id="simple-menu"
@@ -70,7 +70,7 @@ export const SimpleMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem
+        {/* <MenuItem
           button
           key={"/"}
           component={Link}
@@ -78,7 +78,7 @@ export const SimpleMenu = () => {
           onClick={handleClose}
         >
           Профиль
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           button
           key={"/"}
