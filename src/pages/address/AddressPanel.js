@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
     width: 500,
   },
   formWrapper: {
+    flexDirection: "column",
+    gap: theme.spacing(3),
+    display: "flex",
+  },
+  innerContent: {
+    flexDirection: "row",
     gap: theme.spacing(3),
     display: "flex",
   },
@@ -93,31 +99,21 @@ export const AddressPanel = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.table}>
-        <div className={classes.formWrapper}>
-          <AddStreet refreshPage={() => setParams([getUserId()])} />
+        <div className={classes.innerContent}>
+          <div className={classes.formWrapper}>
+            <AddStreet refreshPage={() => setParams([getUserId()])} />
+          </div>
+          <Table
+            title={"Улицы"}
+            handleClick={(cell, row) =>
+              history.push(`/streetDetail?id=${row.id}`)
+            }
+            method="Select"
+            params={params}
+            columns={cs_street}
+            action="cf_bss_cs_street"
+          />
         </div>
-
-        <Table
-          title={"Улицы"}
-          handleClick={(cell, row) =>
-            history.push(`/streetDetail?id=${row.id}`)
-          }
-          method="Select"
-          params={params}
-          columns={cs_street}
-          action="cf_bss_cs_street"
-        />
-{/* 
-        <Table
-          title={"Улицы"}
-          handleClick={(cell, row) =>
-            history.push(`/streetDetail?id=${row.id}`)
-          }
-          method="Query"
-          params={params}
-          columns={cs_street}
-          action="cs_street"
-        /> */}
       </div>
     </div>
   );

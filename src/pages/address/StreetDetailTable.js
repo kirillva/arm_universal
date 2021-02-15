@@ -26,8 +26,14 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   formWrapper: {
-    gap:  theme.spacing(3),
-    display: 'flex'
+    flexDirection: "column",
+    gap: theme.spacing(2),
+    display: "flex",
+  },
+  innerContent: {
+    flexDirection: "row",
+    gap: theme.spacing(3),
+    display: "flex"
   }
 }));
 
@@ -101,19 +107,21 @@ export const StreetDetailTable = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <div className={classes.formWrapper}>
-        <EditStreet id={id} refreshPage={()=>setParams([...params])} />
-        <AddHouse street={id} refreshPage={()=>setParams([...params])}/>
-      </div>
-      <div className={classes.table}>
-        <Table
-          title={"Дома"}
-          method="Select"
-          columns={cs_house}
-          handleClick={(cell, row) => setSelectedHouse(row)}
-          params={params}
-          action="cf_bss_cs_house"
-        />
+      <div className={classes.innerContent}>
+        <div className={classes.formWrapper}>
+          <EditStreet id={id} refreshPage={() => setParams([...params])} />
+          <AddHouse street={id} refreshPage={() => setParams([...params])} />
+        </div>
+        <div className={classes.table}>
+          <Table
+            title={"Дома"}
+            method="Select"
+            columns={cs_house}
+            handleClick={(cell, row) => setSelectedHouse(row)}
+            params={params}
+            action="cf_bss_cs_house"
+          />
+        </div>
       </div>
       <HouseDetail
         refreshTable={() => setParams([...params])}

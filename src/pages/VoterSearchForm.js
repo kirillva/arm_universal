@@ -4,6 +4,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -32,8 +33,24 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   searchForm: {
-    margin: theme.spacing(2),
-  }
+    height: 200,
+    minWidth: 300,
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  addNewItem: {
+    minWidth: 300,
+    padding: theme.spacing(2),
+  },
+  formContainer: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  innerContent: {
+    flexDirection: "row",
+    gap: theme.spacing(3),
+    display: "flex",
+  },
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {
@@ -170,97 +187,101 @@ export const VoterSearchForm = ({ className }) => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <div className={classes.searchForm}>
-        <SelectEditorField
-          fieldProps={{
-            sortBy: "c_name",
-            params: [null],
-            method: "Select",
-            idProperty: "id",
-            table: "cf_bss_cs_street",
-            nameProperty: "c_name",
-          }}
-          value={street}
-          setFieldValue={(name, value) => {
-            setStreet(value);
-            setHouse(null);
-            setAppartament(null);
-          }}
-          label="Улица"
-        />
-        {street && (
-          <SelectEditorField
-            fieldProps={{
-              sortBy: "n_number",
-              params: [userId, street],
-              method: "Select",
-              idProperty: "id",
-              table: "cf_bss_cs_house",
-              nameProperty: "c_full_number",
-            }}
-            value={house}
-            setFieldValue={(name, value) => {
-              setHouse(value);
-              setAppartament(null);
-            }}
-            label="Дом"
-          />
-        )}
-        {house && (
-          <SelectEditorField
-            fieldProps={{
-              sortBy: "n_number",
-              params: [userId, street, house],
-              method: "Select",
-              idProperty: "id",
-              table: "cf_bss_cs_appartament",
-              nameProperty: "c_number",
-            }}
-            value={house}
-            setFieldValue={(name, value) => {
-              setAppartament(value);
-            }}
-            label="Квартира"
-          />
-        )}
-      </div>
-      <List className={className}>
-        {loading ? (
-          <div className={className}>
-            <CircularProgress />
-          </div>
-        ) : data && data.length ? (
-          data.map((item) => {
-            const { c_first_name, c_last_name, c_middle_name, c_name } = item;
-            let primaryText = "";
-            if (c_first_name || c_last_name || c_middle_name) {
-              primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
-                c_middle_name || ""
-              }`;
-            } else {
-              primaryText = "Не указано";
-            }
-            return (
-              <ListItem>
-                <ListItemText primary={primaryText} secondary={c_name} />
-                {/* <Button color="primary" variant="contained">
+      <div className={classes.innerContent}>
+        <div className={classes.formContainer}>
+          <Paper className={classes.searchForm}>
+            <SelectEditorField
+              fieldProps={{
+                sortBy: "c_name",
+                params: [null],
+                method: "Select",
+                idProperty: "id",
+                table: "cf_bss_cs_street",
+                nameProperty: "c_name",
+              }}
+              value={street}
+              setFieldValue={(name, value) => {
+                setStreet(value);
+                setHouse(null);
+                setAppartament(null);
+              }}
+              label="Улица"
+            />
+            {street && (
+              <SelectEditorField
+                fieldProps={{
+                  sortBy: "n_number",
+                  params: [userId, street],
+                  method: "Select",
+                  idProperty: "id",
+                  table: "cf_bss_cs_house",
+                  nameProperty: "c_full_number",
+                }}
+                value={house}
+                setFieldValue={(name, value) => {
+                  setHouse(value);
+                  setAppartament(null);
+                }}
+                label="Дом"
+              />
+            )}
+            {house && (
+              <SelectEditorField
+                fieldProps={{
+                  sortBy: "n_number",
+                  params: [userId, street, house],
+                  method: "Select",
+                  idProperty: "id",
+                  table: "cf_bss_cs_appartament",
+                  nameProperty: "c_number",
+                }}
+                value={house}
+                setFieldValue={(name, value) => {
+                  setAppartament(value);
+                }}
+                label="Квартира"
+              />
+            )}
+          </Paper>
+          {appartament && (
+            <Paper className={classes.addNewItem}>
+              <AddNewItem loadData={loadData} appartament={appartament} />
+            </Paper>
+          )}
+        </div>
+
+        <List className={className}>
+          {loading ? (
+            <div className={className}>
+              <CircularProgress />
+            </div>
+          ) : data && data.length ? (
+            data.map((item) => {
+              const { c_first_name, c_last_name, c_middle_name, c_name } = item;
+              let primaryText = "";
+              if (c_first_name || c_last_name || c_middle_name) {
+                primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
+                  c_middle_name || ""
+                }`;
+              } else {
+                primaryText = "Не указано";
+              }
+              return (
+                <ListItem>
+                  <ListItemText primary={primaryText} secondary={c_name} />
+                  {/* <Button color="primary" variant="contained">
                   <DeleteIcon /> Удалить
                 </Button> */}
-              </ListItem>
-            );
-          })
-        ) : (
-          <ListItem>
-            <ListItemText primary={"Нет данных"} />
-          </ListItem>
-        )}
-
-        {appartament && (
-          <ListItem>
-            <AddNewItem loadData={loadData} appartament={appartament} />
-          </ListItem>
-        )}
-      </List>
+                </ListItem>
+              );
+            })
+          ) : (
+            <ListItem>
+              <ListItemText primary={"Нет данных"} />
+            </ListItem>
+          )}
+        </List>
+      </div>
     </div>
   );
 };

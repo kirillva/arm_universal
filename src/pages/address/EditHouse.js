@@ -15,12 +15,12 @@ const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: theme.spacing(3),
+    gap: theme.spacing(1),
   },
   formWrapper: {
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(3),
-    minidth: 300,
+    marginBottom: theme.spacing(2),
+    padding: theme.spacing(2),
+    minWidth: 300,
   },
   title: {
     textAlign: "center",

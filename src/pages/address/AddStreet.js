@@ -15,12 +15,12 @@ const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: theme.spacing(3),
+    gap: theme.spacing(1),
   },
   formWrapper: {
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(3),
-    minidth: 300,
+    marginBottom: theme.spacing(1),
+    padding: theme.spacing(2),
+    minWidth: 300,
   },
   title: {
     textAlign: "center",
@@ -36,6 +36,7 @@ export const AddStreet = ({ refreshPage }) => {
     setSubmitting,
     errors,
   } = useFormik({
+    validateOnBlur: true,
     validationSchema:  Yup.object().shape({
       c_name: Yup.string().required('Не заполнено обязательное поле'),
     }),
