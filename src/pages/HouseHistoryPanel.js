@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { BoolFilter, StringFilter } from "components/table/Filters";
-import { BoolCell, SelectCell, StringCell } from "components/table/Cell";
+import { BoolCell, NumberCell, SelectCell, StringCell } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { EditHouseHistory } from "./EditHouseHistory";
 import { Box, Drawer } from "@material-ui/core";
@@ -32,6 +32,12 @@ export const HouseHistoryPanel = () => {
 
   const pd_users = React.useMemo(
     () => [
+      {
+        title: "#",
+        accessor: "n_row",
+        Filter: ()=>null,
+        Cell: NumberCell,
+      },
       {
         title: "Улица",
         Filter: SelectFilter,
@@ -117,7 +123,7 @@ export const HouseHistoryPanel = () => {
           title="Список домов"
           params={params}
           columns={pd_users}
-          sortBy={[{id: "c_name", desc: false}]}
+          // sortBy={[{id: "c_name", desc: false}]}
           action={"cf_tmp_cs_house_unknow"}
           method="Select"
         />

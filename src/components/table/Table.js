@@ -159,7 +159,7 @@ export const Table = ({
     []
   );
 
-  const [filterHidden, setFilterHidden] = useState(false);
+  const [filterHidden, setFilterHidden] = useState(true);
 
   const {
     getTableProps,
@@ -238,7 +238,7 @@ export const Table = ({
     }
   );
 
-  console.log('sortBy', sortBy);
+  console.log("sortBy", sortBy);
   const classes = useStyles();
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
@@ -420,21 +420,21 @@ export const Table = ({
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
-        <Button
+        {/* <Button
           title={"Фильтры"}
           className={classes.iconButton}
           color={filters && filters.length ? "primary" : "black"}
           onClick={() => setFilterHidden(!filterHidden)}
         >
           <FilterListIcon />
-        </Button>
-        <Button
+        </Button> */}
+        {/* <Button
           title={"Экспорт в эксель"}
           // className={classes.iconButton}
           onClick={ExportToCsv}
         >
           <Description />
-        </Button>
+        </Button> */}
       </Toolbar>
     );
   }
@@ -480,7 +480,7 @@ export const Table = ({
                     <TableCell {...column.getHeaderProps()}>
                       <div>
                         <span
-                          {...column.getSortByToggleProps()}
+                          // {...column.getSortByToggleProps()}
                           className={classes.headerTitle}
                         >
                           {column.render("Header")}
@@ -517,7 +517,6 @@ export const Table = ({
                   >
                     {row.cells.map((cell) => {
                       const filterProps = cell.column.fieldProps;
-                      debugger;
                       if (!selectable && cell.column.id === "selection") {
                         return null;
                       } else {

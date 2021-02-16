@@ -39,6 +39,8 @@ const initialValues = {
   f_house: null,
 };
 export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
+  const login = getItem("login");
+
   const {
     handleSubmit,
     handleChange,
@@ -60,6 +62,9 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
     }),
     initialValues: initialValues,
     onSubmit: (values) => {
+      const b_tmp_kalinin = login === "kalinin";
+      const b_tmp_lenin = login === "lenin";
+      const b_tmp_moskow = login === "moskow";
       const {
         id,
         n_uik,
@@ -67,9 +72,6 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
         c_house_number,
         c_house_corp,
         c_house_litera,
-        b_tmp_kalinin,
-        b_tmp_lenin,
-        b_tmp_moskow,
       } = values;
       runRpc({
         action: "cf_tmp_house_update",
@@ -155,14 +157,13 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login = getItem("login");
   const classes = useStyles();
 
   return (
     <Paper className={classes.formWrapper}>
       <form className={classes.form} onSubmit={handleSubmit}>
         <Typography variant="h6" className={classes.title}>
-          Редактирование дома
+          Редактирование дома #{values.n_row}
         </Typography>
         <TextField
           margin="dense"
@@ -245,8 +246,8 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
                 color="primary"
                 checked={Boolean(values.b_tmp_kalinin)}
                 onChange={handleChange}
-                name="b_tmp_kalinin"
-                disabled={login !== "kalinin"}
+                // name="b_tmp_kalinin"
+                disabled={true}
               />
             }
             label="Калининский"
@@ -257,8 +258,8 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
                 color="primary"
                 checked={Boolean(values.b_tmp_lenin)}
                 onChange={handleChange}
-                name="b_tmp_lenin"
-                disabled={login !== "lenin"}
+                // name="b_tmp_lenin"
+                disabled={true}
               />
             }
             label="Ленинский"
@@ -269,8 +270,8 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
                 color="primary"
                 checked={Boolean(values.b_tmp_moskow)}
                 onChange={handleChange}
-                name="b_tmp_moskow"
-                disabled={login !== "moskow"}
+                // name="b_tmp_moskow"
+                disabled={true}
               />
             }
             label="Московский"

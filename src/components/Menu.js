@@ -97,7 +97,7 @@ export const menuItems = [
     ],
     icon: HomeIcon,
     path: "/",
-    title: "История домов",
+    title: "I этап: привязка домов",
   },
   // {
   //   claims: [
