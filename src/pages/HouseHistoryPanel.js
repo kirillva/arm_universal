@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     flex: 1,
   },
+  selectColumn: {
+    width: 250
+  },
 }));
 
 export const HouseHistoryPanel = () => {
@@ -35,10 +38,12 @@ export const HouseHistoryPanel = () => {
         accessor: "f_street",
         mapAccessor: "c_name",
         fieldProps: {
+          className: classes.selectColumn,
           idProperty: "id",
           nameProperty: "c_name",
           table: "cs_street",
         },
+       
         Cell: ({ cell }) => {
           const { c_short_type, c_name } = cell.row.original;
           return `${c_short_type} ${c_name}`;
@@ -69,35 +74,17 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
       },
       {
-        title: "Калининский",
-        accessor: "b_tmp_kalinin",
-        Filter: BoolFilter,
-        Cell: BoolCell,
-      },
-      {
-        title: "Ленинский",
-        accessor: "b_tmp_lenin",
-        Filter: BoolFilter,
-        Cell: BoolCell,
-      },
-      {
-        title: "Московский",
-        accessor: "b_tmp_moskow",
-        Filter: BoolFilter,
-        Cell: BoolCell,
-      },
-      {
         title: "Изменил",
         accessor: "c_first_name",
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
-        title: "Число квартир",
+        title: "Квартир",
         accessor: "n_premise_count",
-        Filter: StringFilter,
+        Filter: ()=>null,
         Cell: StringCell,
-      },
+      }
     ],
     []
   );
@@ -130,6 +117,7 @@ export const HouseHistoryPanel = () => {
           title="Список домов"
           params={params}
           columns={pd_users}
+          sortBy={[{id: "c_name", desc: false}]}
           action={"cf_tmp_cs_house_unknow"}
           method="Select"
         />

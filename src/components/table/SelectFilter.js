@@ -81,7 +81,7 @@ export function SelectFilter({
   return (
     <Autocomplete
       hidden={hidden}
-      // className={classes.field}
+      className={className}
       noOptionsText="Нет данных"
       loadingText="Загрузка..."
       open={open}

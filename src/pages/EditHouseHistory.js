@@ -238,42 +238,44 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
             <MenuItem value={item.f_uik}>{item.f_uik}</MenuItem>
           ))}
         </TextField>
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              checked={Boolean(values.b_tmp_kalinin)}
-              onChange={handleChange}
-              name="b_tmp_kalinin"
-              disabled={login !== "kalinin"}
-            />
-          }
-          label="Калининский"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              checked={Boolean(values.b_tmp_lenin)}
-              onChange={handleChange}
-              name="b_tmp_lenin"
-              disabled={login !== "lenin"}
-            />
-          }
-          label="Ленинский"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              checked={Boolean(values.b_tmp_moskow)}
-              onChange={handleChange}
-              name="b_tmp_moskow"
-              disabled={login !== "moskow"}
-            />
-          }
-          label="Московский"
-        />
+        <div>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={Boolean(values.b_tmp_kalinin)}
+                onChange={handleChange}
+                name="b_tmp_kalinin"
+                disabled={login !== "kalinin"}
+              />
+            }
+            label="Калининский"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={Boolean(values.b_tmp_lenin)}
+                onChange={handleChange}
+                name="b_tmp_lenin"
+                disabled={login !== "lenin"}
+              />
+            }
+            label="Ленинский"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={Boolean(values.b_tmp_moskow)}
+                onChange={handleChange}
+                name="b_tmp_moskow"
+                disabled={login !== "moskow"}
+              />
+            }
+            label="Московский"
+          />
+        </div>
         <TextField
           margin="dense"
           disabled
@@ -281,7 +283,6 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
           value={values.n_premise_count}
           variant="outlined"
         />
-
         <Button
           type="submit"
           color="primary"

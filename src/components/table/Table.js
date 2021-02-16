@@ -30,11 +30,15 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { Button, TextField } from "@material-ui/core";
 import {
-  Button,
-  TextField,
-} from "@material-ui/core";
-import { ArrowDropDown, ArrowDropUp, Description, Filter, FilterList, LensTwoTone } from "@material-ui/icons";
+  ArrowDropDown,
+  ArrowDropUp,
+  Description,
+  Filter,
+  FilterList,
+  LensTwoTone,
+} from "@material-ui/icons";
 import classNames from "classnames";
 import { EditRowForm } from "./EditRowForm";
 import moment from "moment";
@@ -54,10 +58,10 @@ const useStyles = makeStyles((theme) => ({
   cell: {
     color: theme.palette.common.grey,
     borderColor: theme.palette.common.grey,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    maxWidth: '200px'
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "200px",
   },
   headerTitle: {
     userSelect: "none",
@@ -118,7 +122,8 @@ export const Table = ({
   editable = false,
   selectable = false,
   handleClick = null,
-  editForm
+  editForm,
+  sortBy: innerSortBy = [],
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -183,7 +188,8 @@ export const Table = ({
   } = useTable(
     {
       initialState: {
-        pageSize: 50,
+        sortBy: innerSortBy,
+        pageSize: 10,
       },
       columns,
       data,
@@ -232,6 +238,7 @@ export const Table = ({
     }
   );
 
+  console.log('sortBy', sortBy);
   const classes = useStyles();
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
@@ -247,11 +254,11 @@ export const Table = ({
                 operator: "gt",
               });
             }
-            
+
             if (item.value.finish) {
               _filters.push({
                 property: item.id,
-                value: moment( item.value.finish).toISOString(true),
+                value: moment(item.value.finish).toISOString(true),
                 operator: "lt",
               });
             }
@@ -322,7 +329,15 @@ export const Table = ({
         setData(data);
       }
     );
-  }, [onFetchDataDebounced, pageIndex, pageSize, sortBy, filters, action, params]);
+  }, [
+    onFetchDataDebounced,
+    pageIndex,
+    pageSize,
+    sortBy,
+    filters,
+    action,
+    params,
+  ]);
 
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
@@ -409,7 +424,7 @@ export const Table = ({
           title={"Фильтры"}
           className={classes.iconButton}
           color={filters && filters.length ? "primary" : "black"}
-          onClick={()=>setFilterHidden(!filterHidden)}
+          onClick={() => setFilterHidden(!filterHidden)}
         >
           <FilterListIcon />
         </Button>
@@ -456,35 +471,37 @@ export const Table = ({
               {headers.map((column) => {
                 let filterProps = { hidden: filterHidden };
                 if (column.fieldProps) {
-                  filterProps = Object.assign(filterProps, column.fieldProps)
+                  filterProps = Object.assign(filterProps, column.fieldProps);
                 }
                 if (!selectable && column.id === "selection") {
-                  return null
+                  return null;
                 } else {
-                  return <TableCell {...column.getHeaderProps()}>
-                    <div>
-                      <span
-                        {...column.getSortByToggleProps()}
-                        className={classes.headerTitle}
-                      >
-                        {column.render("Header")}
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <ArrowDropUp />
+                  return (
+                    <TableCell {...column.getHeaderProps()}>
+                      <div>
+                        <span
+                          {...column.getSortByToggleProps()}
+                          className={classes.headerTitle}
+                        >
+                          {column.render("Header")}
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <ArrowDropUp />
+                            ) : (
+                              <ArrowDropDown />
+                            )
                           ) : (
-                            <ArrowDropDown />
-                          )
-                        ) : (
-                          ""
-                        )}
-                      </span>
-                    </div>
-                    <div>
-                      {column.canFilter
-                        ? column.render("Filter", filterProps)
-                        : null}
-                    </div>
-                  </TableCell>
+                            ""
+                          )}
+                        </span>
+                      </div>
+                      <div>
+                        {column.canFilter
+                          ? column.render("Filter", filterProps)
+                          : null}
+                      </div>
+                    </TableCell>
+                  );
                 }
               })}
             </MaterialTableHead>
@@ -499,8 +516,10 @@ export const Table = ({
                     {...row.getRowProps()}
                   >
                     {row.cells.map((cell) => {
+                      const filterProps = cell.column.fieldProps;
+                      debugger;
                       if (!selectable && cell.column.id === "selection") {
-                        return null
+                        return null;
                       } else {
                         return (
                           <TableCell
@@ -512,7 +531,10 @@ export const Table = ({
                             {...cell.getCellProps()}
                             className={classes.cell}
                           >
-                            {cell.render("Cell", { editable: false })}
+                            {cell.render("Cell", {
+                              ...(filterProps || {}),
+                              editable: false,
+                            })}
                           </TableCell>
                         );
                       }
