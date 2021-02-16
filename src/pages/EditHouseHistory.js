@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   formWrapper: {
     margin: theme.spacing(2),
     padding: theme.spacing(2),
-    minWidth: 300,
+    minWidth: 500,
   },
   title: {
     textAlign: "center",
@@ -52,6 +52,7 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
     validateOnBlur: true,
     validationSchema: Yup.object().shape({
       n_uik: Yup.number().integer().required("Не заполнено обязательное поле"),
+      c_house_number: Yup.string().required("Не заполнено обязательное поле"),
       f_subdivision: Yup.number()
         .nullable()
         .integer()
@@ -98,6 +99,7 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
   });
 
   const [subdivisions, setSubdivisions] = useState([]);
+  const [uik, setUik] = useState([]);
 
   useEffect(() => {
     resetForm();
@@ -108,6 +110,32 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
     setValues(innerValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHouse]);
+
+  useEffect(() => {
+    const filter = [];
+    if (values.f_subdivision) {
+      filter.push({
+        property: "f_subdivision",
+        value: values.f_subdivision,
+        operator: "=",
+      });
+    }
+    runRpc({
+      action: "cv_uik_ref",
+      method: "Query",
+      data: [
+        {
+          limit: 1000,
+          sort: [{ property: "f_uik", direction: "asc" }],
+          filter: filter,
+        },
+      ],
+      type: "rpc",
+    }).then((responce) => {
+      setUik(responce.result.records);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.f_subdivision]);
 
   useEffect(() => {
     runRpc({
@@ -193,8 +221,8 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
           disabled={isSubmitting}
           variant="outlined"
         />
-
         <TextField
+          select
           margin="dense"
           label="УИК"
           name="n_uik"
@@ -204,10 +232,16 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
           onChange={handleChange}
           disabled={isSubmitting}
           variant="outlined"
-        />
+        >
+          <MenuItem value={null}>Не выбрано</MenuItem>
+          {uik.map((item) => (
+            <MenuItem value={item.f_uik}>{item.f_uik}</MenuItem>
+          ))}
+        </TextField>
         <FormControlLabel
           control={
             <Checkbox
+              color="primary"
               checked={Boolean(values.b_tmp_kalinin)}
               onChange={handleChange}
               name="b_tmp_kalinin"
@@ -219,6 +253,7 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
         <FormControlLabel
           control={
             <Checkbox
+              color="primary"
               checked={Boolean(values.b_tmp_lenin)}
               onChange={handleChange}
               name="b_tmp_lenin"
@@ -230,6 +265,7 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
         <FormControlLabel
           control={
             <Checkbox
+              color="primary"
               checked={Boolean(values.b_tmp_moskow)}
               onChange={handleChange}
               name="b_tmp_moskow"
@@ -238,6 +274,14 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
           }
           label="Московский"
         />
+        <TextField
+          margin="dense"
+          disabled
+          label="Число квартир"
+          value={values.n_premise_count}
+          variant="outlined"
+        />
+
         <Button
           type="submit"
           color="primary"

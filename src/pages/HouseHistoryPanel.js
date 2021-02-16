@@ -1,12 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { BoolFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, SelectCell, StringCell } from "components/table/Cell";
-import { BoolEditor } from "components/table/Editors";
 import { SelectFilter } from "components/table/SelectFilter";
 import { EditHouseHistory } from "./EditHouseHistory";
-import { Drawer } from "@material-ui/core";
+import { Box, Drawer } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -18,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   table: {
+    height: "100%",
     flex: 1,
   },
 }));
@@ -69,8 +69,32 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
       },
       {
-        title: "Измененил",
+        title: "Калининский",
+        accessor: "b_tmp_kalinin",
+        Filter: BoolFilter,
+        Cell: BoolCell,
+      },
+      {
+        title: "Ленинский",
+        accessor: "b_tmp_lenin",
+        Filter: BoolFilter,
+        Cell: BoolCell,
+      },
+      {
+        title: "Московский",
+        accessor: "b_tmp_moskow",
+        Filter: BoolFilter,
+        Cell: BoolCell,
+      },
+      {
+        title: "Изменил",
         accessor: "c_first_name",
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
+      {
+        title: "Число квартир",
+        accessor: "n_premise_count",
         Filter: StringFilter,
         Cell: StringCell,
       },
@@ -100,7 +124,7 @@ export const HouseHistoryPanel = () => {
         </div>
       )}
       <div className={classes.toolbar} />
-      <div className={classes.table}>
+      <Box height="100%">
         <Table
           handleClick={(cell, row) => setSelectedHouse(row.original)}
           title="Список домов"
@@ -109,7 +133,7 @@ export const HouseHistoryPanel = () => {
           action={"cf_tmp_cs_house_unknow"}
           method="Select"
         />
-      </div>
+      </Box>
     </div>
   );
 };

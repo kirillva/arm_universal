@@ -182,6 +182,9 @@ export const Table = ({
     },
   } = useTable(
     {
+      initialState: {
+        pageSize: 50,
+      },
       columns,
       data,
       defaultColumn,
