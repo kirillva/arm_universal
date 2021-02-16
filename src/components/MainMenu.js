@@ -36,9 +36,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flex: 1,
   },
+  avatar: {
+    maxWidth: 200,
+    textAlign: 'center'
+  },
 }));
 
 export const SimpleMenu = () => {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
 
@@ -54,14 +59,15 @@ export const SimpleMenu = () => {
     <>
       <ListItem
         button
+        className={classes.avatar}
         aria-controls="simple-menu"
         aria-haspopup="true"
         onClick={handleClick}
       >
+        <ListItemText primary={getUsername() || getItem("login")} />
         <ListItemIcon>
-          <AccountCircleIcon />
+          <AccountCircleIcon color="secondary" />
         </ListItemIcon>
-        <ListItemText primary={getUsername() || getItem('login')} />
       </ListItem>
       <Menu
         id="simple-menu"
@@ -84,10 +90,10 @@ export const SimpleMenu = () => {
           key={"/"}
           component={Link}
           to={"/"}
-          onClick={()=> {
+          onClick={() => {
             logout();
             history.push("/");
-            handleClose()
+            handleClose();
           }}
         >
           Выход
@@ -168,7 +174,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
             selected={active}
             onClick={() => mobileOpen && handleDrawerToggle()}
           >
-            <ListItemIcon>{React.createElement(icon)}</ListItemIcon>
+            <ListItemIcon>{React.createElement(icon, { color: "secondary" })}</ListItemIcon>
             <ListItemText primary={title} />
           </ListItem>
         );

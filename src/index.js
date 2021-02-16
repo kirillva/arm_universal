@@ -16,7 +16,7 @@ const outerTheme = createMuiTheme({
       main: '#2196F3',
     },
     secondary: {
-      main: blue[500],
+      main: '#FFFFFF',
     },
     text: {
       main: 'rgba(0, 0, 0, 0.6)',

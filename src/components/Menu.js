@@ -1,5 +1,6 @@
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import MapIcon from '@material-ui/icons/Map';
+import HomeIcon from '@material-ui/icons/Home';
 
 export const menuItems = [
   // {
@@ -94,7 +95,7 @@ export const menuItems = [
       "manager_candidate",
       "division",
     ],
-    icon: AssignmentIcon,
+    icon: HomeIcon,
     path: "/",
     title: "История домов",
   },

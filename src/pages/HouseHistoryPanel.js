@@ -69,7 +69,7 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
       },
       {
-        title: "Изменено",
+        title: "Измененил",
         accessor: "c_first_name",
         Filter: StringFilter,
         Cell: StringCell,
