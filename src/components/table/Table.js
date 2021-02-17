@@ -238,7 +238,6 @@ export const Table = ({
     }
   );
 
-  console.log("sortBy", sortBy);
   const classes = useStyles();
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
@@ -522,7 +521,11 @@ export const Table = ({
                       } else {
                         return (
                           <TableCell
-                            title={cell.value}
+                            title={
+                              cell.column.mapAccessor
+                                ? cell.row.original[cell.column.mapAccessor]
+                                : cell.value
+                            }
                             onClick={
                               editable ? onEdit(cell, row) : onClick(cell, row)
                             }

@@ -166,6 +166,7 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
           Редактирование дома #{values.n_row}
         </Typography>
         <TextField
+          title={values.c_name}
           margin="dense"
           disabled
           label="Улица"
