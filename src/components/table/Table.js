@@ -37,11 +37,16 @@ import {
   Description,
   Filter,
   FilterList,
+  FirstPage,
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  LastPage,
   LensTwoTone,
 } from "@material-ui/icons";
 import classNames from "classnames";
 import { EditRowForm } from "./EditRowForm";
 import moment from "moment";
+import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,7 +105,109 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
   },
+  paginationRoot: {
+    display: "flex",
+    margin: `0 0 0 ${theme.spacing(2)}px`,
+  },
+  gotoPage: {
+    margin: "auto",
+    width: 40,
+    height: 30,
+  },
+  input: {
+    padding: 0,
+    height: 30,
+    textAlign: "center",
+  },
 }));
+
+const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
+  const [error, setError] = useState(null);
+  const classes = useStyles();
+
+  const [targetPage, setTargetPage] = useState(pageIndex + 1);
+  
+  useEffect(() => {
+    const schema = Yup.number().required().nullable().max(pageCount).min(1);
+
+    schema
+      .validate(targetPage)
+      .then(() => setError(null))
+      .catch((err) => setError(err));
+  }, [targetPage]);
+
+  const isValid = error && error.errors.length ? false : true;
+  return (
+    <TextField
+      inputProps={{
+        className: classes.input,
+      }}
+      variant="outlined"
+      value={targetPage}
+      className={classes.gotoPage}
+      onKeyPress={(e) => {
+        if (e.key == "Enter" && isValid) gotoPage(Number(targetPage) - 1);
+      }}
+      onChange={(e) => setTargetPage(e.target.value || "")}
+    />
+  );
+};
+
+function TablePaginationActions(props) {
+  const classes = useStyles();
+  // const theme = useTheme();
+  const {
+    count,
+    page,
+    rowsPerPage,
+    onChangePage,
+    gotoPage,
+  } = props;
+
+  const handleFirstPageButtonClick = (event) => {
+    onChangePage(event, 0);
+  };
+
+  const handleBackButtonClick = (event) => {
+    onChangePage(event, page - 1);
+  };
+
+  const handleNextButtonClick = (event) => {
+    onChangePage(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (event) => {
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <div className={classes.paginationRoot}>
+      <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
+        <FirstPage />
+      </IconButton>
+      <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
+        <KeyboardArrowLeft />
+      </IconButton>
+      <GotoPageField
+        pageIndex={page}
+        pageCount={count}
+        gotoPage={gotoPage}
+      />
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+      >
+        <KeyboardArrowRight />
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+      >
+        <LastPage />
+      </IconButton>
+    </div>
+  );
+}
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -578,6 +685,20 @@ export const Table = ({
           labelDisplayedRows={({ from, to, count }) =>
             `${from}-${to} из ${count}`
           }
+          // ActionsComponent={(...props) => (
+          //   <TablePaginationActions
+          //     {...props}
+          //     //
+          //     //
+          //     //
+          //   />
+          // )}
+          ActionsComponent={(props) => (
+            <TablePaginationActions
+              {...props}
+              gotoPage={gotoPage}
+            />
+          )}
           labelRowsPerPage="Записей на странице:"
           rowsPerPageOptions={[10, 20, 30, 40, 50]}
           component="div"

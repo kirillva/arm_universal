@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   formWrapper: {
     margin: theme.spacing(2),
     padding: theme.spacing(2),
-    minWidth: 500,
+    // minWidth: 500,
   },
   title: {
     flex: 1,
@@ -84,9 +84,10 @@ export const EditHouseHistory = ({
     }),
     initialValues: initialValues,
     onSubmit: async (values) => {
-      const b_tmp_kalinin = login === "kalinin";
-      const b_tmp_lenin = login === "lenin";
-      const b_tmp_moscow = login === "moscow";
+      const b_tmp_kalinin = values.b_tmp_kalinin || login === "kalinin";
+      const b_tmp_lenin = values.b_tmp_lenin || login === "lenin";
+      const b_tmp_moscow = values.b_tmp_moscow || login === "moscow";
+
       const {
         id,
         n_uik,
