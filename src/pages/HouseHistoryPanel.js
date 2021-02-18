@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { BoolFilter, StringFilter } from "components/table/Filters";
-import { BoolCell, NumberCell, SelectCell, StringCell } from "components/table/Cell";
+import {
+  BoolCell,
+  NumberCell,
+  SelectCell,
+  StringCell,
+} from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { EditHouseHistory } from "./EditHouseHistory";
 import { Box, Drawer } from "@material-ui/core";
@@ -21,21 +26,25 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   selectColumn: {
-    width: 250
+    width: 250,
   },
 }));
 
 export const HouseHistoryPanel = () => {
   const classes = useStyles();
-  const [selectedHouse, setSelectedHouse] = useState(false);
+  const [selectedHouse, setSelectedHouse] = useState(null);
   const [params, setParams] = useState([]);
+  const [data, setData] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  console.log("selectedHouse", selectedHouse);
 
   const pd_users = React.useMemo(
     () => [
       {
         title: "#",
         accessor: "n_row",
-        Filter: ()=>null,
+        Filter: () => null,
         Cell: NumberCell,
       },
       {
@@ -49,7 +58,7 @@ export const HouseHistoryPanel = () => {
           nameProperty: "c_name",
           table: "cs_street",
         },
-       
+
         Cell: ({ cell }) => {
           const { c_short_type, c_name } = cell.row.original;
           return `${c_short_type} ${c_name}`;
@@ -88,12 +97,30 @@ export const HouseHistoryPanel = () => {
       {
         title: "Квартир",
         accessor: "n_premise_count",
-        Filter: ()=>null,
+        Filter: () => null,
         Cell: StringCell,
-      }
+      },
     ],
     []
   );
+
+  const next = () => {
+    if (selectedHouse) {
+      var index = data.findIndex((item) => item.id === selectedHouse.id);
+      if (index < data.length) {
+        setSelectedHouse({ ...data[index + 1] });
+      }
+    }
+  };
+
+  const previous = () => {
+    if (selectedHouse) {
+      var index = data.findIndex((item) => item.id === selectedHouse.id);
+      if (index < data.length) {
+        setSelectedHouse({ ...data[index - 1] });
+      }
+    }
+  };
 
   return (
     <div className={classes.content}>
@@ -107,6 +134,9 @@ export const HouseHistoryPanel = () => {
             }}
           >
             <EditHouseHistory
+              next={next}
+              previous={previous}
+              setSelectedHouse={setSelectedHouse}
               selectedHouse={selectedHouse}
               refreshPage={() => {
                 setParams([]);
@@ -123,6 +153,11 @@ export const HouseHistoryPanel = () => {
           title="Список домов"
           params={params}
           columns={pd_users}
+          onLoadData={(_data, total) => {
+            setData(_data);
+            setTotalPages(total);
+          }}
+          pageIndex={pageIndex}
           // sortBy={[{id: "c_name", desc: false}]}
           action={"cf_tmp_cs_house_unknow"}
           method="Select"

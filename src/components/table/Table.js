@@ -123,12 +123,15 @@ export const Table = ({
   selectable = false,
   handleClick = null,
   editForm,
+  onLoadData=()=>{},
+  pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
   const [selectedRow, setSelectedRow] = useState(null);
+
 
   const DefaultColumnFilter = ({ column, className }) => {
     const { filterValue } = column;
@@ -189,6 +192,7 @@ export const Table = ({
     {
       initialState: {
         sortBy: innerSortBy,
+        pageIndex: innerPageIndex,
         pageSize: 10,
       },
       columns,
@@ -326,6 +330,7 @@ export const Table = ({
         setTotal(total);
         setPageCount(pageCount);
         setData(data);
+        onLoadData(data, pageCount);
       }
     );
   }, [

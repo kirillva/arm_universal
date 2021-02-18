@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { getUserId, getItem } from "utils/user";
 import { runRpc } from "utils/rpc";
+import CloseIcon from "@material-ui/icons/Close";
 import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,9 +27,21 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 500,
   },
   title: {
+    flex: 1,
     textAlign: "center",
   },
+  titleWrapper: {
+    display: "flex",
+  },
 }));
+
+const LEFT = 37;
+const RIGHT = 39;
+const TOP = 38;
+const DOWN = 40;
+const SPACE = 32;
+
+
 const initialValues = {
   f_subdivision: null,
   c_house_number: "",
@@ -38,7 +51,13 @@ const initialValues = {
   b_disabled: false,
   f_house: null,
 };
-export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
+export const EditHouseHistory = ({
+  selectedHouse,
+  setSelectedHouse,
+  refreshPage,
+  next,
+  previous,
+}) => {
   const login = getItem("login");
 
   const {
@@ -50,6 +69,7 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
     setValues,
     errors,
     resetForm,
+    submitForm,
   } = useFormik({
     validateOnBlur: true,
     validationSchema: Yup.object().shape({
@@ -157,14 +177,65 @@ export const EditHouseHistory = ({ selectedHouse, refreshPage }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+  function keyDownTextField(e) {
+    var keyCode = e.keyCode;
+
+    if (selectedHouse) {
+      switch (keyCode) {
+        case LEFT:
+          previous();
+          break;
+
+        case RIGHT:
+          next();
+          break;
+
+        case TOP:
+          previous();
+          break;
+
+        case DOWN:
+          next();
+          break;
+
+        case SPACE:
+          submitForm();
+          next();
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+
+  useEffect(() => {
+    global.document.addEventListener("keydown", keyDownTextField, false);
+    return () => {
+      global.document.removeEventListener("keydown", keyDownTextField, false);
+    };
+  }, []);
+
   const classes = useStyles();
 
   return (
     <Paper className={classes.formWrapper}>
       <form className={classes.form} onSubmit={handleSubmit}>
-        <Typography variant="h6" className={classes.title}>
-          Редактирование дома #{values.n_row}
-        </Typography>
+        <div className={classes.titleWrapper}>
+          <Typography variant="h6" className={classes.title}>
+            Редактирование дома #{values.n_row}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={isSubmitting}
+            onClick={() => setSelectedHouse(null)}
+          >
+            <CloseIcon />
+          </Button>
+        </div>
+
         <TextField
           title={values.c_name}
           margin="dense"
