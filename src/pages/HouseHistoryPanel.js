@@ -51,6 +51,10 @@ export const HouseHistoryPanel = () => {
         accessor: "n_row",
         Filter: () => null,
         Cell: NumberCell,
+        style: {
+          textAlign: 'center',
+          width: '30px'
+        }
       },
       {
         title: "Улица",
@@ -80,30 +84,50 @@ export const HouseHistoryPanel = () => {
         },
         Filter: SelectFilter,
         Cell: SelectCell,
+        style: {
+          textAlign: 'center',
+          width: '150px'
+        }
       },
       {
         title: "УИК",
         accessor: "n_uik",
         Filter: StringFilter,
         Cell: StringCell,
+        style: {
+          textAlign: 'center',
+          width: '30px'
+        }
       },
       {
         title: "Номер",
         accessor: "c_full_number",
         Filter: StringFilter,
         Cell: StringCell,
+        style: {
+          textAlign: 'center',
+          width: '30px'
+        }
       },
       {
         title: "Изменил",
         accessor: "c_first_name",
         Filter: StringFilter,
         Cell: StringCell,
+        style: {
+          textAlign: 'center',
+          width: '30px'
+        }
       },
       {
         title: "Квартир",
         accessor: "n_premise_count",
         Filter: () => null,
         Cell: StringCell,
+        style: {
+          textAlign: 'center',
+          width: '30px'
+        }
       },
     ],
     []

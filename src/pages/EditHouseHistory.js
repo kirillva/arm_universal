@@ -71,11 +71,14 @@ export const EditHouseHistory = ({
     submitForm,
     validateForm,
     setFieldValue,
-    isValid
+    isValid,
   } = useFormik({
     validateOnBlur: true,
     validationSchema: Yup.object().shape({
-      n_uik: Yup.number().integer().nullable().required("Не заполнено обязательное поле"),
+      n_uik: Yup.number()
+        .integer()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
       c_house_number: Yup.string().required("Не заполнено обязательное поле"),
       f_subdivision: Yup.number()
         .nullable()
@@ -254,8 +257,8 @@ export const EditHouseHistory = ({
           value={Number(values.f_subdivision)}
           error={errors.f_subdivision}
           helperText={errors.f_subdivision}
-          onChange={(...props)=>{
-            setFieldValue('n_uik', null);
+          onChange={(...props) => {
+            setFieldValue("n_uik", null);
             handleChange(...props);
           }}
           disabled={isSubmitting}
@@ -361,7 +364,7 @@ export const EditHouseHistory = ({
           variant="outlined"
         />
         <Button
-          onClick={()=>{
+          onClick={() => {
             validateForm();
             if (isValid) {
               submitForm();
@@ -372,6 +375,14 @@ export const EditHouseHistory = ({
           disabled={isSubmitting}
         >
           Сохранить
+        </Button>
+        <Button
+          onClick={() => setSelectedHouse(null)}
+          color="primary"
+          variant="outlined"
+          disabled={isSubmitting}
+        >
+          Отмена
         </Button>
       </form>
     </Paper>

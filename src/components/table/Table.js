@@ -158,7 +158,15 @@ const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
 function TablePaginationActions(props) {
   const classes = useStyles();
   // const theme = useTheme();
-  const { count, page, rowsPerPage, onChangePage, gotoPage, loadData, loading } = props;
+  const {
+    count,
+    page,
+    rowsPerPage,
+    onChangePage,
+    gotoPage,
+    loadData,
+    loading,
+  } = props;
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -601,7 +609,7 @@ export const Table = ({
                   return null;
                 } else {
                   return (
-                    <TableCell {...column.getHeaderProps()}>
+                    <TableCell style={column.style || {}} {...column.getHeaderProps()}>
                       <div>
                         <span
                           // {...column.getSortByToggleProps()}
@@ -664,6 +672,7 @@ export const Table = ({
                               align="left"
                               {...cell.getCellProps()}
                               className={classes.cell}
+                              style={cell.column.style || {}}
                             >
                               {cell.render("Cell", {
                                 ...(filterProps || {}),
