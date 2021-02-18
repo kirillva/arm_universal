@@ -52,9 +52,7 @@ export const EditStreet = ({ id, refreshPage }) => {
       }).then((responce) => {
         refreshPage();
         setSubmitting(false);
-        console.log(responce.result.records);
       });
-      console.log({ ...values, f_user: getUserId() });
     },
   });
 

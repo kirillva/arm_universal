@@ -54,7 +54,6 @@ export const AddStreet = ({ refreshPage }) => {
       }).then((responce) => {
         refreshPage();
         setSubmitting(false);
-        console.log(responce.result.records);
       });
     },
   });

@@ -41,7 +41,6 @@ const TOP = 38;
 const DOWN = 40;
 const SPACE = 32;
 
-
 const initialValues = {
   f_subdivision: null,
   c_house_number: "",
@@ -177,7 +176,6 @@ export const EditHouseHistory = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   function keyDownTextField(e) {
     var keyCode = e.keyCode;
 
@@ -215,7 +213,7 @@ export const EditHouseHistory = ({
     return () => {
       global.document.removeEventListener("keydown", keyDownTextField, false);
     };
-  }, []);
+  }, [selectedHouse]);
 
   const classes = useStyles();
 

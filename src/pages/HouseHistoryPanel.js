@@ -10,7 +10,7 @@ import {
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { EditHouseHistory } from "./EditHouseHistory";
-import { Box, Drawer } from "@material-ui/core";
+import { Box, Button, Drawer } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -37,7 +37,6 @@ export const HouseHistoryPanel = () => {
   const [data, setData] = useState([]);
   const [pageIndex, setPageIndex] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  console.log("selectedHouse", selectedHouse);
 
   const pd_users = React.useMemo(
     () => [
@@ -108,7 +107,7 @@ export const HouseHistoryPanel = () => {
     if (selectedHouse) {
       var index = data.findIndex((item) => item.id === selectedHouse.id);
       if (index < data.length) {
-        setSelectedHouse({ ...data[index + 1] });
+        setSelectedHouse(data[index + 1]);
       }
     }
   };
@@ -116,14 +115,15 @@ export const HouseHistoryPanel = () => {
   const previous = () => {
     if (selectedHouse) {
       var index = data.findIndex((item) => item.id === selectedHouse.id);
-      if (index < data.length) {
-        setSelectedHouse({ ...data[index - 1] });
+      if (index > 0) {
+        setSelectedHouse(data[index - 1]);
       }
     }
   };
 
   return (
     <div className={classes.content}>
+      <div className={classes.toolbar} />
       {selectedHouse && (
         <div className={classes.text}>
           <Drawer
@@ -146,7 +146,6 @@ export const HouseHistoryPanel = () => {
           </Drawer>
         </div>
       )}
-      <div className={classes.toolbar} />
       <Box height="100%">
         <Table
           handleClick={(cell, row) => setSelectedHouse(row.original)}

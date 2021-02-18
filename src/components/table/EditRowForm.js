@@ -36,7 +36,6 @@ export const EditRowForm = ({
       record[item.accessor] = values[item.accessor];
     });
     record[idProperty] = values[idProperty];
-    console.log("record", record);
     // runRpc({
     //   action: action,
     //   method: "Update",
