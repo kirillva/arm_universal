@@ -183,44 +183,44 @@ export const EditHouseHistory = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function keyDownTextField(e) {
-    var keyCode = e.keyCode;
+  // function keyDownTextField(e) {
+  //   var keyCode = e.keyCode;
 
-    if (selectedHouse) {
-      switch (keyCode) {
-        case LEFT:
-          previous();
-          break;
+  //   if (selectedHouse) {
+  //     switch (keyCode) {
+  //       case LEFT:
+  //         previous();
+  //         break;
 
-        case RIGHT:
-          next();
-          break;
+  //       case RIGHT:
+  //         next();
+  //         break;
 
-        case TOP:
-          previous();
-          break;
+  //       case TOP:
+  //         previous();
+  //         break;
 
-        case DOWN:
-          next();
-          break;
+  //       case DOWN:
+  //         next();
+  //         break;
 
-        // case SPACE:
-        //   submitForm();
-        //   // next();
-        //   break;
+  //       // case SPACE:
+  //       //   submitForm();
+  //       //   // next();
+  //       //   break;
 
-        default:
-          break;
-      }
-    }
-  }
+  //       default:
+  //         break;
+  //     }
+  //   }
+  // }
 
-  useEffect(() => {
-    global.document.addEventListener("keydown", keyDownTextField, false);
-    return () => {
-      global.document.removeEventListener("keydown", keyDownTextField, false);
-    };
-  }, [selectedHouse]);
+  // useEffect(() => {
+  //   global.document.addEventListener("keydown", keyDownTextField, false);
+  //   return () => {
+  //     global.document.removeEventListener("keydown", keyDownTextField, false);
+  //   };
+  // }, [selectedHouse]);
 
   const classes = useStyles();
 
@@ -231,14 +231,14 @@ export const EditHouseHistory = ({
           <Typography variant="h6" className={classes.title}>
             Редактирование дома #{values.n_row}
           </Typography>
-          <Button
+          {/* <Button
             color="primary"
             variant="contained"
             disabled={isSubmitting}
             onClick={() => setSelectedHouse(null)}
           >
             <CloseIcon />
-          </Button>
+          </Button> */}
         </div>
 
         <TextField
