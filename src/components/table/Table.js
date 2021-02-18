@@ -30,7 +30,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button, TextField } from "@material-ui/core";
+import { Button, CircularProgress, TextField } from "@material-ui/core";
 import {
   ArrowDropDown,
   ArrowDropUp,
@@ -92,6 +92,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     backgroundColor: lighten(theme.palette.primary.main, 0.85),
   },
+  progress: {
+    margin: "auto",
+  },
+  progressWrapper: {
+    height: 100,
+    display: "flex",
+    alignItems: "center",
+  },
 }));
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -123,7 +131,8 @@ export const Table = ({
   selectable = false,
   handleClick = null,
   editForm,
-  onLoadData=()=>{},
+  className,
+  onLoadData = () => {},
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
 }) => {
@@ -131,7 +140,7 @@ export const Table = ({
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
   const [selectedRow, setSelectedRow] = useState(null);
-
+  const [loading, setLoading] = useState(false);
 
   const DefaultColumnFilter = ({ column, className }) => {
     const { filterValue } = column;
@@ -297,7 +306,7 @@ export const Table = ({
       if (select) {
         data.select = select;
       }
-
+      setLoading(true);
       runRpc({
         action: action,
         method: method,
@@ -306,12 +315,14 @@ export const Table = ({
       }).then((responce) => {
         if (responce.meta && responce.meta.success) {
           const _records = responce.result.records;
+          setLoading(false);
           resolve({
             total: responce.result.total,
             pageCount: Math.ceil(responce.result.total / pageSize),
             data: _records,
           });
         } else {
+          setLoading(false);
           resolve({
             total: 0,
             pageCount: 0,
@@ -462,7 +473,10 @@ export const Table = ({
           classes={classes}
           numSelected={Object.keys(selectedRowIds).length}
         />
-        <TableContainer {...getTableProps()} className={classes.container}>
+        <TableContainer
+          {...getTableProps()}
+          className={classNames(classes.container, className)}
+        >
           <MaterialTable
             stickyHeader
             {...getTableBodyProps()}
@@ -509,47 +523,55 @@ export const Table = ({
                 }
               })}
             </MaterialTableHead>
-            <TableBody>
-              {page.map((row) => {
-                prepareRow(row);
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    {...row.getRowProps()}
-                  >
-                    {row.cells.map((cell) => {
-                      const filterProps = cell.column.fieldProps;
-                      if (!selectable && cell.column.id === "selection") {
-                        return null;
-                      } else {
-                        return (
-                          <TableCell
-                            title={
-                              cell.column.mapAccessor
-                                ? cell.row.original[cell.column.mapAccessor]
-                                : cell.value
-                            }
-                            onClick={
-                              editable ? onEdit(cell, row) : onClick(cell, row)
-                            }
-                            align="left"
-                            {...cell.getCellProps()}
-                            className={classes.cell}
-                          >
-                            {cell.render("Cell", {
-                              ...(filterProps || {}),
-                              editable: false,
-                            })}
-                          </TableCell>
-                        );
-                      }
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
+            {loading ? (
+              <div className={classes.progressWrapper}>
+                <CircularProgress className={classes.progress} />
+              </div>
+            ) : (
+              <TableBody>
+                {page.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      {...row.getRowProps()}
+                    >
+                      {row.cells.map((cell) => {
+                        const filterProps = cell.column.fieldProps;
+                        if (!selectable && cell.column.id === "selection") {
+                          return null;
+                        } else {
+                          return (
+                            <TableCell
+                              title={
+                                cell.column.mapAccessor
+                                  ? cell.row.original[cell.column.mapAccessor]
+                                  : cell.value
+                              }
+                              onClick={
+                                editable
+                                  ? onEdit(cell, row)
+                                  : onClick(cell, row)
+                              }
+                              align="left"
+                              {...cell.getCellProps()}
+                              className={classes.cell}
+                            >
+                              {cell.render("Cell", {
+                                ...(filterProps || {}),
+                                editable: false,
+                              })}
+                            </TableCell>
+                          );
+                        }
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            )}
           </MaterialTable>
         </TableContainer>
         <TablePagination

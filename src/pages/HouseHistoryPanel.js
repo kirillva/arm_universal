@@ -22,11 +22,17 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   table: {
-    height: "100%",
+    maxHeight: 440,
     flex: 1,
   },
   selectColumn: {
     width: 250,
+  },
+  drawer: {
+    maxWidth: 700,
+    minWidth: 500,
+    overflowX: 'hidden',
+    width: "50%",
   },
 }));
 
@@ -127,7 +133,10 @@ export const HouseHistoryPanel = () => {
       {selectedHouse && (
         <div className={classes.text}>
           <Drawer
-            anchor={"right"}
+            PaperProps={{
+              className: classes.drawer,
+            }}
+            anchor="right"
             open={Boolean(selectedHouse)}
             onClose={() => {
               setSelectedHouse(null);
@@ -148,6 +157,7 @@ export const HouseHistoryPanel = () => {
       )}
       <Box height="100%">
         <Table
+          className={classes.table}
           handleClick={(cell, row) => setSelectedHouse(row.original)}
           title="Список домов"
           params={params}
@@ -157,7 +167,6 @@ export const HouseHistoryPanel = () => {
             setTotalPages(total);
           }}
           pageIndex={pageIndex}
-          // sortBy={[{id: "c_name", desc: false}]}
           action={"cf_tmp_cs_house_unknow"}
           method="Select"
         />

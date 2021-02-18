@@ -48,7 +48,6 @@ const BreadcrumbsComponent = ({
       type: "reduxForm/setBreadcrumbs",
       breadcrumbs,
     });
-    console.log('breadcrumbs', breadcrumbs);
   };
 
   const onSelectContainer = () => {
@@ -56,7 +55,6 @@ const BreadcrumbsComponent = ({
       type: "reduxForm/setBreadcrumbs",
       breadcrumbs,
     });
-    console.log('breadcrumbs', breadcrumbs);
   };
 
   const addContainer = () => {

@@ -69,10 +69,13 @@ export const EditHouseHistory = ({
     errors,
     resetForm,
     submitForm,
+    validateForm,
+    setFieldValue,
+    isValid
   } = useFormik({
     validateOnBlur: true,
     validationSchema: Yup.object().shape({
-      n_uik: Yup.number().integer().required("Не заполнено обязательное поле"),
+      n_uik: Yup.number().integer().nullable().required("Не заполнено обязательное поле"),
       c_house_number: Yup.string().required("Не заполнено обязательное поле"),
       f_subdivision: Yup.number()
         .nullable()
@@ -80,10 +83,10 @@ export const EditHouseHistory = ({
         .required("Не заполнено обязательное поле"),
     }),
     initialValues: initialValues,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const b_tmp_kalinin = login === "kalinin";
       const b_tmp_lenin = login === "lenin";
-      const b_tmp_moskow = login === "moskow";
+      const b_tmp_moscow = login === "moscow";
       const {
         id,
         n_uik,
@@ -107,7 +110,7 @@ export const EditHouseHistory = ({
               c_house_litera,
               b_tmp_kalinin,
               b_tmp_lenin,
-              b_tmp_moskow,
+              b_tmp_moscow,
             ],
           },
         ],
@@ -197,10 +200,10 @@ export const EditHouseHistory = ({
           next();
           break;
 
-        case SPACE:
-          submitForm();
-          next();
-          break;
+        // case SPACE:
+        //   submitForm();
+        //   // next();
+        //   break;
 
         default:
           break;
@@ -250,7 +253,10 @@ export const EditHouseHistory = ({
           value={Number(values.f_subdivision)}
           error={errors.f_subdivision}
           helperText={errors.f_subdivision}
-          onChange={handleChange}
+          onChange={(...props)=>{
+            setFieldValue('n_uik', null);
+            handleChange(...props);
+          }}
           disabled={isSubmitting}
           variant="outlined"
         >
@@ -338,9 +344,8 @@ export const EditHouseHistory = ({
             control={
               <Checkbox
                 color="primary"
-                checked={Boolean(values.b_tmp_moskow)}
+                checked={Boolean(values.b_tmp_moscow)}
                 onChange={handleChange}
-                // name="b_tmp_moskow"
                 disabled={true}
               />
             }
@@ -355,7 +360,12 @@ export const EditHouseHistory = ({
           variant="outlined"
         />
         <Button
-          type="submit"
+          onClick={()=>{
+            validateForm();
+            if (isValid) {
+              submitForm();
+            }
+          }}
           color="primary"
           variant="contained"
           disabled={isSubmitting}
