@@ -42,6 +42,7 @@ import {
   KeyboardArrowRight,
   LastPage,
   LensTwoTone,
+  Refresh,
 } from "@material-ui/icons";
 import classNames from "classnames";
 import { EditRowForm } from "./EditRowForm";
@@ -67,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     textOverflow: "ellipsis",
     maxWidth: "200px",
+    borderLeft: "1px solid #e0e0e0",
   },
   headerTitle: {
     userSelect: "none",
@@ -126,7 +128,7 @@ const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
   const classes = useStyles();
 
   const [targetPage, setTargetPage] = useState(pageIndex + 1);
-  
+
   useEffect(() => {
     const schema = Yup.number().required().nullable().max(pageCount).min(1);
 
@@ -156,13 +158,7 @@ const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
 function TablePaginationActions(props) {
   const classes = useStyles();
   // const theme = useTheme();
-  const {
-    count,
-    page,
-    rowsPerPage,
-    onChangePage,
-    gotoPage,
-  } = props;
+  const { count, page, rowsPerPage, onChangePage, gotoPage, loadData, loading } = props;
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -182,17 +178,16 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.paginationRoot}>
+      <IconButton onClick={loadData} disabled={loading}>
+        <Refresh />
+      </IconButton>
       <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
         <FirstPage />
       </IconButton>
       <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
         <KeyboardArrowLeft />
       </IconButton>
-      <GotoPageField
-        pageIndex={page}
-        pageCount={count}
-        gotoPage={gotoPage}
-      />
+      <GotoPageField pageIndex={page} pageCount={count} gotoPage={gotoPage} />
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
@@ -442,7 +437,7 @@ export const Table = ({
 
   const onFetchDataDebounced = useAsyncDebounce(onFetchData, 100);
 
-  useEffect(() => {
+  const loadData = () => {
     onFetchDataDebounced({ pageIndex, pageSize, sortBy, filters, action }).then(
       ({ total, pageCount, data }) => {
         setTotal(total);
@@ -451,6 +446,10 @@ export const Table = ({
         onLoadData(data, pageCount);
       }
     );
+  };
+
+  useEffect(() => {
+    loadData();
   }, [
     onFetchDataDebounced,
     pageIndex,
@@ -685,18 +684,12 @@ export const Table = ({
           labelDisplayedRows={({ from, to, count }) =>
             `${from}-${to} из ${count}`
           }
-          // ActionsComponent={(...props) => (
-          //   <TablePaginationActions
-          //     {...props}
-          //     //
-          //     //
-          //     //
-          //   />
-          // )}
           ActionsComponent={(props) => (
             <TablePaginationActions
               {...props}
               gotoPage={gotoPage}
+              loadData={loadData}
+              loading={loading}
             />
           )}
           labelRowsPerPage="Записей на странице:"
