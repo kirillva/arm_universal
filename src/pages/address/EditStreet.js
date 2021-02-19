@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(1),
   },
   formWrapper: {
-    marginBottom: theme.spacing(1),
+    margin: theme.spacing(2),
     padding: theme.spacing(2),
     minWidth: 300,
   },
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditStreet = ({ id, refreshPage }) => {
+export const EditStreet = ({ id, refreshPage, street }) => {
   const {
     handleSubmit,
     handleChange,
@@ -42,6 +42,7 @@ export const EditStreet = ({ id, refreshPage }) => {
       c_name: "",
       c_type: "",
       c_short_type: "",
+      b_disabled: false
     },
     onSubmit: (values) => {
       runRpc({
@@ -57,27 +58,9 @@ export const EditStreet = ({ id, refreshPage }) => {
   });
 
   useEffect(() => {
-    runRpc({
-      action: "cs_street",
-      method: "Query",
-      data: [
-        {
-          filter: [
-            {
-              property: "id",
-              value: id,
-              operator: "=",
-            },
-          ],
-          limit: 1,
-        },
-      ],
-      type: "rpc",
-    }).then(responce=>{
-      setValues(responce.result.records[0]);
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+    street && setValues(street);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [street]);
 
   const classes = useStyles();
   return (

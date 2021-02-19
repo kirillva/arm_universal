@@ -50,12 +50,6 @@ export const routeItems = [
   // {
   //   claims: ["manager"],
   //   exact: true,
-  //   path: "/address",
-  //   component: AddressPanel,
-  // },
-  // {
-  //   claims: ["manager"],
-  //   exact: true,
   //   path: "/voters",
   //   component: VoterSearchForm,
   // },
@@ -65,16 +59,22 @@ export const routeItems = [
   //   path: "/votersList",
   //   component: VotersList,
   // },
-  // {
-  //   claims: ["manager"],
-  //   exact: false,
-  //   path: "/streetDetail",
-  //   component: StreetDetailTable,
-  // },
   {
     claims: ["manager"],
     exact: false,
     path: "/",
     component: HouseHistoryPanel,
-  }
+  },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/address",
+    component: AddressPanel,
+  },
+  {
+    claims: ["manager"],
+    exact: false,
+    path: "/streetDetail",
+    component: StreetDetailTable,
+  },
 ];

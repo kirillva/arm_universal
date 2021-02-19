@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(1),
   },
   formWrapper: {
-    marginBottom: theme.spacing(1),
+    margin: theme.spacing(2),
     padding: theme.spacing(2),
     minWidth: 300,
   },
@@ -117,7 +117,7 @@ export const AddHouse = ({ street, refreshPage }) => {
             nameProperty: "c_name",
             table: "sd_subdivisions",
           }}
-          label="Округ"
+          label="Округ ЧГСД"
           mapAccessor="c_subdivision"
           // value={values.f_subdivision}
           setFieldValue={setFieldValue}

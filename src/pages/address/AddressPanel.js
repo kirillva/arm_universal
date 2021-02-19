@@ -100,9 +100,9 @@ export const AddressPanel = () => {
       <div className={classes.toolbar} />
       <div className={classes.table}>
         <div className={classes.innerContent}>
-          <div className={classes.formWrapper}>
+          {/* <div className={classes.formWrapper}>
             <AddStreet refreshPage={() => setParams([getUserId()])} />
-          </div>
+          </div> */}
           <Table
             title={"Улицы"}
             handleClick={(cell, row) =>

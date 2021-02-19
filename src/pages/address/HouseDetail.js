@@ -142,27 +142,20 @@ export const HouseDetail = ({
   }, [selectedHouse]);
 
   return (
-    <Drawer
-      anchor={"right"}
-      open={Boolean(street && selectedHouse)}
-      onClose={() => {
-        setSelectedHouse(null);
-      }}
-    >
-      <div className={classes.drawer}>
-        {selectedHouse && (
-          <div className={classes.text}>
-            {/* <Typography>
+    <div className={classes.drawer}>
+      {selectedHouse && (
+        <div className={classes.text}>
+          {/* <Typography>
               {c_short_type} {c_name} {c_full_number}
             </Typography> */}
-            <EditHouse
-              id={id}
-              refreshPage={() => {
-                refreshTable();
-                setSelectedHouse(null);
-              }}
-            />
-            {/* <Button
+          <EditHouse
+            id={id}
+            refreshPage={() => {
+              refreshTable();
+              setSelectedHouse(null);
+            }}
+          />
+          {/* <Button
               className={classes.button}
               // disabled={!Boolean(appartamentNumber) || error}
               color="primary"
@@ -187,79 +180,79 @@ export const HouseDetail = ({
             >
               {b_disabled ? "Включить" : "Выключить"}
             </Button> */}
-          </div>
-        )}
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <>
-            <div className={classes.newHouse}>
-              <TextField
-                error={error}
-                helperText={error}
-                variant="outlined"
-                value={appartamentNumber}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const item = appartament.find(
-                    (item) => item.c_number === value
-                  );
-                  if (item) {
-                    setError(`Квартира ${value} уже существует`);
-                  } else {
-                    setError(null);
-                  }
-                  setAppartamentNumber(value);
-                }}
-                label="Номер квартиры"
-              />
-              <Button
-                className={classes.button}
-                disabled={!Boolean(appartamentNumber) || error}
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  // setLoading(true);
-                  runRpc({
-                    action: "cs_appartament",
-                    method: "Add",
-                    data: [
-                      {
-                        c_number: appartamentNumber,
-                        n_number: Number.parseInt(appartamentNumber),
-                        f_house: selectedHouse.id,
-                        b_off_range: false,
-                      },
-                    ],
-                    type: "rpc",
-                  })
-                    .then(() => {
-                      // setLoading(false);
-                      loadData();
-                      setAppartamentNumber("");
-                    })
-                    .catch((e) => {
-                      // setLoading(false);
-                      setAppartamentNumber("");
-                    });
-                }}
-              >
-                Добавить
-              </Button>
-            </div>
-            <div className={classes.grid}>
-              {appartament.map((item) => {
-                return (
-                  <Paper className={classes.paper} elevation={3}>
-                    <div className={classes.textPaper}>{item.c_number}</div>
-                  </Paper>
+        </div>
+      )}
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <div className={classes.newHouse}>
+            <TextField
+              error={error}
+              helperText={error}
+              variant="outlined"
+              value={appartamentNumber}
+              onChange={(e) => {
+                const value = e.target.value;
+                const item = appartament.find(
+                  (item) => item.c_number === value
                 );
-              })}
-            </div>
-          </>
-        )}
+                if (item) {
+                  setError(`Квартира ${value} уже существует`);
+                } else {
+                  setError(null);
+                }
+                setAppartamentNumber(value);
+              }}
+              label="Номер квартиры"
+            />
+            <Button
+              className={classes.button}
+              disabled={!Boolean(appartamentNumber) || error}
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                // setLoading(true);
+                runRpc({
+                  action: "cs_appartament",
+                  method: "Add",
+                  data: [
+                    {
+                      c_number: appartamentNumber,
+                      n_number: Number.parseInt(appartamentNumber),
+                      f_house: selectedHouse.id,
+                      b_off_range: false,
+                    },
+                  ],
+                  type: "rpc",
+                })
+                  .then(() => {
+                    // setLoading(false);
+                    loadData();
+                    setAppartamentNumber("");
+                  })
+                  .catch((e) => {
+                    // setLoading(false);
+                    setAppartamentNumber("");
+                  });
+              }}
+            >
+              Добавить
+            </Button>
+          </div>
+          <div className={classes.grid}>
+            {appartament.map((item) => {
+              return (
+                <Paper className={classes.paper} elevation={3}>
+                  <div className={classes.textPaper}>{item.c_number}</div>
+                </Paper>
+              );
+            })}
+          </div>
+        </>
+      )}
 
-        {/* <List>
+      {/* <List>
           <Typography className={classes.text}>Избиратели</Typography>
           {!houseInfoLoading ? (
             houseInfo && houseInfo.length ? (
@@ -301,7 +294,6 @@ export const HouseDetail = ({
             <CircularProgress className={classes.progress} />
           )}
         </List> */}
-      </div>
-    </Drawer>
+    </div>
   );
 };

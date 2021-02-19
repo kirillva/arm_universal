@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     maxWidth: 200,
-    textAlign: 'center'
+    textAlign: "center",
   },
 }));
 
@@ -84,6 +84,32 @@ export const SimpleMenu = () => {
           onClick={handleClose}
         >
           Профиль
+        </MenuItem> */}
+        {/* <MenuItem
+          button
+          key={"/"}
+          component={Link}
+          to={"/"}
+          onClick={() => {
+            logout();
+            history.push("/");
+            handleClose();
+          }}
+        >
+          I этап
+        </MenuItem>
+        <MenuItem
+          button
+          key={"/address"}
+          component={Link}
+          to={"/address"}
+          onClick={() => {
+            logout();
+            history.push("/");
+            handleClose();
+          }}
+        >
+          II этап
         </MenuItem> */}
         <MenuItem
           button
@@ -174,7 +200,9 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
             selected={active}
             onClick={() => mobileOpen && handleDrawerToggle()}
           >
-            <ListItemIcon>{React.createElement(icon, { color: "secondary" })}</ListItemIcon>
+            <ListItemIcon>
+              {React.createElement(icon, { color: "secondary" })}
+            </ListItemIcon>
             <ListItemText primary={title} />
           </ListItem>
         );

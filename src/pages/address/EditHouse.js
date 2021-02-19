@@ -128,7 +128,7 @@ export const EditHouse = ({ id, refreshPage }) => {
             nameProperty: "c_name",
             table: "sd_subdivisions",
           }}
-          label="Округ"
+          label="Округ ЧГСД"
           mapAccessor="c_subdivision"
           value={values.f_subdivision}
           setFieldValue={setFieldValue}
