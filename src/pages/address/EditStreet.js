@@ -20,11 +20,18 @@ const useStyles = makeStyles((theme) => ({
   formWrapper: {
     margin: theme.spacing(2),
     padding: theme.spacing(2),
-    minWidth: 300,
+    // minWidth: 300,
   },
   title: {
     textAlign: "center",
   },
+  fieldWrapper: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",      
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  }
 }));
 
 export const EditStreet = ({ id, refreshPage, street }) => {
@@ -42,7 +49,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
       c_name: "",
       c_type: "",
       c_short_type: "",
-      b_disabled: false
+      b_disabled: false,
     },
     onSubmit: (values) => {
       runRpc({
@@ -69,46 +76,56 @@ export const EditStreet = ({ id, refreshPage, street }) => {
         <Typography variant="h6" className={classes.title}>
           Изменить улицу
         </Typography>
-        <TextField
-          error={errors.c_type}
-          helperText={errors.c_type}
-          label="Тип"
-          name="c_type"
-          value={values.c_type}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          error={errors.c_short_type}
-          helperText={errors.c_short_type}
-          label="Краткий тип"
-          name="c_short_type"
-          value={values.c_short_type}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          error={errors.c_name}
-          helperText={errors.c_name}
-          label="Название"
-          name="c_name"
-          value={values.c_name}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <BoolEditor
-          error={errors.b_disabled}
-          helperText={errors.b_disabled}
-          label="Выключено"
-          name="b_disabled"
-          value={values.b_disabled}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
+        <div className={classes.fieldWrapper}>
+          <TextField
+            size="small"
+            margin="none"
+            error={errors.c_type}
+            helperText={errors.c_type}
+            label="Тип"
+            name="c_type"
+            value={values.c_type}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            size="small"
+            margin="none"
+            error={errors.c_short_type}
+            helperText={errors.c_short_type}
+            label="Краткий тип"
+            name="c_short_type"
+            value={values.c_short_type}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            size="small"
+            margin="none"
+            error={errors.c_name}
+            helperText={errors.c_name}
+            label="Название"
+            name="c_name"
+            value={values.c_name}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <BoolEditor
+            size="small"
+            margin="none"
+            error={errors.b_disabled}
+            helperText={errors.b_disabled}
+            label="Выключено"
+            name="b_disabled"
+            value={values.b_disabled}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+        </div>
         <Button
           type="submit"
           color="primary"

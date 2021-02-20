@@ -44,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: "auto 0 auto auto",
   },
+  drawer: {
+    maxWidth: 700,
+    minWidth: 500,
+    overflowX: 'hidden',
+    width: "50%",
+  },
 }));
 
 const EDIT_STREET = "EDIT_STREET";
@@ -65,6 +71,12 @@ export const StreetDetailTable = () => {
 
   const cs_house = React.useMemo(
     () => [
+      {
+        title: "УИК",
+        Filter: StringFilter,
+        Cell: StringCell,
+        accessor: "n_uik",
+      },
       {
         title: "Улица",
         Filter: StringFilter,
@@ -99,18 +111,12 @@ export const StreetDetailTable = () => {
         Cell: BoolCell,
         accessor: "b_disabled",
       },
-      {
-        title: "Причина",
-        Filter: StringFilter,
-        Cell: StringCell,
-        accessor: "c_disabled",
-      },
-      {
-        title: "УИК",
-        Filter: StringFilter,
-        Cell: StringCell,
-        accessor: "n_uik",
-      },
+      // {
+      //   title: "Причина",
+      //   Filter: StringFilter,
+      //   Cell: StringCell,
+      //   accessor: "c_disabled",
+      // },
       {
         title: "Автор",
         Filter: StringFilter,
@@ -155,23 +161,27 @@ export const StreetDetailTable = () => {
           <Typography variant="h6">
             Улица: {street ? street.c_name : ""}
           </Typography>
-          <Button
+          {/* <Button
             className={classes.button}
             onClick={() => {
               setDrawerState(ADD_HOUSE);
             }}
           >
             <AddIcon />
-          </Button>
-          <Button
+          </Button> */}
+          {/* <Button
+            className={classes.button}
             onClick={() => {
               setDrawerState(EDIT_STREET);
             }}
           >
             <EditIcon />
-          </Button>
+          </Button> */}
         </Paper>
         <Drawer
+          PaperProps={{
+            className: classes.drawer,
+          }}
           anchor={"right"}
           open={Boolean(drawerState)}
           onClose={() => {

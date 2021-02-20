@@ -21,18 +21,18 @@ export const HouseDetail = ({
   setSelectedHouse,
 }) => {
   const useStyles = makeStyles((theme) => ({
-    drawer: {
-      width: 400,
-    },
+    // drawer: {
+    //   width: 400,
+    // },
     grid: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
+      gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
       gap: theme.spacing(2),
       margin: theme.spacing(2),
     },
-    text: {
-      margin: theme.spacing(2),
-    },
+    // text: {
+    //   margin: theme.spacing(2),
+    // },
     progress: {
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
@@ -52,7 +52,7 @@ export const HouseDetail = ({
       gap: theme.spacing(2),
     },
     button: {
-      height: 56,
+      height: 40,
     },
   }));
 
@@ -140,22 +140,7 @@ export const HouseDetail = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHouse]);
-
-  return (
-    <div className={classes.drawer}>
-      {selectedHouse && (
-        <div className={classes.text}>
-          {/* <Typography>
-              {c_short_type} {c_name} {c_full_number}
-            </Typography> */}
-          <EditHouse
-            id={id}
-            refreshPage={() => {
-              refreshTable();
-              setSelectedHouse(null);
-            }}
-          />
-          {/* <Button
+  /* <Button
               className={classes.button}
               // disabled={!Boolean(appartamentNumber) || error}
               color="primary"
@@ -179,8 +164,17 @@ export const HouseDetail = ({
               }}
             >
               {b_disabled ? "Включить" : "Выключить"}
-            </Button> */}
-        </div>
+            </Button> */
+  return (
+    <>
+      {selectedHouse && (
+        <EditHouse
+          id={id}
+          refreshPage={() => {
+            refreshTable();
+            setSelectedHouse(null);
+          }}
+        />
       )}
       {loading ? (
         <CircularProgress />
@@ -188,6 +182,7 @@ export const HouseDetail = ({
         <>
           <div className={classes.newHouse}>
             <TextField
+              size="small"
               error={error}
               helperText={error}
               variant="outlined"
@@ -294,6 +289,6 @@ export const HouseDetail = ({
             <CircularProgress className={classes.progress} />
           )}
         </List> */}
-    </div>
+    </>
   );
 };

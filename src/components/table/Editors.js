@@ -20,8 +20,9 @@ export const StringEditor = ({ fieldProps, ...props }) => {
 };
 
 export const BoolEditor = ({ fieldProps, ...props }) => {
+  const { margin, size } = fieldProps || {};
   return (
-    <TextField select {...props} variant="outlined" margin="dense">
+    <TextField margin={margin || 'dense'} size={size || 'small'} select {...props} variant="outlined">
       <MenuItem value={true}>Да</MenuItem>
       <MenuItem value={false}>Нет</MenuItem>
     </TextField>
@@ -69,6 +70,7 @@ export function SelectEditor({ fieldProps, value, ...rest }) {
 
   useEffect(() => {
     if (value) {
+      debugger;
       setLoading(true);
       runRpc({
         action: table,
@@ -121,6 +123,8 @@ export function SelectEditorField({
     sortBy,
     error,
     helperText,
+    margin,
+    size
   } = fieldProps;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -227,7 +231,8 @@ export function SelectEditorField({
           label={label}
           {...params}
           variant="outlined"
-          margin="dense"
+          margin={margin || "dense"}
+          size={size || "small"}
           InputProps={{
             ...params.InputProps,
             endAdornment: params.InputProps.endAdornment,
