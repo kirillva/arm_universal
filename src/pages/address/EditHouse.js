@@ -12,6 +12,7 @@ import {
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import { BoolEditor, SelectEditor } from "components/table/Editors";
+import { SelectUik } from "components/SelectUik";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -100,30 +101,8 @@ export const EditHouse = ({ id, refreshPage }) => {
           Редактирование дома
         </Typography>
         <div className={classes.fieldWrapper}>
-          <TextField
-            size='small'
-            label="Номер"
-            name="c_house_number"
-            value={values.c_house_number}
-            error={errors.c_house_number}
-            helperText={errors.c_house_number}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            variant="outlined"
-          />
-          <TextField
-            size='small'
-            label="Корпус"
-            name="c_house_corp"
-            value={values.c_house_corp}
-            error={errors.c_house_corp}
-            helperText={errors.c_house_corp}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            variant="outlined"
-          />
-          <TextField
-            size='small'
+          {/* <TextField
+            size="small"
             label="УИК"
             name="n_uik"
             value={values.n_uik}
@@ -132,12 +111,12 @@ export const EditHouse = ({ id, refreshPage }) => {
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"
-          />
+          /> */}
           <SelectEditor
             name={"f_subdivision"}
             fieldProps={{
-              margin: 'none',
-              size: 'small',
+              margin: "none",
+              size: "small",
               helperText: errors.f_subdivision,
               error: errors.f_subdivision,
               idProperty: "id",
@@ -149,18 +128,57 @@ export const EditHouse = ({ id, refreshPage }) => {
             value={values.f_subdivision}
             setFieldValue={setFieldValue}
           />
-          {/* <BoolEditor
-            error={errors.b_disabled}
-            helperText={errors.b_disabled}
-            label="Выключено"
-            name="b_disabled"
-            value={values.b_disabled}
+          <SelectUik
+            margin="none"
+            size="small"
+            name="n_uik"
+            subdivision={values.f_subdivision}
+            value={values.n_uik}
+            error={errors.n_uik}
+            handleChange={handleChange}
+            isSubmitting={isSubmitting}
+          />
+          <SelectEditor
+            name={"f_street"}
+            fieldProps={{
+              margin: "none",
+              size: "small",
+              helperText: errors.f_street,
+              error: errors.f_street,
+              idProperty: "id",
+              nameProperty: "c_name",
+              table: "cs_street",
+            }}
+            label="Улица"
+            // mapAccessor="n_uik"
+            value={values.f_street}
+            setFieldValue={setFieldValue}
+          />
+          <TextField
+            size="small"
+            label="Номер"
+            name="c_house_number"
+            value={values.c_house_number}
+            error={errors.c_house_number}
+            helperText={errors.c_house_number}
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"
-          /> */}
+          />
           <TextField
-            size='small'
+            size="small"
+            label="Корпус"
+            name="c_house_corp"
+            value={values.c_house_corp}
+            error={errors.c_house_corp}
+            helperText={errors.c_house_corp}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+
+          <TextField
+            size="small"
             label="Примечание"
             name="c_notice"
             value={values.c_notice}

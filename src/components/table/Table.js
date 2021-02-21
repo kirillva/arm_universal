@@ -71,11 +71,17 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: "1px solid #e0e0e0",
   },
   headerTitle: {
+    overflow: "hidden",
+    maxHeight: "30px",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     userSelect: "none",
     display: "flex",
     flexDirection: "row",
   },
   headerTitleText: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
     flex: 1,
   },
   container: {
@@ -549,14 +555,14 @@ export const Table = ({
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
-        {/* <Button
+        <Button
           title={"Фильтры"}
           className={classes.iconButton}
           color={filters && filters.length ? "primary" : "black"}
           onClick={() => setFilterHidden(!filterHidden)}
         >
           <FilterListIcon />
-        </Button> */}
+        </Button>
         {/* <Button
           title={"Экспорт в эксель"}
           // className={classes.iconButton}
@@ -609,24 +615,29 @@ export const Table = ({
                   return null;
                 } else {
                   return (
-                    <TableCell style={column.style || {}} {...column.getHeaderProps()}>
-                      <div>
-                        <span
-                          // {...column.getSortByToggleProps()}
-                          className={classes.headerTitle}
-                        >
-                          {column.render("Header")}
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <ArrowDropUp />
-                            ) : (
-                              <ArrowDropDown />
-                            )
+                    <TableCell
+                      style={column.style || {}}
+                      {...column.getHeaderProps()}
+                    >
+                      <span
+                        {...column.getSortByToggleProps()}
+                        title={column.title}
+                        className={classes.headerTitle}
+                        style={{
+                          ...column.style,
+                        }}
+                      >
+                        {column.render("Header")}
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <ArrowDropUp />
                           ) : (
-                            ""
-                          )}
-                        </span>
-                      </div>
+                            <ArrowDropDown />
+                          )
+                        ) : (
+                          ""
+                        )}
+                      </span>
                       <div>
                         {column.canFilter
                           ? column.render("Filter", filterProps)

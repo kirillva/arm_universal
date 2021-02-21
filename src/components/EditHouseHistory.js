@@ -14,6 +14,7 @@ import { getUserId, getItem } from "utils/user";
 import { runRpc } from "utils/rpc";
 import CloseIcon from "@material-ui/icons/Close";
 import * as Yup from "yup";
+import { SelectUik } from "./SelectUik";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -34,12 +35,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-
-const LEFT = 37;
-const RIGHT = 39;
-const TOP = 38;
-const DOWN = 40;
-const SPACE = 32;
 
 const initialValues = {
   f_subdivision: null,
@@ -127,7 +122,6 @@ export const EditHouseHistory = ({
   });
 
   const [subdivisions, setSubdivisions] = useState([]);
-  const [uik, setUik] = useState([]);
 
   useEffect(() => {
     resetForm();
@@ -138,32 +132,6 @@ export const EditHouseHistory = ({
     setValues(innerValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHouse]);
-
-  useEffect(() => {
-    const filter = [];
-    if (values.f_subdivision) {
-      filter.push({
-        property: "f_subdivision",
-        value: values.f_subdivision,
-        operator: "=",
-      });
-    }
-    runRpc({
-      action: "cv_uik_ref",
-      method: "Query",
-      data: [
-        {
-          limit: 1000,
-          sort: [{ property: "f_uik", direction: "asc" }],
-          filter: filter,
-        },
-      ],
-      type: "rpc",
-    }).then((responce) => {
-      setUik(responce.result.records);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.f_subdivision]);
 
   useEffect(() => {
     runRpc({
@@ -302,7 +270,15 @@ export const EditHouseHistory = ({
           disabled={isSubmitting}
           variant="outlined"
         />
-        <TextField
+        <SelectUik
+          name="n_uik"
+          subdivision={values.f_subdivision}
+          value={values.n_uik}
+          error={errors.n_uik}
+          handleChange={handleChange}
+          isSubmitting={isSubmitting}
+        />
+        {/* <TextField
           select
           margin="dense"
           label="УИК"
@@ -318,7 +294,7 @@ export const EditHouseHistory = ({
           {uik.map((item) => (
             <MenuItem value={item.f_uik}>{item.f_uik}</MenuItem>
           ))}
-        </TextField>
+        </TextField> */}
         <div>
           <FormControlLabel
             control={

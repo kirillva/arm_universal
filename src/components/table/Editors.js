@@ -14,6 +14,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import useDebounce from "components/hooks/useDebounce";
 
 export const StringEditor = ({ fieldProps, ...props }) => {
   return <TextField {...props} />;
@@ -22,7 +23,13 @@ export const StringEditor = ({ fieldProps, ...props }) => {
 export const BoolEditor = ({ fieldProps, ...props }) => {
   const { margin, size } = fieldProps || {};
   return (
-    <TextField margin={margin || 'dense'} size={size || 'small'} select {...props} variant="outlined">
+    <TextField
+      margin={margin || "dense"}
+      size={size || "small"}
+      select
+      {...props}
+      variant="outlined"
+    >
       <MenuItem value={true}>Да</MenuItem>
       <MenuItem value={false}>Нет</MenuItem>
     </TextField>
@@ -63,14 +70,25 @@ export const DateEditor = ({
   );
 };
 
-export function SelectEditor({ fieldProps, value, ...rest }) {
+export function SelectEditor({
+  fieldProps,
+  value,
+  setFieldValue,
+  name,
+  ...rest
+}) {
   const { idProperty, nameProperty, table } = fieldProps;
-  const [_value, _setValue] = useState("");
+  const [inputValue, _setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
 
+  value = value ? String(value) : null;
+
+  const setInputValue = (_value) => {
+    _setInputValue(_value ? String(_value) : "");
+  };
+
   useEffect(() => {
-    if (value) {
-      debugger;
+    if (value && !inputValue) {
       setLoading(true);
       runRpc({
         action: table,
@@ -85,17 +103,26 @@ export function SelectEditor({ fieldProps, value, ...rest }) {
         type: "rpc",
       }).then((responce) => {
         setLoading(false);
-        _setValue(responce.result.records[0][nameProperty]);
+        setInputValue(responce.result.records[0][nameProperty]);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, inputValue]);
 
   return !loading ? (
     <SelectEditorField
       {...rest}
       fieldProps={fieldProps}
-      value={{ [idProperty]: value, [nameProperty]: _value }}
+      value={{ [nameProperty]: inputValue, [idProperty]: value }}
+      inputValue={inputValue}
+      setInputValue={setInputValue}
+      setValue={(_value) => {
+        if (_value) {
+          setFieldValue(name, _value[idProperty]);
+        } else {
+          setFieldValue(name, null);
+        }
+      }}
     />
   ) : (
     <CircularProgress />
@@ -105,14 +132,11 @@ export function SelectEditor({ fieldProps, value, ...rest }) {
 export function SelectEditorField({
   fieldProps,
   value,
-  setFieldValue,
-  name,
+  inputValue,
+  setValue,
+  setInputValue,
   label,
 }) {
-  const setFilter = (newValue) => {
-    setFieldValue(name, newValue);
-  };
-
   const {
     idProperty,
     nameProperty,
@@ -124,105 +148,106 @@ export function SelectEditorField({
     error,
     helperText,
     margin,
-    size
+    size,
+    operator,
+    filter: initialFilter,
   } = fieldProps;
-  const [open, setOpen] = useState(false);
+
+  const deferredInputValue = useDebounce(inputValue, 1000);
+
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
 
-  const [inputValue, setInputValue] = useState("");
-
-  const onChange = (event, newValue) => {
-    if (newValue) {
-      setFilter(newValue[idProperty]);
-    } else {
-      setFilter(null);
-    }
-  };
-
-  const onInputChange = (event, newInputValue, reason) => {
-    if (reason === "reset") {
-      setInputValue("");
-    } else {
-      setInputValue(newInputValue);
-    }
-  };
-
   const loadData = () => {
-    if (open) {
-      let filter = [];
+    let filter = [];
 
-      if (nameProperty && inputValue) {
-        filter.push({
-          property: nameProperty,
-          value: inputValue,
-          operator: "like",
-        });
-      }
-      if (propFilter) {
-        filter = filter.concat(propFilter);
-      }
-      const rpcData = {
-        limit: 50,
-        select: [idProperty, nameProperty, sortBy]
-          .filter((item) => item)
-          .join(","),
-        filter: filter,
-      };
-      if (params) {
-        rpcData.params = params;
-      }
-      if (sortBy) {
-        rpcData.sort = [
-          {
-            property: sortBy,
-            direction: "ASC",
-          },
-        ];
-      }
-      setLoading(true);
-      runRpc({
-        action: table,
-        method: method,
-        data: [rpcData],
-        type: "rpc",
-      }).then((responce) => {
-        setLoading(false);
-        setOptions(responce.result.records);
-      });
-    } else {
-      setLoading(false);
-      setOptions([]);
+    if (initialFilter) {
+      filter = filter.concat(initialFilter);
     }
+    if (nameProperty && inputValue) {
+      filter.push({
+        property: nameProperty,
+        value: inputValue,
+        operator: operator || "like",
+      });
+    }
+    if (propFilter) {
+      filter = filter.concat(propFilter);
+    }
+    const rpcData = {
+      limit: 50,
+      select: [idProperty, nameProperty, sortBy]
+        .filter((item) => item)
+        .join(","),
+      filter: filter,
+    };
+    if (params) {
+      rpcData.params = params;
+    }
+    if (sortBy) {
+      rpcData.sort = [
+        {
+          property: sortBy,
+          direction: "ASC",
+        },
+      ];
+    }
+    setLoading(true);
+    runRpc({
+      action: table,
+      method: method,
+      data: [rpcData],
+      type: "rpc",
+    }).then((responce) => {
+      setLoading(false);
+      setOptions(
+        responce.result.records.map((item) => {
+          return {
+            [idProperty]: String(item[idProperty]),
+            [nameProperty]: String(item[nameProperty]) || String(item[idProperty]),
+          };
+        }) || []
+      );
+    });
   };
-
-  const onInputChangeDebounce = _.debounce(onInputChange, 1000);
 
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, inputValue]);
+  }, [deferredInputValue]);
+
+  const onChange = (event, newValue) => {
+    if (newValue) {
+      setValue(newValue);
+      setInputValue(newValue[nameProperty]);
+    } else {
+      setValue(null);
+      setInputValue("");
+      setOptions([]);
+    }
+  };
+
+  const onInputChange = (event, newInputValue, reason) => {
+    setLoading(true);
+    setOptions([]);
+    setInputValue(newInputValue);
+  };
 
   return (
     <Autocomplete
       noOptionsText="Нет данных"
       loadingText="Загрузка..."
-      open={open}
-      onOpen={() => {
-        setOptions([]);
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
       getOptionSelected={(option, value) =>
         option[idProperty] === value[idProperty]
       }
-      defaultValue={value}
-      getOptionLabel={(option) => option[nameProperty]}
+      inputValue={inputValue}
+      value={value}
+      getOptionLabel={(option) => {
+        return option[nameProperty] || ''
+      }}
       options={options}
       loading={loading}
-      onInputChange={onInputChangeDebounce}
+      onInputChange={onInputChange}
       onChange={onChange}
       renderInput={(params) => (
         <TextField

@@ -60,35 +60,39 @@ export const AddressPanel = () => {
       },
       {
         title: "Район",
-        accessor: "f_division",
-        mapAccessor: "c_division",
-        fieldProps: {
-          idProperty: "id",
-          nameProperty: "c_name",
-          table: "sd_divisions",
+        accessor: "c_division",
+        // mapAccessor: "c_division",
+        // fieldProps: {
+        //   idProperty: "id",
+        //   nameProperty: "c_name",
+        //   table: "sd_divisions",
+        // },
+        style: {
+          width: '250px'
         },
-        Filter: SelectFilter,
-        Editor: SelectEditor,
-        Cell: SelectCell,
-      },
-      {
-        title: "Удалена",
-        Filter: BoolFilter,
-        Cell: BoolCell,
-        accessor: "b_disabled",
-      },
-      {
-        title: "Причина",
+        // Filter: SelectFilter,
         Filter: StringFilter,
+        // Editor: SelectEditor,
         Cell: StringCell,
-        accessor: "c_disabled",
       },
-      {
-        title: "Автор",
-        Filter: StringFilter,
-        Cell: StringCell,
-        accessor: "c_first_name",
-      },
+      // {
+      //   title: "Удалена",
+      //   Filter: BoolFilter,
+      //   Cell: BoolCell,
+      //   accessor: "b_disabled",
+      // },
+      // {
+      //   title: "Причина",
+      //   Filter: StringFilter,
+      //   Cell: StringCell,
+      //   accessor: "c_disabled",
+      // },
+      // {
+      //   title: "Автор",
+      //   Filter: StringFilter,
+      //   Cell: StringCell,
+      //   accessor: "c_first_name",
+      // },
     ],
     []
   );
@@ -104,6 +108,16 @@ export const AddressPanel = () => {
             <AddStreet refreshPage={() => setParams([getUserId()])} />
           </div> */}
           <Table
+            sortBy={[
+              {
+                id: "c_division",
+                desc: false,
+              },
+              {
+                id: "c_name",
+                desc: false,
+              },
+            ]}
             title={"Улицы"}
             handleClick={(cell, row) =>
               history.push(`/streetDetail?id=${row.id}`)

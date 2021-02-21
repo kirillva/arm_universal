@@ -9,7 +9,7 @@ import {
   StringCell,
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
-import { EditHouseHistory } from "./EditHouseHistory";
+import { EditHouseHistory } from "../components/EditHouseHistory";
 import { Box, Button, Drawer } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({

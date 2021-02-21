@@ -180,7 +180,7 @@ export const HouseDetail = ({
         <CircularProgress />
       ) : (
         <>
-          <div className={classes.newHouse}>
+          {/* <div className={classes.newHouse}>
             <TextField
               size="small"
               error={error}
@@ -234,7 +234,7 @@ export const HouseDetail = ({
             >
               Добавить
             </Button>
-          </div>
+          </div> */}
           <div className={classes.grid}>
             {appartament.map((item) => {
               return (

@@ -91,6 +91,7 @@ export const StringFilter = ({
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   return (
     <TextField
+      fullWidth
       style={{ display: hidden ? 'none' : 'unset'}}
       variant="outlined"
       margin="dense"

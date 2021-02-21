@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, StringFilter } from "components/table/Filters";
+import {
+  BoolFilter,
+  NumberFilter,
+  StringFilter,
+} from "components/table/Filters";
 import { BoolCell, SelectCell, StringCell } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { SelectEditor } from "components/table/Editors";
@@ -47,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     maxWidth: 700,
     minWidth: 500,
-    overflowX: 'hidden',
+    overflowX: "hidden",
     width: "50%",
   },
 }));
@@ -73,9 +77,12 @@ export const StreetDetailTable = () => {
     () => [
       {
         title: "УИК",
-        Filter: StringFilter,
+        Filter: NumberFilter,
         Cell: StringCell,
         accessor: "n_uik",
+        style: {
+          width: "80px",
+        },
       },
       {
         title: "Улица",
@@ -87,7 +94,7 @@ export const StreetDetailTable = () => {
         },
       },
       {
-        title: "Район",
+        title: "Округ ЧГСД",
         accessor: "f_subdivision",
         mapAccessor: "c_subdivision",
         fieldProps: {
@@ -98,18 +105,28 @@ export const StreetDetailTable = () => {
         Filter: SelectFilter,
         Editor: SelectEditor,
         Cell: SelectCell,
+        style: {
+          width: "100px",
+        },
       },
       {
         title: "Номер дома",
         Filter: StringFilter,
         Cell: StringCell,
         accessor: "c_full_number",
+        style: {
+          width: "80px",
+        },
       },
       {
-        title: "Удалена",
+        title: "Подтверждено",
         Filter: BoolFilter,
-        Cell: BoolCell,
+        Cell: ({ cell }) =>
+          cell.value ? "Нет" : cell.value === false ? "Да" : "",
         accessor: "b_disabled",
+        style: {
+          width: "80px",
+        },
       },
       // {
       //   title: "Причина",
@@ -117,12 +134,12 @@ export const StreetDetailTable = () => {
       //   Cell: StringCell,
       //   accessor: "c_disabled",
       // },
-      {
-        title: "Автор",
-        Filter: StringFilter,
-        Cell: StringCell,
-        accessor: "c_first_name",
-      },
+      // {
+      //   title: "Автор",
+      //   Filter: StringFilter,
+      //   Cell: StringCell,
+      //   accessor: "c_first_name",
+      // },
     ],
     []
   );
@@ -201,7 +218,10 @@ export const StreetDetailTable = () => {
           )}
           {drawerState === EDIT_HOUSE && (
             <HouseDetail
-              refreshTable={() => setParams([...params])}
+              refreshTable={() => {
+                setDrawerState(null);
+                setParams([...params]);
+              }}
               street={id}
               selectedHouse={selectedHouse}
               setSelectedHouse={setSelectedHouse}
@@ -210,6 +230,12 @@ export const StreetDetailTable = () => {
         </Drawer>
         <div className={classes.table}>
           <Table
+            sortBy={[
+              {
+                id: "n_number",
+                desc: false,
+              },
+            ]}
             title={"Дома"}
             method="Select"
             columns={cs_house}
