@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { TextField, MenuItem } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  InputAdornment,
+  IconButton,
+} from "@material-ui/core";
 import _ from "lodash";
 import DatePicker from "./DatePicker";
-import Hidden from '@material-ui/core/Hidden';
+import Hidden from "@material-ui/core/Hidden";
+import { Clear } from "@material-ui/icons";
 
 export const Operators = {
   number: "number",
@@ -29,7 +35,7 @@ export const NumberFilter = ({
   column: { filterValue, setFilter },
   className,
   allowNegative = true,
-  hidden
+  hidden,
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   const InputProps = {};
@@ -47,7 +53,7 @@ export const NumberFilter = ({
   return (
     <TextField
       type="number"
-      style={{ display: hidden ? 'none' : 'unset'}}
+      style={{ display: hidden ? "none" : "unset" }}
       variant="outlined"
       margin="dense"
       value={value}
@@ -86,17 +92,31 @@ export const NumberFilter = ({
 export const StringFilter = ({
   column: { filterValue, setFilter },
   className,
-  hidden
+  hidden,
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   return (
     <TextField
       fullWidth
-      style={{ display: hidden ? 'none' : 'unset'}}
+      style={{ display: hidden ? "none" : "unset" }}
       variant="outlined"
       margin="dense"
       value={value}
       className={className}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              onClick={() => {
+                setValue("");
+                setFilter(null);
+              }}
+            >
+              <Clear fontSize="small" />
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
       onChange={(e) => {
         setValue(e.target.value);
         applyFilterDebounced(filterValue, e.target.value, setFilter, "like");
@@ -113,7 +133,7 @@ export const StringFilter = ({
 
 export const UserFilter = ({
   column: { filterValue, setFilter },
-  className
+  className,
 }) => {
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   return (
@@ -145,15 +165,15 @@ export const UserFilter = ({
 export const DateFilter = ({
   column: { filterValue = { start: null, finish: null }, setFilter },
   className,
-  hidden
+  hidden,
 }) => {
   return (
     <DatePicker
-      style={{ display: hidden ? 'none' : 'unset'}}
+      style={{ display: hidden ? "none" : "unset" }}
       value={filterValue}
       className={className}
       onChange={(props) => {
-        setFilter({ ...filterValue, ...props, operator: Operators.date })
+        setFilter({ ...filterValue, ...props, operator: Operators.date });
       }}
       initialDateStart={filterValue.start}
       initialDateFinish={filterValue.finish}
@@ -164,7 +184,7 @@ export const DateFilter = ({
 export const BoolFilter = ({
   column: { filterValue, setFilter },
   className,
-  hidden
+  hidden,
 }) => {
   const defaultProps = {
     BOOL_TRUE: "Да",
@@ -174,7 +194,7 @@ export const BoolFilter = ({
   return (
     <TextField
       select
-      style={{ display: hidden ? 'none' : 'unset'}}
+      style={{ display: hidden ? "none" : "unset" }}
       value={filterValue ? filterValue.value : ""}
       variant="outlined"
       margin="dense"

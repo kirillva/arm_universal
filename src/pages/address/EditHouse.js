@@ -13,6 +13,8 @@ import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import { BoolEditor, SelectEditor } from "components/table/Editors";
 import { SelectUik } from "components/SelectUik";
+import { SelectSubdivision } from "components/SelectSubdivision";
+import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -47,13 +49,20 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
     setFieldValue,
     errors,
   } = useFormik({
+    validationSchema: Yup.object().shape({
+      c_house_number: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      n_uik: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      f_subdivision: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      f_street: Yup.string().nullable().required("Не заполнено обязательное поле"),
+    }),
     initialValues: {
       id: id,
       c_house_number: "",
       c_house_corp: "",
       n_uik: "",
-      f_subdivision: null,
+      f_subdivision: '',
       // b_disabled: false,
+      f_street: '',
       c_notice: "",
       b_check: false,
     },
@@ -136,7 +145,7 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
             disabled={isSubmitting}
             variant="outlined"
           /> */}
-          <SelectEditor
+          {/* <SelectEditor
             name={"f_subdivision"}
             fieldProps={{
               margin: "none",
@@ -151,6 +160,18 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
             mapAccessor="c_subdivision"
             value={values.f_subdivision}
             setFieldValue={setFieldValue}
+          /> */}
+          <SelectSubdivision
+            margin="none"
+            size="small"
+            name="f_subdivision"
+            value={values.f_subdivision}
+            error={errors.f_subdivision}
+            handleChange={(...props)=>{
+              setFieldValue('n_uik', '');
+              handleChange(...props);
+            }}
+            isSubmitting={isSubmitting}
           />
           <SelectUik
             margin="none"
@@ -171,7 +192,7 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
               error: errors.f_street,
               idProperty: "id",
               nameProperty: "c_name",
-              table: "cs_street",
+              table: "cv_street",
             }}
             label="Улица"
             // mapAccessor="n_uik"

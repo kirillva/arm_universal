@@ -411,12 +411,12 @@ export const HouseDetail = ({
                 setAnchorEl(null);
               }}
             >
-              {selectedAppartament.b_check === true ? (
+              {[selectedAppartament.b_check === true ? (
                 <CheckBoxIcon />
               ) : (
                 <CheckBoxOutlineBlankIcon />
-              )}
-              {"  "}Подтверждаю
+              )
+              ,'Подтверждаю']}
             </MenuItem>
             <MenuItem
               button
