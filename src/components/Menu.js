@@ -76,18 +76,18 @@ export const menuItems = [
   //   title: "Пользователи",
   // },
 
-  {
-    claims: [
-      "manual_edit",
-      "admin",
-      "food_kit",
-      "manager_candidate",
-      "division",
-    ],
-    icon: HomeIcon,
-    path: "/",
-    title: "I этап: привязка домов",
-  },
+  // {
+  //   claims: [
+  //     "manual_edit",
+  //     "admin",
+  //     "food_kit",
+  //     "manager_candidate",
+  //     "division",
+  //   ],
+  //   icon: HomeIcon,
+  //   path: "/address",
+  //   title: "I этап: привязка домов",
+  // },
   {
     claims: [
       "manual_edit",
@@ -97,8 +97,8 @@ export const menuItems = [
       "division",
     ],
     icon: AssignmentIcon,
-    path: "/address",
-    title: "II этап",
+    path: "/",
+    title: "II этап: подтверждение",
   },
   // {
   //   claims: [

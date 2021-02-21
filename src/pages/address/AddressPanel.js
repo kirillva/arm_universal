@@ -44,37 +44,43 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddressPanel = () => {
-  const [params, setParams] = useState([null]);
+  const [params, setParams] = useState([getUserId()]);
   const history = useHistory();
 
   const cs_street = React.useMemo(
     () => [
       {
+        title: "Тип",
+        accessor: "c_short_type",
+        style: {
+          width: '80px'
+        },
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
+      {
         title: "Улица",
         Filter: StringFilter,
         accessor: "c_name",
-        Cell: ({ cell }) => {
-          const { c_short_type, c_name } = cell.row.original;
-          return `${c_short_type} ${c_name}`;
-        },
-      },
-      {
-        title: "Район",
-        accessor: "c_division",
-        // mapAccessor: "c_division",
-        // fieldProps: {
-        //   idProperty: "id",
-        //   nameProperty: "c_name",
-        //   table: "sd_divisions",
-        // },
-        style: {
-          width: '250px'
-        },
-        // Filter: SelectFilter,
-        Filter: StringFilter,
-        // Editor: SelectEditor,
         Cell: StringCell,
       },
+      // {
+      //   title: "Район",
+      //   accessor: "c_division",
+      //   // mapAccessor: "c_division",
+      //   // fieldProps: {
+      //   //   idProperty: "id",
+      //   //   nameProperty: "c_name",
+      //   //   table: "sd_divisions",
+      //   // },
+      //   style: {
+      //     width: '250px'
+      //   },
+      //   // Filter: SelectFilter,
+      //   Filter: StringFilter,
+      //   // Editor: SelectEditor,
+      //   Cell: StringCell,
+      // },
       // {
       //   title: "Удалена",
       //   Filter: BoolFilter,
@@ -109,10 +115,6 @@ export const AddressPanel = () => {
           </div> */}
           <Table
             sortBy={[
-              {
-                id: "c_division",
-                desc: false,
-              },
               {
                 id: "c_name",
                 desc: false,

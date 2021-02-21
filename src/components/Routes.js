@@ -62,13 +62,13 @@ export const routeItems = [
   {
     claims: ["manager"],
     exact: false,
-    path: "/",
+    path: "/address",
     component: HouseHistoryPanel,
   },
   {
     claims: ["manager"],
     exact: true,
-    path: "/address",
+    path: "/",
     component: AddressPanel,
   },
   {

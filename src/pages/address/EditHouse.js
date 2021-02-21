@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditHouse = ({ id, refreshPage }) => {
+export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
   const {
     handleSubmit,
     handleChange,
@@ -100,6 +100,30 @@ export const EditHouse = ({ id, refreshPage }) => {
         <Typography variant="h6" className={classes.title}>
           Редактирование дома
         </Typography>
+        <div className={classes.fieldWrapper}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={values.b_check === true}
+                onClick={() => setFieldValue("b_check", true)}
+                name="b_check"
+              />
+            }
+            label="Подтверждаю"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={values.b_check === false}
+                onClick={() => setFieldValue("b_check", false)}
+                name="b_check"
+              />
+            }
+            label="Не подтверждаю"
+          />
+        </div>
         <div className={classes.fieldWrapper}>
           {/* <TextField
             size="small"
@@ -176,51 +200,38 @@ export const EditHouse = ({ id, refreshPage }) => {
             disabled={isSubmitting}
             variant="outlined"
           />
-
-          <TextField
-            size="small"
-            label="Примечание"
-            name="c_notice"
-            value={values.c_notice}
-            error={errors.c_notice}
-            helperText={errors.c_notice}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            variant="outlined"
-          />
         </div>
-        <div className={classes.fieldWrapper}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={values.b_check}
-                onClick={() => setFieldValue("b_check", true)}
-                name="b_check"
-              />
-            }
-            label="Подтверждаю"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={!values.b_check}
-                onClick={() => setFieldValue("b_check", false)}
-                name="b_check"
-              />
-            }
-            label="Не подтверждаю"
-          />
-        </div>
-        <Button
-          type="submit"
-          color="primary"
-          variant="contained"
+        <TextField
+          multiline
+          rows={3}
+          size="small"
+          label="Примечание"
+          name="c_notice"
+          value={values.c_notice}
+          error={errors.c_notice}
+          helperText={errors.c_notice}
+          onChange={handleChange}
           disabled={isSubmitting}
-        >
-          Сохранить
-        </Button>
+          variant="outlined"
+        />
+        <div className={classes.fieldWrapper}>
+          <Button
+            type="submit"
+            color="primary"
+            variant="contained"
+            disabled={isSubmitting}
+          >
+            Сохранить
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            disabled={isSubmitting}
+            onClick={() => refreshPage()}
+          >
+            Отменить
+          </Button>
+        </div>
       </form>
     </Paper>
   );

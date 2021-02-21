@@ -106,7 +106,7 @@ export const StreetDetailTable = () => {
         Editor: SelectEditor,
         Cell: SelectCell,
         style: {
-          width: "100px",
+          width: "120px",
         },
       },
       {
@@ -115,17 +115,20 @@ export const StreetDetailTable = () => {
         Cell: StringCell,
         accessor: "c_full_number",
         style: {
-          width: "80px",
+          width: "120px",
         },
       },
       {
         title: "Подтверждено",
         Filter: BoolFilter,
-        Cell: ({ cell }) =>
-          cell.value ? "Нет" : cell.value === false ? "Да" : "",
-        accessor: "b_disabled",
+        Cell: ({ cell }) => {
+          if (cell.value === null) return '';
+          if (cell.value === true) return 'Да';
+          if (cell.value === false) return 'Нет';
+        },
+        accessor: "b_check",
         style: {
-          width: "80px",
+          width: "120px",
         },
       },
       // {

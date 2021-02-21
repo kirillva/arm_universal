@@ -85,32 +85,30 @@ export const SimpleMenu = () => {
         >
           Профиль
         </MenuItem> */}
-        {/* <MenuItem
-          button
-          key={"/"}
-          component={Link}
-          to={"/"}
-          onClick={() => {
-            logout();
-            history.push("/");
-            handleClose();
-          }}
-        >
-          I этап
-        </MenuItem>
         <MenuItem
           button
           key={"/address"}
           component={Link}
           to={"/address"}
           onClick={() => {
-            logout();
+            history.push("/address");
+            handleClose();
+          }}
+        >
+          I этап: привязка домов
+        </MenuItem>
+        <MenuItem
+          button
+          key={"/"}
+          component={Link}
+          to={"/"}
+          onClick={() => {
             history.push("/");
             handleClose();
           }}
         >
-          II этап
-        </MenuItem> */}
+          II этап: подтверждение
+        </MenuItem>
         <MenuItem
           button
           key={"/"}

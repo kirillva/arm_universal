@@ -12,6 +12,8 @@ import {
   List,
   ListItem,
   ListItemText,
+  Menu,
+  MenuItem,
   Paper,
   TextField,
   Typography,
@@ -26,7 +28,6 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import { useFormik } from "formik";
 
 const Window = ({ item = {}, reloadData, open, handleClose }) => {
-  debugger;
   const {
     handleSubmit,
     handleChange,
@@ -36,7 +37,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
     errors,
   } = useFormik({
     initialValues: {
-      c_notice: item ? item.c_notice : ''
+      c_notice: item ? item.c_notice : "",
     },
     onSubmit: (values) => {
       runRpc({
@@ -45,7 +46,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
         data: [
           {
             ...values,
-            id: item.id
+            id: item.id,
           },
         ],
         type: "rpc",
@@ -66,6 +67,8 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
       <DialogTitle id="form-dialog-title">Квартира</DialogTitle>
       <DialogContent>
         <TextField
+          multiline
+          rows={3}
           label="Примечание"
           name="c_notice"
           value={values.c_notice}
@@ -88,58 +91,45 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
   );
 };
 
-const Appartament = ({ classes, item, reloadData, onEdit }) => {
+const Appartament = ({
+  classes,
+  item,
+  reloadData,
+  onClick: _onClick,
+  setAnchorEl,
+}) => {
   const [hidden, setHidden] = useState(true);
-  const onMouseEnter = () => {
-    setHidden(false);
-  };
-  const onMouseLeave = () => {
-    setHidden(true);
+  // const onMouseEnter = () => {
+  //   setHidden(false);
+  // };
+  // const onMouseLeave = () => {
+  //   setHidden(true);
+  // };
+
+  const handleClick = (event) => {
+    _onClick();
+    setAnchorEl(event.currentTarget);
   };
 
-  const onClick = () => {
-    runRpc({
-      action: "cs_appartament",
-      method: "Update",
-      data: [{ b_check: !Boolean(item.b_check), id: item.id }],
-      type: "rpc",
-    }).then((responce) => {
-      reloadData();
-    });
-  };
-
-  let color = '#FFFFFF'
+  let color = "#FFFFFF";
   if (item.b_check) {
-    color = '#2196F3'
+    color = "green";
   }
   if (item.b_check === false) {
-    color = 'red'
+    color = "red";
   }
   return (
     <Paper
       style={{
-        border: `1px solid ${color}`
+        border: `1px solid ${color}`,
       }}
       className={classes.paper}
       elevation={3}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      // onMouseEnter={onMouseEnter}
+      // onMouseLeave={onMouseLeave}
+      onClick={handleClick}
     >
-      {hidden ? (
-        <div className={classes.textPaper}>{item.c_number}</div>
-      ) : (
-        <div className={classes.editIcons}>
-          <IconButton
-            title={item.b_check ? "Не подтверждаю" : "Подтверждаю"}
-            onClick={onClick}
-          >
-            {item.b_check ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-          </IconButton>
-          <IconButton title={"Указать примечание"} onClick={onEdit}>
-            <EditIcon />
-          </IconButton>
-        </div>
-      )}
+      <div className={classes.textPaper}>{item.c_number}</div>
     </Paper>
   );
 };
@@ -169,7 +159,7 @@ export const HouseDetail = ({
     },
     paper: {
       width: 100,
-      height: 60,
+      height: 100,
       display: "flex",
       // margin: "auto",
     },
@@ -185,9 +175,11 @@ export const HouseDetail = ({
       height: 40,
     },
     editIcons: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
+      // display: "flex",
+      // flexDirection: "row",
+      // alignItems: "center",
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
     },
   }));
 
@@ -201,8 +193,14 @@ export const HouseDetail = ({
   const [loading, setLoading] = useState(false);
   const [appartamentNumber, setAppartamentNumber] = useState("");
   const [error, setError] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const classes = useStyles();
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const { c_short_type, c_name, c_full_number, b_disabled, id } = selectedHouse
     ? selectedHouse.original
@@ -276,31 +274,42 @@ export const HouseDetail = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHouse]);
+
+  const onSendSelected = (b_check) => {
+    runRpc({
+      action: "cs_appartament",
+      method: "Update",
+      data: [{ b_check: !Boolean(b_check), id: selectedAppartament.id }],
+      type: "rpc",
+    }).then((responce) => {
+      loadData();
+    });
+  };
   /* <Button
-              className={classes.button}
-              // disabled={!Boolean(appartamentNumber) || error}
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                runRpc({
-                  action: "cs_house",
-                  method: "Update",
-                  data: [
-                    {
-                      id,
-                      b_disabled: !b_disabled,
-                    },
-                  ],
-                  type: "rpc",
-                }).then(() => {
-                  // setLoading(false);
-                  setSelectedHouse(null);
-                  refreshTable();
-                });
-              }}
-            >
-              {b_disabled ? "Включить" : "Выключить"}
-            </Button> */
+    className={classes.button}
+    // disabled={!Boolean(appartamentNumber) || error}
+    color="primary"
+    variant="contained"
+    onClick={() => {
+      runRpc({
+        action: "cs_house",
+        method: "Update",
+        data: [
+          {
+            id,
+            b_disabled: !b_disabled,
+          },
+        ],
+        type: "rpc",
+      }).then(() => {
+        // setLoading(false);
+        setSelectedHouse(null);
+        refreshTable();
+      });
+    }}
+  >
+    {b_disabled ? "Включить" : "Выключить"}
+  </Button> */
   return (
     <>
       {selectedHouse && (
@@ -375,22 +384,97 @@ export const HouseDetail = ({
             {appartament.map((item) => {
               return (
                 <Appartament
+                  setAnchorEl={setAnchorEl}
                   reloadData={loadData}
                   classes={classes}
                   item={item}
-                  onEdit={() => setSelectedAppartament(item)}
+                  onClick={() => setSelectedAppartament(item)}
                 />
               );
             })}
           </div>
         </>
       )}
-      {selectedAppartament && <Window
-        item={selectedAppartament}
-        reloadData={loadData}
-        open={Boolean(selectedAppartament)}
-        handleClose={() => setSelectedAppartament(null)}
-      />}
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {selectedAppartament && (
+          <>
+            <MenuItem
+              button
+              onClick={() => {
+                onSendSelected(false);
+                setAnchorEl(null);
+              }}
+            >
+              {selectedAppartament.b_check === true ? (
+                <CheckBoxIcon />
+              ) : (
+                <CheckBoxOutlineBlankIcon />
+              )}
+              {"  "}Подтверждаю
+            </MenuItem>
+            <MenuItem
+              button
+              onClick={() => {
+                onSendSelected(true);
+                setAnchorEl(null);
+              }}
+            >
+              {selectedAppartament.b_check === false ? (
+                <CheckBoxIcon />
+              ) : (
+                <CheckBoxOutlineBlankIcon />
+              )}
+              {"  "}Не подтверждаю
+            </MenuItem>
+            <MenuItem
+              button
+              onClick={() => {
+                setOpen(true);
+                setAnchorEl(null);
+              }}
+            >
+              <EditIcon />
+              {"  "}Указать примечание
+            </MenuItem>
+          </>
+        )}
+        {/* <MenuItem
+          button
+          onClick={() => {
+          }}
+        >
+          I этап: привязка домов
+        </MenuItem>
+        <MenuItem
+          button
+          onClick={() => {
+          }}
+        >
+          II этап: подтверждение
+        </MenuItem>
+        <MenuItem
+          button
+          onClick={() => {
+            
+          }}
+        >
+          Выход
+        </MenuItem> */}
+      </Menu>
+      {selectedAppartament && (
+        <Window
+          item={selectedAppartament}
+          reloadData={loadData}
+          open={open}
+          handleClose={() => setOpen(false)}
+        />
+      )}
       {/* <List>
           <Typography className={classes.text}>Избиратели</Typography>
           {!houseInfoLoading ? (
