@@ -1,7 +1,14 @@
 import {
   Button,
+  Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -13,6 +20,129 @@ import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
 import { makeStyles } from "@material-ui/core/styles";
 import { EditHouse } from "./EditHouse";
+import EditIcon from "@material-ui/icons/Edit";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import { useFormik } from "formik";
+
+const Window = ({ item = {}, reloadData, open, handleClose }) => {
+  debugger;
+  const {
+    handleSubmit,
+    handleChange,
+    values,
+    isSubmitting,
+    setSubmitting,
+    errors,
+  } = useFormik({
+    initialValues: {
+      c_notice: item ? item.c_notice : ''
+    },
+    onSubmit: (values) => {
+      runRpc({
+        action: "cs_appartament",
+        method: "Update",
+        data: [
+          {
+            ...values,
+            id: item.id
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        setSubmitting(false);
+        handleClose();
+        reloadData();
+      });
+    },
+  });
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Квартира</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Примечание"
+          name="c_notice"
+          value={values.c_notice}
+          error={errors.c_notice}
+          helperText={errors.c_notice}
+          onChange={handleChange}
+          disabled={isSubmitting}
+          variant="outlined"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button variant={"contained"} onClick={handleClose} color="secondary">
+          Отмена
+        </Button>
+        <Button variant={"contained"} onClick={handleSubmit} color="primary">
+          Сохранить
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const Appartament = ({ classes, item, reloadData, onEdit }) => {
+  const [hidden, setHidden] = useState(true);
+  const onMouseEnter = () => {
+    setHidden(false);
+  };
+  const onMouseLeave = () => {
+    setHidden(true);
+  };
+
+  const onClick = () => {
+    runRpc({
+      action: "cs_appartament",
+      method: "Update",
+      data: [{ b_check: !Boolean(item.b_check), id: item.id }],
+      type: "rpc",
+    }).then((responce) => {
+      reloadData();
+    });
+  };
+
+  let color = '#FFFFFF'
+  if (item.b_check) {
+    color = '#2196F3'
+  }
+  if (item.b_check === false) {
+    color = 'red'
+  }
+  return (
+    <Paper
+      style={{
+        border: `1px solid ${color}`
+      }}
+      className={classes.paper}
+      elevation={3}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {hidden ? (
+        <div className={classes.textPaper}>{item.c_number}</div>
+      ) : (
+        <div className={classes.editIcons}>
+          <IconButton
+            title={item.b_check ? "Не подтверждаю" : "Подтверждаю"}
+            onClick={onClick}
+          >
+            {item.b_check ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+          </IconButton>
+          <IconButton title={"Указать примечание"} onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+        </div>
+      )}
+    </Paper>
+  );
+};
 
 export const HouseDetail = ({
   refreshTable,
@@ -38,7 +168,7 @@ export const HouseDetail = ({
       marginRight: theme.spacing(2),
     },
     paper: {
-      width: 60,
+      width: 100,
       height: 60,
       display: "flex",
       // margin: "auto",
@@ -54,6 +184,11 @@ export const HouseDetail = ({
     button: {
       height: 40,
     },
+    editIcons: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+    },
   }));
 
   // const [houseInfo, setHouseInfo] = useState([]);
@@ -62,6 +197,7 @@ export const HouseDetail = ({
   // const [houseLoyalityLoading, setHouseLoyalityLoading] = useState(false);
 
   const [appartament, setAppartament] = useState([]);
+  const [selectedAppartament, setSelectedAppartament] = useState(null);
   const [loading, setLoading] = useState(false);
   const [appartamentNumber, setAppartamentNumber] = useState("");
   const [error, setError] = useState("");
@@ -238,15 +374,23 @@ export const HouseDetail = ({
           <div className={classes.grid}>
             {appartament.map((item) => {
               return (
-                <Paper className={classes.paper} elevation={3}>
-                  <div className={classes.textPaper}>{item.c_number}</div>
-                </Paper>
+                <Appartament
+                  reloadData={loadData}
+                  classes={classes}
+                  item={item}
+                  onEdit={() => setSelectedAppartament(item)}
+                />
               );
             })}
           </div>
         </>
       )}
-
+      {selectedAppartament && <Window
+        item={selectedAppartament}
+        reloadData={loadData}
+        open={Boolean(selectedAppartament)}
+        handleClose={() => setSelectedAppartament(null)}
+      />}
       {/* <List>
           <Typography className={classes.text}>Избиратели</Typography>
           {!houseInfoLoading ? (
