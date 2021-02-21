@@ -11,6 +11,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
@@ -411,12 +412,14 @@ export const HouseDetail = ({
                 setAnchorEl(null);
               }}
             >
-              {[selectedAppartament.b_check === true ? (
-                <CheckBoxIcon />
-              ) : (
-                <CheckBoxOutlineBlankIcon />
-              )
-              ,'Подтверждаю']}
+              <ListItemIcon>
+                {selectedAppartament.b_check === true ? (
+                  <CheckBoxIcon />
+                ) : (
+                  <CheckBoxOutlineBlankIcon />
+                )}
+              </ListItemIcon>
+              Подтверждаю
             </MenuItem>
             <MenuItem
               button
@@ -425,12 +428,14 @@ export const HouseDetail = ({
                 setAnchorEl(null);
               }}
             >
-              {selectedAppartament.b_check === false ? (
-                <CheckBoxIcon />
-              ) : (
-                <CheckBoxOutlineBlankIcon />
-              )}
-              {"  "}Не подтверждаю
+              <ListItemIcon>
+                {selectedAppartament.b_check === false ? (
+                  <CheckBoxIcon />
+                ) : (
+                  <CheckBoxOutlineBlankIcon />
+                )}
+              </ListItemIcon>
+              Не подтверждаю
             </MenuItem>
             <MenuItem
               button
@@ -439,8 +444,10 @@ export const HouseDetail = ({
                 setAnchorEl(null);
               }}
             >
-              <EditIcon />
-              {"  "}Указать примечание
+              <ListItemIcon>
+                <EditIcon />
+              </ListItemIcon>
+              Указать примечание
             </MenuItem>
           </>
         )}

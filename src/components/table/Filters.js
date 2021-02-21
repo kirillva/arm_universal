@@ -194,6 +194,7 @@ export const BoolFilter = ({
   return (
     <TextField
       select
+      fullWidth
       style={{ display: hidden ? "none" : "unset" }}
       value={filterValue ? filterValue.value : ""}
       variant="outlined"

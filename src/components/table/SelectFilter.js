@@ -104,7 +104,8 @@ export function SelectFilter({
         <TextField
           {...params}
           variant="outlined"
-          margin="dense"
+          margin="none"
+          size="small"
           InputProps={{
             ...params.InputProps,
             endAdornment: params.InputProps.endAdornment,
