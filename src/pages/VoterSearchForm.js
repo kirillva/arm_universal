@@ -211,7 +211,7 @@ export const VoterSearchForm = ({ className }) => {
               <SelectEditorField
                 fieldProps={{
                   sortBy: "n_number",
-                  params: [userId, street],
+                  params: [userId, street, null],
                   method: "Select",
                   idProperty: "id",
                   table: "cf_bss_cs_house",

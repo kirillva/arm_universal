@@ -69,7 +69,7 @@ export const StreetDetailTable = () => {
 
   const { id } = parse(location.search);
 
-  const [params, setParams] = useState([null, id]);
+  const [params, setParams] = useState([null, id, null]);
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [street, setStreet] = useState(null);
   const [open, setOpen] = useState(false);
@@ -130,6 +130,19 @@ export const StreetDetailTable = () => {
           if (cell.value === false) return 'Нет';
         },
         accessor: "b_check",
+        style: {
+          width: "120px",
+        },
+      },
+      {
+        title: "Завершено",
+        Filter: BoolFilter,
+        Cell: ({ cell }) => {
+          if (cell.value === null) return '';
+          if (cell.value === true) return 'Да';
+          if (cell.value === false) return 'Нет';
+        },
+        accessor: "b_finish",
         style: {
           width: "120px",
         },

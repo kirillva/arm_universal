@@ -35,6 +35,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
     values,
     isSubmitting,
     setSubmitting,
+    resetForm,
     errors,
   } = useFormik({
     initialValues: {
@@ -53,16 +54,21 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
         type: "rpc",
       }).then((responce) => {
         setSubmitting(false);
-        handleClose();
+        _handleClose();
         reloadData();
       });
     },
   });
 
+  function _handleClose (...props) {
+    handleClose(...props);
+    resetForm();
+  }
+
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={_handleClose}
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">Квартира</DialogTitle>
@@ -81,7 +87,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button variant={"contained"} onClick={handleClose} color="secondary">
+        <Button variant={"contained"} onClick={_handleClose} color="secondary">
           Отмена
         </Button>
         <Button variant={"contained"} onClick={handleSubmit} color="primary">
