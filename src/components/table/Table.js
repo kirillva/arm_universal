@@ -325,7 +325,7 @@ export const Table = ({
       data,
       defaultColumn,
       pageCount: pageCount,
-      autoResetPage: false,
+      autoResetPage: true,
       autoResetExpanded: false,
       autoResetGroupBy: false,
       autoResetSelectedRows: false,
@@ -374,7 +374,6 @@ export const Table = ({
     return new Promise((resolve) => {
       const _filters = [];
       filters.forEach((item) => {
-        debugger;
         switch (item.value.operator) {
           case "date":
             if (item.value.start) {

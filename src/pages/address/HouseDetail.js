@@ -38,6 +38,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
     resetForm,
     errors,
   } = useFormik({
+    enableReinitialize: true,
     initialValues: {
       c_notice: item ? item.c_notice : "",
     },
@@ -54,7 +55,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
         type: "rpc",
       }).then((responce) => {
         setSubmitting(false);
-        _handleClose();
+        handleClose();
         reloadData();
       });
     },
