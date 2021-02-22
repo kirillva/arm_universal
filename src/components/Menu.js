@@ -100,6 +100,19 @@ export const menuItems = [
     path: "/",
     title: "II этап: подтверждение",
   },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/streetDetail",
+    title: "II этап: подтверждение",
+  },
+  
   // {
   //   claims: [
   //     "manual_edit",

@@ -185,8 +185,6 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   // );
   
   const location = useLocation();
-  console.log(data)
-  console.log(location)
   
   const item = data.find(item=>item.path === location.pathname);
 

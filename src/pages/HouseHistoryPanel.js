@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, StringFilter } from "components/table/Filters";
+import { BoolFilter, NumberFilter, StringFilter } from "components/table/Filters";
 import {
   BoolCell,
   NumberCell,
@@ -101,17 +101,17 @@ export const HouseHistoryPanel = () => {
         Cell: SelectCell,
         style: {
           textAlign: 'center',
-          width: '150px'
+          width: '130px'
         }
       },
       {
         title: "УИК",
         accessor: "n_uik",
-        Filter: StringFilter,
+        Filter: NumberFilter,
         Cell: StringCell,
         style: {
           textAlign: 'center',
-          width: '50px'
+          width: '80px'
         }
       },
       {
@@ -121,7 +121,7 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
         style: {
           textAlign: 'center',
-          width: '50px'
+          width: '80px'
         }
       },
       {

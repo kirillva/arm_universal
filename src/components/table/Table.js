@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   headerTitleText: {
     overflow: "hidden",
     textOverflow: "ellipsis",
-    flex: 1,
+    // flex: 1,
   },
   container: {
     maxHeight: "400px",

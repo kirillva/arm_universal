@@ -10,6 +10,16 @@ import DatePicker from "./DatePicker";
 import Hidden from "@material-ui/core/Hidden";
 import { Clear } from "@material-ui/icons";
 
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  adornedEnd: {
+    paddingRight: '3px',
+  },
+  root: {
+    padding: "6px",
+  },
+}));
+
 export const Operators = {
   number: "number",
   string: "string",
@@ -94,6 +104,7 @@ export const StringFilter = ({
   className,
   hidden,
 }) => {
+  const classes = useStyles();
   const [value, setValue] = useState(filterValue ? filterValue.value : "");
   return (
     <TextField
@@ -104,17 +115,21 @@ export const StringFilter = ({
       value={value}
       className={className}
       InputProps={{
+        classes: {
+          adornedEnd: classes.adornedEnd,
+        },
         endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              onClick={() => {
-                setValue("");
-                setFilter(null);
-              }}
-            >
-              <Clear fontSize="small" />
-            </IconButton>
-          </InputAdornment>
+          <IconButton
+            classes={{
+              root: classes.root,
+            }}
+            onClick={() => {
+              setValue("");
+              setFilter(null);
+            }}
+          >
+            <Clear fontSize="small" />
+          </IconButton>
         ),
       }}
       onChange={(e) => {
