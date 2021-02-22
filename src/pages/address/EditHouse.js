@@ -3,7 +3,9 @@ import { useFormik } from "formik";
 import {
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   makeStyles,
   Paper,
   TextField,
@@ -50,19 +52,26 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
     errors,
   } = useFormik({
     validationSchema: Yup.object().shape({
-      c_house_number: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      c_house_number: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
       n_uik: Yup.string().nullable().required("Не заполнено обязательное поле"),
-      f_subdivision: Yup.string().nullable().required("Не заполнено обязательное поле"),
-      f_street: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      f_subdivision: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      f_street: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      b_check: Yup.boolean().typeError('Должно быть указано одно из значений')
     }),
     initialValues: {
       id: id,
       c_house_number: "",
       c_house_corp: "",
       n_uik: "",
-      f_subdivision: '',
+      f_subdivision: "",
       // b_disabled: false,
-      f_street: '',
+      f_street: "",
       c_notice: "",
       b_check: false,
     },
@@ -110,28 +119,44 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
           Редактирование дома
         </Typography>
         <div className={classes.fieldWrapper}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={values.b_check === true}
-                onClick={() => setFieldValue("b_check", true)}
-                name="b_check"
-              />
-            }
-            label="Подтверждаю"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={values.b_check === false}
-                onClick={() => setFieldValue("b_check", false)}
-                name="b_check"
-              />
-            }
-            label="Не подтверждаю"
-          />
+          <FormControl
+            required
+            error={errors.b_check}
+            component="fieldset"
+            className={classes.formControl}
+          >
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={values.b_check === true}
+                  onClick={() => setFieldValue("b_check", true)}
+                  name="b_check"
+                />
+              }
+              label="Подтверждаю"
+            />
+            <FormHelperText>{errors.b_check || ''}</FormHelperText>
+          </FormControl>
+          <FormControl
+            required
+            error={errors.b_check}
+            component="fieldset"
+            className={classes.formControl}
+          >
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={values.b_check === false}
+                  onClick={() => setFieldValue("b_check", false)}
+                  name="b_check"
+                />
+              }
+              label="Не подтверждаю"
+            />
+            <FormHelperText>{errors.b_check || ''}</FormHelperText>
+          </FormControl>
         </div>
         <div className={classes.fieldWrapper}>
           {/* <TextField
@@ -167,8 +192,8 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
             name="f_subdivision"
             value={values.f_subdivision}
             error={errors.f_subdivision}
-            handleChange={(...props)=>{
-              setFieldValue('n_uik', '');
+            handleChange={(...props) => {
+              setFieldValue("n_uik", "");
               handleChange(...props);
             }}
             isSubmitting={isSubmitting}

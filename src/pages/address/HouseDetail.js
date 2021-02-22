@@ -120,15 +120,15 @@ const Appartament = ({
 
   let color = "#FFFFFF";
   if (item.b_check) {
-    color = "green";
+    color = "#a3d9a3";
   }
   if (item.b_check === false) {
-    color = "red";
+    color = "#d9a3a3";
   }
   return (
     <Paper
       style={{
-        border: `1px solid ${color}`,
+        backgroundColor: `${color}`,
       }}
       className={classes.paper}
       elevation={3}
