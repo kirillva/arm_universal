@@ -111,7 +111,7 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
         style: {
           textAlign: 'center',
-          width: '30px'
+          width: '50px'
         }
       },
       {
@@ -121,7 +121,7 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
         style: {
           textAlign: 'center',
-          width: '30px'
+          width: '50px'
         }
       },
       {
@@ -131,7 +131,7 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
         style: {
           textAlign: 'center',
-          width: '30px'
+          width: '80px'
         }
       },
       {
@@ -141,7 +141,7 @@ export const HouseHistoryPanel = () => {
         Cell: StringCell,
         style: {
           textAlign: 'center',
-          width: '30px'
+          width: '80px'
         }
       },
     ],

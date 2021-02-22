@@ -16,8 +16,13 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
+    display: 'flex',
     flexGrow: 1,
+    height: '100%',
     padding: theme.spacing(3),
+    margin: "auto",
+    background: `linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(0deg, #abbff9, #abbff9),
+    url("../../assets/chebback.3092cceb.jpg")`,
   },
   form: {
     display: "flex",
@@ -26,9 +31,10 @@ const useStyles = makeStyles((theme) => ({
   },
   formWrapper: {
     maxWidth: 540,
-    height: "100%",
+    // height: "100%",
     margin: "auto",
     padding: theme.spacing(3),
+    // maxHeight: 310
   },
   title: {
     textAlign: "center",
@@ -56,7 +62,6 @@ export const SigninForm = withRouter(({ history }) => {
   const classes = useStyles();
   return (
     <div className={classes.content}>
-      <div className={classes.toolbar} />
       <Paper className={classes.formWrapper}>
         <form className={classes.form} onSubmit={handleSubmit}>
           <Typography variant="h6" className={classes.title}>

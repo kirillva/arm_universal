@@ -14,6 +14,7 @@ import { getItem, getUsername, logout } from "utils/user";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
+import HomeIcon from '@material-ui/icons/Home';
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -130,7 +131,6 @@ export const SimpleMenu = () => {
 export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
   // const history = useHistory();
-  const location = useLocation();
 
   // const drawer = (
   //   <>
@@ -183,28 +183,28 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   //     </List>
   //   </>
   // );
+  
+  const location = useLocation();
+  console.log(data)
+  console.log(location)
+  
+  const item = data.find(item=>item.path === location.pathname);
 
   return (
     <List className={classes.grow}>
-      {data.map((item, index) => {
-        const { path, title, icon } = item;
-        const active = location.pathname === path;
-        return (
-          <ListItem
-            button
-            key={path}
-            component={Link}
-            to={path}
-            selected={active}
-            onClick={() => mobileOpen && handleDrawerToggle()}
-          >
-            <ListItemIcon>
-              {React.createElement(icon, { color: "secondary" })}
-            </ListItemIcon>
-            <ListItemText primary={title} />
-          </ListItem>
-        );
-      })}
+     <ListItem
+        button
+        // key={path}
+        // component={Link}
+        // to={path}
+        // selected={active}
+        // onClick={() => mobileOpen && handleDrawerToggle()}
+      >
+        <ListItemIcon>
+          {React.createElement(item ? item.icon : HomeIcon, { color: "secondary" })}
+        </ListItemIcon>
+        <ListItemText primary={item ? item.title : 'Заголовок страницы'} />
+      </ListItem>
       <Divider />
       <SimpleMenu />
     </List>
