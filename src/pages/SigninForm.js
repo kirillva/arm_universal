@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     padding: theme.spacing(3),
     margin: "auto",
-    background: `linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(0deg, #abbff9, #abbff9),
-    url("../../assets/chebback.3092cceb.jpg")`,
+    background: `url(chebback.jpg) no-repeat center center fixed`,
+    backgroundSize: 'cover',
   },
   form: {
     display: "flex",

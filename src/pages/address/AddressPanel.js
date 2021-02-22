@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(3),
     display: "flex",
   },
+  selectedRow: {
+    backgroundColor: "#0096005c",
+  },
 }));
 
 export const AddressPanel = () => {
@@ -53,7 +56,7 @@ export const AddressPanel = () => {
         title: "Тип",
         accessor: "c_short_type",
         style: {
-          width: '80px'
+          width: "80px",
         },
         Filter: StringFilter,
         Cell: StringCell,
@@ -81,12 +84,15 @@ export const AddressPanel = () => {
       //   // Editor: SelectEditor,
       //   Cell: StringCell,
       // },
-      // {
-      //   title: "Удалена",
-      //   Filter: BoolFilter,
-      //   Cell: BoolCell,
-      //   accessor: "b_disabled",
-      // },
+      {
+        title: "Завершен",
+        Filter: BoolFilter,
+        Cell: BoolCell,
+        style: {
+          width: "80px",
+        },
+        accessor: "b_finish",
+      },
       // {
       //   title: "Причина",
       //   Filter: StringFilter,
@@ -127,6 +133,9 @@ export const AddressPanel = () => {
             method="Select"
             params={params}
             columns={cs_street}
+            getRowClassName={(row) =>
+              row.original.b_finish ? classes.selectedRow : ""
+            }
             action="cf_bss_cs_street"
           />
         </div>
