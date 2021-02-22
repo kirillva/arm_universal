@@ -251,7 +251,7 @@ export const Table = ({
   onLoadData = () => {},
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
-  getRowClassName= ()=> ('')
+  getRowClassName = () => "",
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -374,6 +374,7 @@ export const Table = ({
     return new Promise((resolve) => {
       const _filters = [];
       filters.forEach((item) => {
+        debugger;
         switch (item.value.operator) {
           case "date":
             if (item.value.start) {
@@ -393,6 +394,33 @@ export const Table = ({
             }
             break;
 
+          case "bool":
+            if (item.value && item.value.value === true) {
+              _filters.push({
+                property: item.id,
+                value: true,
+                operator: "=",
+              });
+              _filters.push({
+                property: item.id,
+                value: null,
+                operator: "isnot",
+              });
+            }
+
+            if (item.value && item.value.value === false) {
+              _filters.push({
+                property: item.id,
+                value: false,
+                operator: "=",
+              });
+              _filters.push({
+                property: item.id,
+                value: null,
+                operator: "isnot",
+              });
+            }
+            break;
           default:
             if (item.value && item.value.value) {
               _filters.push({
@@ -657,7 +685,6 @@ export const Table = ({
               <TableBody>
                 {page.map((row) => {
                   prepareRow(row);
-                  debugger;
                   return (
                     <TableRow
                       hover
