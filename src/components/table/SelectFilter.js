@@ -22,7 +22,7 @@ export function SelectFilter({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
-  
+
   const [inputValue, setInputValue] = useState("");
 
   // const classes = useStyles();
@@ -75,7 +75,7 @@ export function SelectFilter({
 
   useEffect(() => {
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, inputValue]);
 
   return (
@@ -102,6 +102,7 @@ export function SelectFilter({
       onChange={onChange}
       renderInput={(params) => (
         <TextField
+          fullWidth
           {...params}
           variant="outlined"
           margin="none"

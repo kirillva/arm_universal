@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: "50%",
   },
+  selectedRow: {
+    backgroundColor: '#0096005c',
+  }
 }));
 
 const EDIT_STREET = "EDIT_STREET";
@@ -242,6 +245,7 @@ export const StreetDetailTable = () => {
             title={"Дома"}
             method="Select"
             columns={cs_house}
+            getRowClassName={(row)=>row.original.b_finish ? classes.selectedRow : ''}
             handleClick={(cell, row) => {
               setSelectedHouse(row);
               setDrawerState(EDIT_HOUSE);

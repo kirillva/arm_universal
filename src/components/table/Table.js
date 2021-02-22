@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   container: {
-    // maxHeight: "400px",
+    maxHeight: "400px",
   },
   visuallyHidden: {
     border: 0,
@@ -251,6 +251,7 @@ export const Table = ({
   onLoadData = () => {},
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
+  getRowClassName= ()=> ('')
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -656,12 +657,14 @@ export const Table = ({
               <TableBody>
                 {page.map((row) => {
                   prepareRow(row);
+                  debugger;
                   return (
                     <TableRow
                       hover
                       role="checkbox"
                       tabIndex={-1}
                       {...row.getRowProps()}
+                      className={getRowClassName(row)}
                     >
                       {row.cells.map((cell) => {
                         const filterProps = cell.column.fieldProps;

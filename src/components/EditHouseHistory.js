@@ -34,6 +34,11 @@ const useStyles = makeStyles((theme) => ({
   titleWrapper: {
     display: "flex",
   },
+  fieldWrapper: {
+    display: "grid",
+    columnGap: theme.spacing(2),
+    gridTemplateColumns: "1fr 1fr",
+  },
 }));
 
 const initialValues = {
@@ -42,6 +47,7 @@ const initialValues = {
   c_house_corp: "",
   c_house_litera: "",
   n_uik: "",
+  c_notice: "",
   b_disabled: false,
   f_house: null,
 };
@@ -93,6 +99,7 @@ export const EditHouseHistory = ({
         c_house_number,
         c_house_corp,
         c_house_litera,
+        c_notice
       } = values;
       runRpc({
         action: "cf_tmp_house_update",
@@ -110,6 +117,7 @@ export const EditHouseHistory = ({
               b_tmp_kalinin,
               b_tmp_lenin,
               b_tmp_moscow,
+              c_notice
             ],
           },
         ],
@@ -209,76 +217,77 @@ export const EditHouseHistory = ({
           </Button> */}
         </div>
 
-        <TextField
-          title={values.c_name}
-          margin="dense"
-          disabled
-          label="Улица"
-          value={values.c_name}
-          variant="outlined"
-        />
-        <TextField
-          margin="dense"
-          select
-          label="Округ ЧГСД"
-          name="f_subdivision"
-          value={Number(values.f_subdivision)}
-          error={errors.f_subdivision}
-          helperText={errors.f_subdivision}
-          onChange={(...props) => {
-            setFieldValue("n_uik", null);
-            handleChange(...props);
-          }}
-          disabled={isSubmitting}
-          variant="outlined"
-        >
-          <MenuItem value={null}>Не выбрано</MenuItem>
-          {subdivisions.map((item) => (
-            <MenuItem value={item.id}>{item.c_name}</MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          margin="dense"
-          label="Номер"
-          name="c_house_number"
-          value={values.c_house_number}
-          error={errors.c_house_number}
-          helperText={errors.c_house_number}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          margin="dense"
-          label="Корпус"
-          name="c_house_corp"
-          value={values.c_house_corp}
-          error={errors.c_house_corp}
-          helperText={errors.c_house_corp}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          margin="dense"
-          label="Литера"
-          name="c_house_litera"
-          value={values.c_house_litera}
-          error={errors.c_house_litera}
-          helperText={errors.c_house_litera}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <SelectUik
-          name="n_uik"
-          subdivision={values.f_subdivision}
-          value={values.n_uik}
-          error={errors.n_uik}
-          handleChange={handleChange}
-          isSubmitting={isSubmitting}
-        />
-        {/* <TextField
+        <div className={classes.fieldWrapper}>
+          <TextField
+            title={values.c_name}
+            margin="dense"
+            disabled
+            label="Улица"
+            value={values.c_name}
+            variant="outlined"
+          />
+          <TextField
+            margin="dense"
+            select
+            label="Округ ЧГСД"
+            name="f_subdivision"
+            value={Number(values.f_subdivision)}
+            error={errors.f_subdivision}
+            helperText={errors.f_subdivision}
+            onChange={(...props) => {
+              setFieldValue("n_uik", null);
+              handleChange(...props);
+            }}
+            disabled={isSubmitting}
+            variant="outlined"
+          >
+            <MenuItem value={null}>Не выбрано</MenuItem>
+            {subdivisions.map((item) => (
+              <MenuItem value={item.id}>{item.c_name}</MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            margin="dense"
+            label="Номер"
+            name="c_house_number"
+            value={values.c_house_number}
+            error={errors.c_house_number}
+            helperText={errors.c_house_number}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            margin="dense"
+            label="Корпус"
+            name="c_house_corp"
+            value={values.c_house_corp}
+            error={errors.c_house_corp}
+            helperText={errors.c_house_corp}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            margin="dense"
+            label="Литера"
+            name="c_house_litera"
+            value={values.c_house_litera}
+            error={errors.c_house_litera}
+            helperText={errors.c_house_litera}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <SelectUik
+            name="n_uik"
+            subdivision={values.f_subdivision}
+            value={values.n_uik}
+            error={errors.n_uik}
+            handleChange={handleChange}
+            isSubmitting={isSubmitting}
+          />
+          {/* <TextField
           select
           margin="dense"
           label="УИК"
@@ -295,6 +304,14 @@ export const EditHouseHistory = ({
             <MenuItem value={item.f_uik}>{item.f_uik}</MenuItem>
           ))}
         </TextField> */}
+          <TextField
+            margin="dense"
+            disabled
+            label="Число квартир"
+            value={values.n_premise_count}
+            variant="outlined"
+          />
+        </div>
         <div>
           <FormControlLabel
             control={
@@ -333,33 +350,41 @@ export const EditHouseHistory = ({
           />
         </div>
         <TextField
-          margin="dense"
-          disabled
-          label="Число квартир"
-          value={values.n_premise_count}
+          multiline
+          rows={3}
+          size="small"
+          label="Примечание"
+          name="c_notice"
+          value={values.c_notice}
+          error={errors.c_notice}
+          helperText={errors.c_notice}
+          onChange={handleChange}
+          disabled={isSubmitting}
           variant="outlined"
         />
-        <Button
-          onClick={() => {
-            validateForm();
-            if (isValid) {
-              submitForm();
-            }
-          }}
-          color="primary"
-          variant="contained"
-          disabled={isSubmitting}
-        >
-          Сохранить
-        </Button>
-        <Button
-          onClick={() => setSelectedHouse(null)}
-          color="primary"
-          variant="outlined"
-          disabled={isSubmitting}
-        >
-          Отмена
-        </Button>
+        <div className={classes.fieldWrapper}>
+          <Button
+            onClick={() => {
+              validateForm();
+              if (isValid) {
+                submitForm();
+              }
+            }}
+            color="primary"
+            variant="contained"
+            disabled={isSubmitting}
+          >
+            Сохранить
+          </Button>
+          <Button
+            onClick={() => setSelectedHouse(null)}
+            color="primary"
+            variant="outlined"
+            disabled={isSubmitting}
+          >
+            Отмена
+          </Button>
+        </div>
       </form>
     </Paper>
   );

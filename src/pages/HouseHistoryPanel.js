@@ -56,22 +56,37 @@ export const HouseHistoryPanel = () => {
           width: '30px'
         }
       },
+      // {
+      //   title: "Улица",
+      //   Filter: SelectFilter,
+      //   accessor: "f_street",
+      //   mapAccessor: "c_name",
+      //   fieldProps: {
+      //     className: classes.selectColumn,
+      //     idProperty: "id",
+      //     nameProperty: "c_name",
+      //     table: "cs_street",
+      //   },
+
+      //   Cell: ({ cell }) => {
+      //     const { c_short_type, c_name } = cell.row.original;
+      //     return `${c_short_type} ${c_name}`;
+      //   },
+      // },
+      {
+        title: "Тип",
+        accessor: "c_short_type",
+        style: {
+          width: '80px'
+        },
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
       {
         title: "Улица",
-        Filter: SelectFilter,
-        accessor: "f_street",
-        mapAccessor: "c_name",
-        fieldProps: {
-          className: classes.selectColumn,
-          idProperty: "id",
-          nameProperty: "c_name",
-          table: "cs_street",
-        },
-
-        Cell: ({ cell }) => {
-          const { c_short_type, c_name } = cell.row.original;
-          return `${c_short_type} ${c_name}`;
-        },
+        Filter: StringFilter,
+        accessor: "c_name",
+        Cell: StringCell,
       },
       {
         title: "Округ ЧГСД",

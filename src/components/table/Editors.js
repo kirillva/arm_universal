@@ -204,7 +204,8 @@ export function SelectEditorField({
         responce.result.records.map((item) => {
           return {
             [idProperty]: String(item[idProperty]),
-            [nameProperty]: String(item[nameProperty]) || String(item[idProperty]),
+            [nameProperty]:
+              String(item[nameProperty]) || String(item[idProperty]),
           };
         }) || []
       );
@@ -235,6 +236,7 @@ export function SelectEditorField({
 
   return (
     <Autocomplete
+      fullWidth
       noOptionsText="Нет данных"
       loadingText="Загрузка..."
       getOptionSelected={(option, value) =>
@@ -243,7 +245,7 @@ export function SelectEditorField({
       inputValue={inputValue}
       value={value}
       getOptionLabel={(option) => {
-        return option[nameProperty] || ''
+        return option[nameProperty] || "";
       }}
       options={options}
       loading={loading}
@@ -251,6 +253,7 @@ export function SelectEditorField({
       onChange={onChange}
       renderInput={(params) => (
         <TextField
+          fullWidth
           error={error}
           helperText={helperText}
           label={label}
