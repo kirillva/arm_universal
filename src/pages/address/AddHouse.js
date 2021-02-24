@@ -12,6 +12,8 @@ import { getUserId } from "utils/user";
 import * as Yup from "yup";
 import { runRpc } from "utils/rpc";
 import { SelectEditor } from "components/table/Editors";
+import { useHistory } from "react-router-dom";
+import { GetGUID } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -27,9 +29,22 @@ const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: "center",
   },
+  fieldWrapper: {
+    display: "grid",
+    gap: theme.spacing(1),
+    gridTemplateColumns: "1fr 1fr",
+  }
 }));
 
 export const AddHouse = ({ street, refreshPage }) => {
+  const history = useHistory();
+  const initialValues = {
+    id: GetGUID(),
+    c_house_number: "",
+    c_house_corp: null,
+    f_subdivision: null,
+  };
+
   const {
     handleSubmit,
     handleChange,
@@ -37,18 +52,17 @@ export const AddHouse = ({ street, refreshPage }) => {
     isSubmitting,
     setSubmitting,
     errors,
+    submitForm,
     setFieldValue,
   } = useFormik({
     validationSchema: Yup.object().shape({
       c_house_number: Yup.string().required("Не заполнено обязательное поле"),
       n_uik: Yup.string().required("Не заполнено обязательное поле"),
-      f_subdivision: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      f_subdivision: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
     }),
-    initialValues: {
-      c_house_number: "",
-      c_house_corp: null,
-      f_subdivision: null,
-    },
+    initialValues,
     onSubmit: (values) => {
       runRpc({
         action: "cs_house",
@@ -71,6 +85,14 @@ export const AddHouse = ({ street, refreshPage }) => {
       });
     },
   });
+
+  const onSubmitAndEdit = () => {
+    submitForm().then(() => {
+      console.log('Edit_House')
+      // history.push(`/streetDetail?id=${values.id}`);
+    });
+  };
+  
   const classes = useStyles();
   return (
     <Paper className={classes.formWrapper}>
@@ -78,57 +100,75 @@ export const AddHouse = ({ street, refreshPage }) => {
         <Typography variant="h6" className={classes.title}>
           Добавить дом
         </Typography>
-        <TextField
-          label="Номер"
-          name="c_house_number"
-          value={values.c_house_number}
-          error={errors.c_house_number}
-          helperText={errors.c_house_number}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          label="Корпус"
-          name="c_house_corp"
-          value={values.c_house_corp}
-          error={errors.c_house_corp}
-          helperText={errors.c_house_corp}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          label="УИК"
-          name="n_uik"
-          value={values.n_uik}
-          error={errors.n_uik}
-          helperText={errors.n_uik}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <SelectEditor
-          name={"f_subdivision"}
-          fieldProps={{
-            helperText: errors.f_subdivision,
-            error: errors.f_subdivision,
-            idProperty: "id",
-            nameProperty: "c_name",
-            table: "sd_subdivisions",
-          }}
-          label="Округ ЧГСД"
-          mapAccessor="c_subdivision"
-          // value={values.f_subdivision}
-          setFieldValue={setFieldValue}
-        />
+        <div className={classes.fieldWrapper}>
+          <TextField
+            label="Номер"
+            name="c_house_number"
+            margin="none"
+            size="small"
+            value={values.c_house_number}
+            error={errors.c_house_number}
+            helperText={errors.c_house_number}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            label="Корпус"
+            name="c_house_corp"
+            margin="none"
+            size="small"
+            value={values.c_house_corp}
+            error={errors.c_house_corp}
+            helperText={errors.c_house_corp}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            label="УИК"
+            name="n_uik"
+            margin="none"
+            size="small"
+            value={values.n_uik}
+            error={errors.n_uik}
+            helperText={errors.n_uik}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <SelectEditor
+            name={"f_subdivision"}
+            fieldProps={{
+              margin: "none",
+              size: "small",
+              helperText: errors.f_subdivision,
+              error: errors.f_subdivision,
+              idProperty: "id",
+              nameProperty: "c_name",
+              table: "sd_subdivisions",
+            }}
+            label="Округ ЧГСД"
+            mapAccessor="c_subdivision"
+            // value={values.f_subdivision}
+            setFieldValue={setFieldValue}
+          />
+        </div>
         <Button
           type="submit"
           color="primary"
           variant="contained"
           disabled={isSubmitting}
         >
-          Добавить
+          Добавить дом
+        </Button>
+        <Button
+          onClick={onSubmitAndEdit}
+          color="primary"
+          variant="outlined"
+          disabled={isSubmitting}
+        >
+          Добавить и редактировать дом
         </Button>
       </form>
     </Paper>

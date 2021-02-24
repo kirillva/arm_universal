@@ -9,7 +9,9 @@ import {
 } from "@material-ui/core";
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
-import * as Yup from 'yup';
+import * as Yup from "yup";
+import { useHistory } from "react-router-dom";
+import { GetGUID } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -18,35 +20,45 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(1),
   },
   formWrapper: {
-    marginBottom: theme.spacing(1),
+    margin: theme.spacing(2),
     padding: theme.spacing(2),
     minWidth: 300,
   },
   title: {
     textAlign: "center",
   },
+  fieldWrapper: {
+    display: "grid",
+    gap: theme.spacing(1),
+    gridTemplateColumns: "1fr 1fr",
+  },
 }));
 
 export const AddStreet = ({ refreshPage }) => {
+  const history = useHistory();
+  const initialValues = {
+    id: GetGUID(),
+    c_name: "",
+    c_type: "",
+    c_short_type: "",
+  }
+
   const {
     handleSubmit,
     handleChange,
     values,
     isSubmitting,
     setSubmitting,
+    submitForm,
     errors,
   } = useFormik({
     validateOnBlur: true,
-    validationSchema:  Yup.object().shape({
-      c_name: Yup.string().required('Не заполнено обязательное поле'),
+    validationSchema: Yup.object().shape({
+      c_name: Yup.string().required("Не заполнено обязательное поле"),
     }),
-    initialValues: {
-      c_name: "",
-      c_type: "",
-      c_short_type: "",
-    },
+    initialValues,
     onSubmit: (values) => {
-      runRpc({
+      return runRpc({
         action: "cs_street",
         method: "Add",
         data: [{ ...values, f_user: getUserId(), b_disabled: false }],
@@ -57,6 +69,13 @@ export const AddStreet = ({ refreshPage }) => {
       });
     },
   });
+
+  const onSubmitAndEdit = () => {
+    submitForm().then(() => {
+      history.push(`/streetDetail?id=${values.id}`);
+    });
+  };
+
   const classes = useStyles();
   return (
     <Paper className={classes.formWrapper}>
@@ -64,36 +83,44 @@ export const AddStreet = ({ refreshPage }) => {
         <Typography variant="h6" className={classes.title}>
           Добавить улицу
         </Typography>
-        <TextField
-          error={errors.c_type}
-          helperText={errors.c_type}
-          label="Тип"
-          name="c_type"
-          value={values.c_type}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          error={errors.c_short_type}
-          helperText={errors.c_short_type}
-          label="Краткий тип"
-          name="c_short_type"
-          value={values.c_short_type}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
-        <TextField
-          error={errors.c_name}
-          helperText={errors.c_name}
-          label="Название"
-          name="c_name"
-          value={values.c_name}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          variant="outlined"
-        />
+        <div className={classes.fieldWrapper}>
+          <TextField
+            margin={"none"}
+            size={"small"}
+            error={errors.c_type}
+            helperText={errors.c_type}
+            label="Тип"
+            name="c_type"
+            value={values.c_type}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            margin={"none"}
+            size={"small"}
+            error={errors.c_short_type}
+            helperText={errors.c_short_type}
+            label="Краткий тип"
+            name="c_short_type"
+            value={values.c_short_type}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            margin={"none"}
+            size={"small"}
+            error={errors.c_name}
+            helperText={errors.c_name}
+            label="Название"
+            name="c_name"
+            value={values.c_name}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+        </div>
         <Button
           type="submit"
           color="primary"
@@ -101,6 +128,14 @@ export const AddStreet = ({ refreshPage }) => {
           disabled={isSubmitting}
         >
           Добавить
+        </Button>
+        <Button
+          onClick={onSubmitAndEdit}
+          color="primary"
+          variant="outlined"
+          disabled={isSubmitting}
+        >
+          Добавить и редактировать улицу
         </Button>
       </form>
     </Paper>

@@ -21,6 +21,8 @@ import { getUserId } from "utils/user";
 import { StreetDetailTable } from "./StreetDetailTable";
 import { AddStreet } from "./AddStreet";
 import { useHistory } from "react-router-dom";
+import { Button, Drawer } from "@material-ui/core";
+import { Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -29,11 +31,14 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   drawer: {
-    width: 500,
+    maxWidth: 700,
+    minWidth: 500,
+    overflowX: "hidden",
+    width: "50%",
   },
   formWrapper: {
     flexDirection: "column",
-    gap: theme.spacing(3),
+    gap: theme.spacing(2),
     display: "flex",
   },
   innerContent: {
@@ -49,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
 export const AddressPanel = () => {
   const [params, setParams] = useState([getUserId()]);
   const history = useHistory();
+  const [open, setOpen] = useState(false);
 
   const cs_street = React.useMemo(
     () => [
@@ -116,10 +122,34 @@ export const AddressPanel = () => {
       <div className={classes.toolbar} />
       <div className={classes.table}>
         <div className={classes.innerContent}>
-          {/* <div className={classes.formWrapper}>
-            <AddStreet refreshPage={() => setParams([getUserId()])} />
-          </div> */}
+          <Drawer
+            PaperProps={{
+              className: classes.drawer,
+            }}
+            anchor="right"
+            open={open}
+            onClose={() => {
+              setOpen(false);
+            }}
+          >
+            <AddStreet refreshPage={() => {
+              setParams([getUserId()])
+              setOpen(false);
+            }} />
+          </Drawer>
           <Table
+            buttons={
+              <>
+                <Button
+                  title={"Фильтры"}
+                  className={classes.iconButton}
+                  color={"black"}
+                  onClick={() => setOpen(true)}
+                >
+                  <Add />
+                </Button>
+              </>
+            }
             sortBy={[
               {
                 id: "c_name",

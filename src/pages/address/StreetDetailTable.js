@@ -56,7 +56,10 @@ const useStyles = makeStyles((theme) => ({
   },
   selectedRow: {
     backgroundColor: '#0096005c',
-  }
+  },
+  flexGrow: {
+    flex: 1,
+  },
 }));
 
 const EDIT_STREET = "EDIT_STREET";
@@ -197,22 +200,23 @@ export const StreetDetailTable = () => {
           <Typography variant="h6">
             Улица: {street ? street.c_name : ""}
           </Typography>
-          {/* <Button
+          <div className={classes.flexGrow} />
+          <Button
             className={classes.button}
             onClick={() => {
               setDrawerState(ADD_HOUSE);
             }}
           >
             <AddIcon />
-          </Button> */}
-          {/* <Button
+          </Button>
+          <Button
             className={classes.button}
             onClick={() => {
               setDrawerState(EDIT_STREET);
             }}
           >
             <EditIcon />
-          </Button> */}
+          </Button>
         </Paper>
         <Drawer
           PaperProps={{
@@ -228,8 +232,12 @@ export const StreetDetailTable = () => {
             <EditStreet
               street={street}
               id={id}
-              loadData={loadData}
-              refreshPage={() => setParams([...params])}
+              // loadData={loadData}
+              refreshPage={() => {
+                setParams([...params]);
+                loadData(id).then((record) => setStreet(record));
+                setDrawerState(null);
+              }}
             />
           )}
           {drawerState === ADD_HOUSE && (

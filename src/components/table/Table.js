@@ -98,8 +98,8 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  iconButton: {
-    margin: "0 0 0 auto",
+  iconButtonFlex: {
+    flex: 1,
   },
   highlight: {
     color: theme.palette.primary.main,
@@ -252,6 +252,7 @@ export const Table = ({
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
   getRowClassName = () => "",
+  buttons = null
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -583,6 +584,8 @@ export const Table = ({
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
+        <div className={classes.iconButtonFlex} />
+        {buttons}
         <Button
           title={"Фильтры"}
           className={classes.iconButton}
