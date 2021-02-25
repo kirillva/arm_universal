@@ -89,7 +89,7 @@ export const AddHouse = ({ street, refreshPage }) => {
   const onSubmitAndEdit = () => {
     submitForm().then(() => {
       console.log('Edit_House')
-      // history.push(`/streetDetail?id=${values.id}`);
+      // history.push(`/street/detail?id=${values.id}`);
     });
   };
   

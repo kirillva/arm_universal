@@ -27,6 +27,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import { useFormik } from "formik";
+import { Appartament } from "./Appartament";
 
 const Window = ({ item = {}, reloadData, open, handleClose }) => {
   const {
@@ -61,7 +62,7 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
     },
   });
 
-  function _handleClose (...props) {
+  function _handleClose(...props) {
     handleClose(...props);
     resetForm();
   }
@@ -96,49 +97,6 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
-
-const Appartament = ({
-  classes,
-  item,
-  reloadData,
-  onClick: _onClick,
-  setAnchorEl,
-}) => {
-  const [hidden, setHidden] = useState(true);
-  // const onMouseEnter = () => {
-  //   setHidden(false);
-  // };
-  // const onMouseLeave = () => {
-  //   setHidden(true);
-  // };
-
-  const handleClick = (event) => {
-    _onClick();
-    setAnchorEl(event.currentTarget);
-  };
-
-  let color = "#FFFFFF";
-  if (item.b_check) {
-    color = "#a3d9a3";
-  }
-  if (item.b_check === false) {
-    color = "#d9a3a3";
-  }
-  return (
-    <Paper
-      style={{
-        backgroundColor: `${color}`,
-      }}
-      className={classes.paper}
-      elevation={3}
-      // onMouseEnter={onMouseEnter}
-      // onMouseLeave={onMouseLeave}
-      onClick={handleClick}
-    >
-      <div className={classes.textPaper}>{item.c_number}</div>
-    </Paper>
   );
 };
 
@@ -323,6 +281,7 @@ export const HouseDetail = ({
       {selectedHouse && (
         <EditHouse
           id={id}
+          handleClose={() => setSelectedHouse(null)}
           refreshPage={() => {
             refreshTable();
             setSelectedHouse(null);

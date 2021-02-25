@@ -169,31 +169,27 @@ export const HouseHistoryPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      {selectedHouse && (
-        <div className={classes.text}>
-          <Drawer
-            PaperProps={{
-              className: classes.drawer,
-            }}
-            anchor="right"
-            open={Boolean(selectedHouse)}
-            onClose={() => {
+      <div className={classes.text}>
+        <Drawer
+          PaperProps={{
+            className: classes.drawer,
+          }}
+          anchor="right"
+          open={Boolean(selectedHouse)}
+          onClose={() => {
+            setSelectedHouse(null);
+          }}
+        >
+            {selectedHouse && (<EditHouseHistory
+            setSelectedHouse={setSelectedHouse}
+            selectedHouse={selectedHouse}
+            refreshPage={() => {
+              setParams([]);
               setSelectedHouse(null);
             }}
-          >
-            <EditHouseHistory
-              next={next}
-              previous={previous}
-              setSelectedHouse={setSelectedHouse}
-              selectedHouse={selectedHouse}
-              refreshPage={() => {
-                setParams([]);
-                setSelectedHouse(null);
-              }}
-            />
-          </Drawer>
-        </div>
-      )}
+          />)}
+        </Drawer>
+      </div>
       <Box height="100%">
         <Table
           className={classes.table}

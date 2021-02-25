@@ -74,7 +74,7 @@ export const routeItems = [
   {
     claims: ["manager"],
     exact: false,
-    path: "/streetDetail",
+    path: "/street/detail",
     component: StreetDetailTable,
   },
 ];

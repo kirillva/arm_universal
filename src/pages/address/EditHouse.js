@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
+export const EditHouse = ({ id, refreshPage, handleClose }) => {
   const {
     handleSubmit,
     handleChange,
@@ -273,7 +273,7 @@ export const EditHouse = ({ id, refreshPage, setSelectedHouse }) => {
             color="primary"
             variant="outlined"
             disabled={isSubmitting}
-            onClick={() => refreshPage()}
+            onClick={() => handleClose()}
           >
             Отменить
           </Button>

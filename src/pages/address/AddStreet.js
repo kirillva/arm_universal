@@ -72,7 +72,7 @@ export const AddStreet = ({ refreshPage }) => {
 
   const onSubmitAndEdit = () => {
     submitForm().then(() => {
-      history.push(`/streetDetail?id=${values.id}`);
+      history.push(`/street/detail?id=${values.id}`);
     });
   };
 

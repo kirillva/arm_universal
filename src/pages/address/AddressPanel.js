@@ -158,7 +158,7 @@ export const AddressPanel = () => {
             ]}
             title={"Улицы"}
             handleClick={(cell, row) =>
-              history.push(`/streetDetail?id=${row.id}`)
+              history.push(`/street/detail?id=${row.id}`)
             }
             method="Select"
             params={params}

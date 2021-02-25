@@ -109,7 +109,7 @@ export const menuItems = [
       "division",
     ],
     icon: AssignmentIcon,
-    path: "/streetDetail",
+    path: "/street/detail",
     title: "II этап: подтверждение",
   },
   
