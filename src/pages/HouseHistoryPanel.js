@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     maxWidth: 700,
-    minWidth: 500,
     overflowX: 'hidden',
     width: "50%",
   },

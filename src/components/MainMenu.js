@@ -77,20 +77,8 @@ export const SimpleMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {/* <MenuItem
-          button
-          key={"/"}
-          component={Link}
-          to={"/"}
-          onClick={handleClose}
-        >
-          Профиль
-        </MenuItem> */}
         <MenuItem
           button
-          key={"/address"}
-          component={Link}
-          to={"/address"}
           onClick={() => {
             history.push("/address");
             handleClose();
@@ -100,11 +88,8 @@ export const SimpleMenu = () => {
         </MenuItem>
         <MenuItem
           button
-          key={"/"}
-          component={Link}
-          to={"/"}
           onClick={() => {
-            history.push("/");
+            history.push("/street");
             handleClose();
           }}
         >

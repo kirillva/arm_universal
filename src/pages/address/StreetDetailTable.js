@@ -6,12 +6,11 @@ import {
   NumberFilter,
   StringFilter,
 } from "components/table/Filters";
-import { BoolCell, SelectCell, StringCell } from "components/table/Cell";
+import { SelectCell, StringCell } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { SelectEditor } from "components/table/Editors";
 import { HouseDetail } from "./HouseDetail";
-import { parse } from "query-string";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { EditStreet } from "./EditStreet";
 import { AddHouse } from "./AddHouse";
 import { Button, Drawer, Paper, Typography } from "@material-ui/core";
@@ -50,12 +49,11 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     maxWidth: 700,
-    minWidth: 500,
     overflowX: "hidden",
     width: "50%",
   },
   selectedRow: {
-    backgroundColor: '#0096005c',
+    backgroundColor: "#0096005c",
   },
   flexGrow: {
     flex: 1,
@@ -69,15 +67,15 @@ const EDIT_HOUSE = "EDIT_HOUSE";
 export const StreetDetailTable = () => {
   const classes = useStyles();
   const location = useLocation();
+  const { streetId } = useParams();
 
-  const { id } = parse(location.search);
-
-  const [params, setParams] = useState([null, id, null]);
+  const [params, setParams] = useState([null, streetId, null]);
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [street, setStreet] = useState(null);
   const [open, setOpen] = useState(false);
 
   const [drawerState, setDrawerState] = useState(null);
+  const history = useHistory();
 
   const cs_house = React.useMemo(
     () => [
@@ -128,9 +126,9 @@ export const StreetDetailTable = () => {
         title: "Подтверждено",
         Filter: BoolFilter,
         Cell: ({ cell }) => {
-          if (cell.value === null) return '';
-          if (cell.value === true) return 'Да';
-          if (cell.value === false) return 'Нет';
+          if (cell.value === null) return "";
+          if (cell.value === true) return "Да";
+          if (cell.value === false) return "Нет";
         },
         accessor: "b_check",
         style: {
@@ -141,27 +139,15 @@ export const StreetDetailTable = () => {
         title: "Завершено",
         Filter: BoolFilter,
         Cell: ({ cell }) => {
-          if (cell.value === null) return '';
-          if (cell.value === true) return 'Да';
-          if (cell.value === false) return 'Нет';
+          if (cell.value === null) return "";
+          if (cell.value === true) return "Да";
+          if (cell.value === false) return "Нет";
         },
         accessor: "b_finish",
         style: {
           width: "120px",
         },
       },
-      // {
-      //   title: "Причина",
-      //   Filter: StringFilter,
-      //   Cell: StringCell,
-      //   accessor: "c_disabled",
-      // },
-      // {
-      //   title: "Автор",
-      //   Filter: StringFilter,
-      //   Cell: StringCell,
-      //   accessor: "c_first_name",
-      // },
     ],
     []
   );
@@ -189,8 +175,8 @@ export const StreetDetailTable = () => {
   };
 
   useEffect(() => {
-    loadData(id).then((record) => setStreet(record));
-  }, [id]);
+    streetId && loadData(streetId).then((record) => setStreet(record));
+  }, [streetId]);
 
   return (
     <div className={classes.content}>
@@ -231,17 +217,17 @@ export const StreetDetailTable = () => {
           {drawerState === EDIT_STREET && (
             <EditStreet
               street={street}
-              id={id}
+              id={streetId}
               // loadData={loadData}
               refreshPage={() => {
                 setParams([...params]);
-                loadData(id).then((record) => setStreet(record));
+                loadData(streetId).then((record) => setStreet(record));
                 setDrawerState(null);
               }}
             />
           )}
           {drawerState === ADD_HOUSE && (
-            <AddHouse street={id} refreshPage={() => setParams([...params])} />
+            <AddHouse street={streetId} refreshPage={() => setParams([...params])} />
           )}
           {drawerState === EDIT_HOUSE && (
             <HouseDetail
@@ -249,7 +235,7 @@ export const StreetDetailTable = () => {
                 setDrawerState(null);
                 setParams([...params]);
               }}
-              street={id}
+              street={streetId}
               selectedHouse={selectedHouse}
               setSelectedHouse={setSelectedHouse}
             />
@@ -266,7 +252,9 @@ export const StreetDetailTable = () => {
             title={"Дома"}
             method="Select"
             columns={cs_house}
-            getRowClassName={(row)=>row.original.b_finish ? classes.selectedRow : ''}
+            getRowClassName={(row) =>
+              row.original.b_finish ? classes.selectedRow : ""
+            }
             handleClick={(cell, row) => {
               setSelectedHouse(row);
               setDrawerState(EDIT_HOUSE);

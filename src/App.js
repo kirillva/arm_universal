@@ -12,19 +12,13 @@ import { routeItems } from "components/Routes";
 import { getClaims, isAuthorized } from "utils/user";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    height: '100%'
+    height: "100%",
   },
   appBar: {
-    // [theme.breakpoints.up("sm")]: {
-    //   width: `calc(100% - ${drawerWidth}px)`,
-    //   marginLeft: drawerWidth,
-    // },
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: theme.palette.primary.main,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -38,16 +32,6 @@ function ResponsiveDrawer() {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-
-  const currentMenuItem = menuItems.find(
-    (item) => item.path === location.pathname
-  );
-  const currentRouteItem = routeItems.find(
-    (item) => item.path === location.pathname
-  );
-  // console.log(currentMenuItem);
-  // console.log(location);
-  // console.log(menuItems);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -63,51 +47,39 @@ function ResponsiveDrawer() {
     });
     return val;
   };
-  const filteredMenu = menuItems.filter(filter);
-  const filteredRoute = routeItems.filter(filter);
-
   const PrivateRoute = ({ component: Component, ...rest }) => {
     return isAuthorized() ? <Route {...rest} /> : <Redirect to="/auth" />;
   };
 
-  if (!currentRouteItem) return "404";
-
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {currentRouteItem.path === "/auth" ? null : (
-        <>
-          <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                className={classes.menuButton}
-              >
-                <MenuIcon />
-              </IconButton>
-              <MainMenu
-                mobileOpen={mobileOpen}
-                data={menuItems}
-                handleDrawerToggle={handleDrawerToggle}
-              />
-              {/* <Typography variant="h6" noWrap>
-                {currentMenuItem.title}
-              </Typography> */}
-            </Toolbar>
-          </AppBar>
-        </>
-      )}
       <Switch>
         {routeItems.map((item) => {
           return item.public ? (
-            <Route exact={true} path={item.path}>
+            <Route path={item.path}>
               {React.createElement(item.component)}
             </Route>
           ) : (
-            <PrivateRoute exact={true} path={item.path}>
+            <PrivateRoute path={item.path}>
+              <AppBar position="fixed" className={classes.appBar}>
+                <Toolbar>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    className={classes.menuButton}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <MainMenu
+                    mobileOpen={mobileOpen}
+                    data={menuItems}
+                    handleDrawerToggle={handleDrawerToggle}
+                  />
+                </Toolbar>
+              </AppBar>
               {React.createElement(item.component)}
             </PrivateRoute>
           );

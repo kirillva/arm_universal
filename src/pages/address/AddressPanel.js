@@ -20,7 +20,7 @@ import { getSelectByColumns } from "utils/helpers";
 import { getUserId } from "utils/user";
 import { StreetDetailTable } from "./StreetDetailTable";
 import { AddStreet } from "./AddStreet";
-import { useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { Button, Drawer } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     maxWidth: 700,
-    minWidth: 500,
     overflowX: "hidden",
     width: "50%",
   },
@@ -53,8 +52,11 @@ const useStyles = makeStyles((theme) => ({
 
 export const AddressPanel = () => {
   const [params, setParams] = useState([getUserId()]);
-  const history = useHistory();
   const [open, setOpen] = useState(false);
+
+  const history = useHistory();
+  const classes = useStyles();
+  const match = useRouteMatch();
 
   const cs_street = React.useMemo(
     () => [
@@ -73,23 +75,6 @@ export const AddressPanel = () => {
         accessor: "c_name",
         Cell: StringCell,
       },
-      // {
-      //   title: "Район",
-      //   accessor: "c_division",
-      //   // mapAccessor: "c_division",
-      //   // fieldProps: {
-      //   //   idProperty: "id",
-      //   //   nameProperty: "c_name",
-      //   //   table: "sd_divisions",
-      //   // },
-      //   style: {
-      //     width: '250px'
-      //   },
-      //   // Filter: SelectFilter,
-      //   Filter: StringFilter,
-      //   // Editor: SelectEditor,
-      //   Cell: StringCell,
-      // },
       {
         title: "Завершен",
         Filter: BoolFilter,
@@ -99,77 +84,70 @@ export const AddressPanel = () => {
         },
         accessor: "b_finish",
       },
-      // {
-      //   title: "Причина",
-      //   Filter: StringFilter,
-      //   Cell: StringCell,
-      //   accessor: "c_disabled",
-      // },
-      // {
-      //   title: "Автор",
-      //   Filter: StringFilter,
-      //   Cell: StringCell,
-      //   accessor: "c_first_name",
-      // },
     ],
     []
   );
 
-  const classes = useStyles();
-
   return (
-    <div className={classes.content}>
-      <div className={classes.toolbar} />
-      <div className={classes.table}>
-        <div className={classes.innerContent}>
-          <Drawer
-            PaperProps={{
-              className: classes.drawer,
-            }}
-            anchor="right"
-            open={open}
-            onClose={() => {
-              setOpen(false);
-            }}
-          >
-            <AddStreet refreshPage={() => {
-              setParams([getUserId()])
-              setOpen(false);
-            }} />
-          </Drawer>
-          <Table
-            buttons={
-              <>
-                <Button
-                  title={"Фильтры"}
-                  className={classes.iconButton}
-                  color={"black"}
-                  onClick={() => setOpen(true)}
-                >
-                  <Add />
-                </Button>
-              </>
-            }
-            sortBy={[
-              {
-                id: "c_name",
-                desc: false,
-              },
-            ]}
-            title={"Улицы"}
-            handleClick={(cell, row) =>
-              history.push(`/street/detail?id=${row.id}`)
-            }
-            method="Select"
-            params={params}
-            columns={cs_street}
-            getRowClassName={(row) =>
-              row.original.b_finish ? classes.selectedRow : ""
-            }
-            action="cf_bss_cs_street"
-          />
+    <Switch>
+      <Route path={`${match.path}/:streetId`}>
+        <StreetDetailTable/>
+      </Route>
+      <Route path={match.path}>
+        <div className={classes.content}>
+          <div className={classes.toolbar} />
+          <div className={classes.table}>
+            <div className={classes.innerContent}>
+              <Drawer
+                PaperProps={{
+                  className: classes.drawer,
+                }}
+                anchor="right"
+                open={open}
+                onClose={() => {
+                  setOpen(false);
+                }}
+              >
+                <AddStreet
+                  refreshPage={() => {
+                    setParams([getUserId()]);
+                    setOpen(false);
+                  }}
+                />
+              </Drawer>
+              <Table
+                buttons={
+                  <>
+                    <Button
+                      title={"Фильтры"}
+                      className={classes.iconButton}
+                      color={"black"}
+                      onClick={() => setOpen(true)}
+                    >
+                      <Add />
+                    </Button>
+                  </>
+                }
+                sortBy={[
+                  {
+                    id: "c_name",
+                    desc: false,
+                  },
+                ]}
+                title={"Улицы"}
+                handleClick={(cell, row) => history.push(`/street/${row.id}`)}
+                method="Select"
+                params={params}
+                columns={cs_street}
+                getRowClassName={(row) =>
+                  row.original.b_finish ? classes.selectedRow : ""
+                }
+                action="cf_bss_cs_street"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </Route>
+    </Switch>
   );
 };
