@@ -41,7 +41,7 @@ export const AddStreet = ({ refreshPage }) => {
     c_name: "",
     c_type: "",
     c_short_type: "",
-  }
+  };
 
   const {
     handleSubmit,
@@ -50,29 +50,33 @@ export const AddStreet = ({ refreshPage }) => {
     isSubmitting,
     setSubmitting,
     submitForm,
+    validateForm,
     errors,
+    isValid,
   } = useFormik({
     validateOnBlur: true,
     validationSchema: Yup.object().shape({
       c_name: Yup.string().required("Не заполнено обязательное поле"),
     }),
     initialValues,
-    onSubmit: (values) => {
-      return runRpc({
+    onSubmit: async (values) => {
+      const responce = await runRpc({
         action: "cs_street",
         method: "Add",
         data: [{ ...values, f_user: getUserId(), b_disabled: false }],
         type: "rpc",
-      }).then((responce) => {
-        refreshPage();
-        setSubmitting(false);
       });
+      refreshPage();
+      setSubmitting(false);
+      return responce;
     },
   });
 
   const onSubmitAndEdit = () => {
-    submitForm().then(() => {
-      history.push(`/street/${values.id}`);
+    submitForm().then((responce)=>{
+      if (responce) {
+        history.push(`/street/${values.id}`);
+      }
     });
   };
 

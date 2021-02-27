@@ -31,22 +31,11 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer() {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const filter = (item) => {
-    let val = false;
-    if (item.public) return true;
-    item.claims.forEach((element) => {
-      if (getClaims().indexOf(`.${element}.`) >= 0) {
-        val = true;
-      }
-    });
-    return val;
-  };
   const PrivateRoute = ({ component: Component, ...rest }) => {
     return isAuthorized() ? <Route {...rest} /> : <Redirect to="/auth" />;
   };
@@ -84,6 +73,9 @@ function ResponsiveDrawer() {
             </PrivateRoute>
           );
         })}
+        <Route path="/">
+          <Redirect to="/address" />
+        </Route>
       </Switch>
     </div>
   );

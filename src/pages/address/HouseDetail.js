@@ -28,6 +28,7 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import { useFormik } from "formik";
 import { Appartament } from "./Appartament";
+import { useHistory, useParams } from "react-router-dom";
 
 const Window = ({ item = {}, reloadData, open, handleClose }) => {
   const {
@@ -103,9 +104,13 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
 export const HouseDetail = ({
   refreshTable,
   street,
-  selectedHouse,
-  setSelectedHouse,
+  // selectedHouse,
+  // setSelectedHouse,
 }) => {
+  
+  const { houseId, streetId } = useParams();
+
+  debugger;
   const useStyles = makeStyles((theme) => ({
     // drawer: {
     //   width: 400,
@@ -157,10 +162,11 @@ export const HouseDetail = ({
   const [appartament, setAppartament] = useState([]);
   const [selectedAppartament, setSelectedAppartament] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [appartamentNumber, setAppartamentNumber] = useState("");
-  const [error, setError] = useState("");
+  // const [appartamentNumber, setAppartamentNumber] = useState("");
+  // const [error, setError] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const history = useHistory();
 
   const classes = useStyles();
 
@@ -168,9 +174,11 @@ export const HouseDetail = ({
     setAnchorEl(null);
   };
 
-  const { c_short_type, c_name, c_full_number, b_disabled, id } = selectedHouse
-    ? selectedHouse.original
-    : {};
+  // const { c_short_type, c_name, c_full_number, b_disabled, id } = selectedHouse
+  //   ? selectedHouse.original
+  //   : {};
+
+
   // useEffect(() => {
   //   if (street && selectedHouse) {
   //     setHouseInfo([]);
@@ -223,7 +231,7 @@ export const HouseDetail = ({
               direction: "asc",
             },
           ],
-          params: [null, street, id],
+          params: [null, street, houseId],
           limit: 1000,
         },
       ],
@@ -235,11 +243,11 @@ export const HouseDetail = ({
   };
 
   useEffect(() => {
-    if (selectedHouse) {
+    if (houseId) {
       loadData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedHouse]);
+  }, [houseId]);
 
   const onSendSelected = (b_check) => {
     runRpc({
@@ -278,13 +286,13 @@ export const HouseDetail = ({
   </Button> */
   return (
     <>
-      {selectedHouse && (
+      {houseId && (
         <EditHouse
-          id={id}
-          handleClose={() => setSelectedHouse(null)}
+          id={houseId}
+          handleClose={() => history.push(`/street/${streetId}`)}
           refreshPage={() => {
             refreshTable();
-            setSelectedHouse(null);
+            // setSelectedHouse(null);
           }}
         />
       )}

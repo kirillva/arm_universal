@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   Divider,
-  Drawer,
-  Hidden,
   List,
   ListItem,
   ListItemIcon,
@@ -11,18 +9,14 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getItem, getUsername, logout } from "utils/user";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-
+import AccountCircleIcon from "@material-ui/icons/AccountCircle"
 import HomeIcon from '@material-ui/icons/Home';
-import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  // toolbar: theme.mixins.toolbar,
   drawer: {
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,

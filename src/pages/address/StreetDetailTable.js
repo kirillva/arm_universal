@@ -10,13 +10,21 @@ import { SelectCell, StringCell } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { SelectEditor } from "components/table/Editors";
 import { HouseDetail } from "./HouseDetail";
-import { useHistory, useLocation, useParams } from "react-router-dom";
 import { EditStreet } from "./EditStreet";
 import { AddHouse } from "./AddHouse";
 import { Button, Drawer, Paper, Typography } from "@material-ui/core";
 import { runRpc } from "utils/rpc";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
+import {
+  Redirect,
+  Route,
+  Switch,
+  useLocation,
+  useHistory,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -76,6 +84,7 @@ export const StreetDetailTable = () => {
 
   const [drawerState, setDrawerState] = useState(null);
   const history = useHistory();
+  const match = useRouteMatch();
 
   const cs_house = React.useMemo(
     () => [
@@ -182,6 +191,50 @@ export const StreetDetailTable = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.innerContent}>
+        <Switch>
+          <Route path={`${match.path}/:houseId`}>
+            <Drawer
+              PaperProps={{
+                className: classes.drawer,
+              }}
+              anchor={"right"}
+              open={true}
+              onClose={() => {
+                // setDrawerState(null);
+              }}
+            >
+              {/* {drawerState === EDIT_STREET && (
+                <EditStreet
+                  street={street}
+                  id={streetId}
+                  // loadData={loadData}
+                  refreshPage={() => {
+                    setParams([...params]);
+                    loadData(streetId).then((record) => setStreet(record));
+                    setDrawerState(null);
+                  }}
+                />
+              )}
+              {drawerState === ADD_HOUSE && (
+                <AddHouse
+                  street={streetId}
+                  refreshPage={() => setParams([...params])}
+                />
+              )}
+              {drawerState === EDIT_HOUSE && ( */}
+              <HouseDetail
+                refreshTable={() => {
+                  // setDrawerState(null);
+                  setParams([...params]);
+                }}
+                street={streetId}
+                // selectedHouse={selectedHouse}
+                // setSelectedHouse={setSelectedHouse}
+              />
+              {/* )} */}
+            </Drawer>
+          </Route>
+        </Switch>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
             Улица: {street ? street.c_name : ""}
@@ -204,43 +257,6 @@ export const StreetDetailTable = () => {
             <EditIcon />
           </Button>
         </Paper>
-        <Drawer
-          PaperProps={{
-            className: classes.drawer,
-          }}
-          anchor={"right"}
-          open={Boolean(drawerState)}
-          onClose={() => {
-            setDrawerState(null);
-          }}
-        >
-          {drawerState === EDIT_STREET && (
-            <EditStreet
-              street={street}
-              id={streetId}
-              // loadData={loadData}
-              refreshPage={() => {
-                setParams([...params]);
-                loadData(streetId).then((record) => setStreet(record));
-                setDrawerState(null);
-              }}
-            />
-          )}
-          {drawerState === ADD_HOUSE && (
-            <AddHouse street={streetId} refreshPage={() => setParams([...params])} />
-          )}
-          {drawerState === EDIT_HOUSE && (
-            <HouseDetail
-              refreshTable={() => {
-                setDrawerState(null);
-                setParams([...params]);
-              }}
-              street={streetId}
-              selectedHouse={selectedHouse}
-              setSelectedHouse={setSelectedHouse}
-            />
-          )}
-        </Drawer>
         <div className={classes.table}>
           <Table
             sortBy={[
@@ -256,8 +272,9 @@ export const StreetDetailTable = () => {
               row.original.b_finish ? classes.selectedRow : ""
             }
             handleClick={(cell, row) => {
-              setSelectedHouse(row);
-              setDrawerState(EDIT_HOUSE);
+              history.push(`/street/${streetId}/${row.original.id}`);
+              // setSelectedHouse(row);
+              // setDrawerState(EDIT_HOUSE);
             }}
             params={params}
             action="cf_bss_cs_house"

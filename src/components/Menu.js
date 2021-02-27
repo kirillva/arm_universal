@@ -1,5 +1,4 @@
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import MapIcon from '@material-ui/icons/Map';
 import HomeIcon from '@material-ui/icons/Home';
 
 export const menuItems = [

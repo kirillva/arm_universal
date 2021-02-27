@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: "grid",
     gap: theme.spacing(1),
     gridTemplateColumns: "1fr 1fr",
-  }
+  },
 }));
 
 export const AddHouse = ({ street, refreshPage }) => {
@@ -63,8 +63,8 @@ export const AddHouse = ({ street, refreshPage }) => {
         .required("Не заполнено обязательное поле"),
     }),
     initialValues,
-    onSubmit: (values) => {
-      runRpc({
+    onSubmit: async (values) => {
+      const responce = await runRpc({
         action: "cs_house",
         method: "Add",
         data: [
@@ -78,21 +78,21 @@ export const AddHouse = ({ street, refreshPage }) => {
           },
         ],
         type: "rpc",
-      }).then((responce) => {
-        refreshPage();
-        setSubmitting(false);
-        // console.log(responce.result.records);
       });
+      refreshPage();
+      setSubmitting(false);
+      return responce;
     },
   });
 
   const onSubmitAndEdit = () => {
-    submitForm().then(() => {
-      console.log('Edit_House')
-      // history.push(`/street/detail?id=${values.id}`);
+    submitForm().then((responce) => {
+      if (responce) {
+        history.push(`/street/${street}/${values.id}`);
+      }
     });
   };
-  
+
   const classes = useStyles();
   return (
     <Paper className={classes.formWrapper}>
