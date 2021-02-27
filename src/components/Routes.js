@@ -1,6 +1,6 @@
 import { SigninForm } from "pages/SigninForm";
 import { AddressPanel } from "pages/address/AddressPanel";
-import { StreetDetailTable } from "pages/address/StreetDetailTable";
+// import { HouseListTable } from "pages/address/HouseListTable";
 import { HouseHistoryPanel } from "pages/HouseHistoryPanel";
 
 export const routeItems = [

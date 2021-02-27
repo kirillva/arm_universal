@@ -18,7 +18,7 @@ import { SelectFilter } from "components/table/SelectFilter";
 import { BoolEditor, SelectEditor, DateEditor } from "components/table/Editors";
 import { getSelectByColumns } from "utils/helpers";
 import { getUserId } from "utils/user";
-import { StreetDetailTable } from "./StreetDetailTable";
+import { HouseListTable } from "./HouseListTable";
 import { AddStreet } from "./AddStreet";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { Button, Drawer } from "@material-ui/core";
@@ -91,7 +91,7 @@ export const AddressPanel = () => {
   return (
     <Switch>
       <Route path={`${match.path}/:streetId`}>
-        <StreetDetailTable/>
+        <HouseListTable/>
       </Route>
       <Route path={match.path}>
         <div className={classes.content}>

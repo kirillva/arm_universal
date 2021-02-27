@@ -14,6 +14,8 @@ import { runRpc } from "utils/rpc";
 import { SelectEditor } from "components/table/Editors";
 import { useHistory } from "react-router-dom";
 import { GetGUID } from "utils/helpers";
+import { SelectSubdivision } from "components/SelectSubdivision";
+import { SelectUik } from "components/SelectUik";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -125,7 +127,29 @@ export const AddHouse = ({ street, refreshPage }) => {
             disabled={isSubmitting}
             variant="outlined"
           />
-          <TextField
+          <SelectSubdivision
+            margin="none"
+            size="small"
+            name="f_subdivision"
+            value={values.f_subdivision}
+            error={errors.f_subdivision}
+            handleChange={(...props) => {
+              setFieldValue("n_uik", "");
+              handleChange(...props);
+            }}
+            isSubmitting={isSubmitting}
+          />
+          <SelectUik
+            margin="none"
+            size="small"
+            name="n_uik"
+            subdivision={values.f_subdivision}
+            value={values.n_uik}
+            error={errors.n_uik}
+            handleChange={handleChange}
+            isSubmitting={isSubmitting}
+          />
+          {/* <TextField
             label="УИК"
             name="n_uik"
             margin="none"
@@ -152,7 +176,7 @@ export const AddHouse = ({ street, refreshPage }) => {
             mapAccessor="c_subdivision"
             // value={values.f_subdivision}
             setFieldValue={setFieldValue}
-          />
+          /> */}
         </div>
         <Button
           type="submit"

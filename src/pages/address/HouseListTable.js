@@ -68,21 +68,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EDIT_STREET = "EDIT_STREET";
-const ADD_HOUSE = "ADD_HOUSE";
-const EDIT_HOUSE = "EDIT_HOUSE";
-
-export const StreetDetailTable = () => {
+export const HouseListTable = () => {
   const classes = useStyles();
-  const location = useLocation();
   const { streetId } = useParams();
-
   const [params, setParams] = useState([null, streetId, null]);
-  const [selectedHouse, setSelectedHouse] = useState(null);
   const [street, setStreet] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  const [drawerState, setDrawerState] = useState(null);
   const history = useHistory();
   const match = useRouteMatch();
 
@@ -192,6 +182,48 @@ export const StreetDetailTable = () => {
       <div className={classes.toolbar} />
       <div className={classes.innerContent}>
         <Switch>
+          <Route path={`${match.path}/edit`}>
+            <Drawer
+              PaperProps={{
+                className: classes.drawer,
+              }}
+              anchor={"right"}
+              open={true}
+              onClose={() => {
+                history.push(`/street/${streetId}`);
+              }}
+            >
+              <EditStreet
+                street={street}
+                id={streetId}
+                refreshPage={() => {
+                  setParams([...params]);
+                  loadData(streetId).then((record) => setStreet(record));
+                  history.push(`/street/${streetId}`);
+                }}
+              />
+            </Drawer>
+          </Route>
+          <Route path={`${match.path}/add`}>
+            <Drawer
+              PaperProps={{
+                className: classes.drawer,
+              }}
+              anchor={"right"}
+              open={true}
+              onClose={() => {
+                history.push(`/street/${streetId}`);
+              }}
+            >
+              <AddHouse
+                street={streetId}
+                refreshPage={() => {
+                  setParams([...params]);
+                  history.push(`/street/${streetId}`);
+                }}
+              />
+            </Drawer>
+          </Route>
           <Route path={`${match.path}/:houseId`}>
             <Drawer
               PaperProps={{
@@ -200,38 +232,18 @@ export const StreetDetailTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                // setDrawerState(null);
+                history.push(`/street/${streetId}`);
               }}
             >
-              {/* {drawerState === EDIT_STREET && (
-                <EditStreet
-                  street={street}
-                  id={streetId}
-                  // loadData={loadData}
-                  refreshPage={() => {
-                    setParams([...params]);
-                    loadData(streetId).then((record) => setStreet(record));
-                    setDrawerState(null);
-                  }}
-                />
-              )}
-              {drawerState === ADD_HOUSE && (
-                <AddHouse
-                  street={streetId}
-                  refreshPage={() => setParams([...params])}
-                />
-              )}
-              {drawerState === EDIT_HOUSE && ( */}
               <HouseDetail
                 refreshTable={() => {
-                  // setDrawerState(null);
                   setParams([...params]);
+                  history.push(`/street/${streetId}`);
                 }}
                 street={streetId}
                 // selectedHouse={selectedHouse}
                 // setSelectedHouse={setSelectedHouse}
               />
-              {/* )} */}
             </Drawer>
           </Route>
         </Switch>
@@ -243,7 +255,7 @@ export const StreetDetailTable = () => {
           <Button
             className={classes.button}
             onClick={() => {
-              setDrawerState(ADD_HOUSE);
+              history.push(`/street/${streetId}/add`);
             }}
           >
             <AddIcon />
@@ -251,7 +263,8 @@ export const StreetDetailTable = () => {
           <Button
             className={classes.button}
             onClick={() => {
-              setDrawerState(EDIT_STREET);
+              // setDrawerState(EDIT_STREET);
+              history.push(`/street/${streetId}/edit`);
             }}
           >
             <EditIcon />
