@@ -159,33 +159,6 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
           </FormControl>
         </div>
         <div className={classes.fieldWrapper}>
-          {/* <TextField
-            size="small"
-            label="УИК"
-            name="n_uik"
-            value={values.n_uik}
-            error={errors.n_uik}
-            helperText={errors.n_uik}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            variant="outlined"
-          /> */}
-          {/* <SelectEditor
-            name={"f_subdivision"}
-            fieldProps={{
-              margin: "none",
-              size: "small",
-              helperText: errors.f_subdivision,
-              error: errors.f_subdivision,
-              idProperty: "id",
-              nameProperty: "c_name",
-              table: "sd_subdivisions",
-            }}
-            label="Округ ЧГСД"
-            mapAccessor="c_subdivision"
-            value={values.f_subdivision}
-            setFieldValue={setFieldValue}
-          /> */}
           <SelectSubdivision
             margin="none"
             size="small"

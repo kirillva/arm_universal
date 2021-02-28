@@ -109,8 +109,6 @@ export const HouseDetail = ({
 }) => {
   
   const { houseId, streetId } = useParams();
-
-  debugger;
   const useStyles = makeStyles((theme) => ({
     // drawer: {
     //   width: 400,
@@ -162,8 +160,8 @@ export const HouseDetail = ({
   const [appartament, setAppartament] = useState([]);
   const [selectedAppartament, setSelectedAppartament] = useState(null);
   const [loading, setLoading] = useState(false);
-  // const [appartamentNumber, setAppartamentNumber] = useState("");
-  // const [error, setError] = useState("");
+  const [appartamentNumber, setAppartamentNumber] = useState("");
+  const [error, setError] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const history = useHistory();
@@ -300,7 +298,7 @@ export const HouseDetail = ({
         <CircularProgress />
       ) : (
         <>
-          {/* <div className={classes.newHouse}>
+          <div className={classes.newHouse}>
             <TextField
               size="small"
               error={error}
@@ -335,7 +333,7 @@ export const HouseDetail = ({
                     {
                       c_number: appartamentNumber,
                       n_number: Number.parseInt(appartamentNumber),
-                      f_house: selectedHouse.id,
+                      f_house: houseId,
                       b_off_range: false,
                     },
                   ],
@@ -354,7 +352,7 @@ export const HouseDetail = ({
             >
               Добавить
             </Button>
-          </div> */}
+          </div>
           <div className={classes.grid}>
             {appartament.map((item) => {
               return (
