@@ -28,7 +28,12 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import { useFormik } from "formik";
 import { Appartament } from "./Appartament";
-import { useHistory, useLocation, useParams, useRouteMatch } from "react-router-dom";
+import {
+  useHistory,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
 
 const Window = ({ item = {}, reloadData, open, handleClose }) => {
   const {
@@ -104,13 +109,12 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
 export const HouseDetail = ({
   refreshTable,
   street,
-  addNew = false
+  addNew = false,
   // selectedHouse,
   // setSelectedHouse,
 }) => {
-  
   const { houseId, streetId } = useParams();
-  
+
   const match = useRouteMatch();
 
   const useStyles = makeStyles((theme) => ({
@@ -180,7 +184,6 @@ export const HouseDetail = ({
   //   ? selectedHouse.original
   //   : {};
 
-
   // useEffect(() => {
   //   if (street && selectedHouse) {
   //     setHouseInfo([]);
@@ -222,26 +225,61 @@ export const HouseDetail = ({
 
   const loadData = () => {
     setLoading(true);
-    runRpc({
-      action: "cf_bss_cs_appartament",
-      method: "Select",
-      data: [
-        {
-          sort: [
-            {
-              property: "n_number",
-              direction: "asc",
-            },
-          ],
-          params: [null, street, houseId],
-          limit: 1000,
-        },
-      ],
-      type: "rpc",
-    }).then((responce) => {
-      setLoading(false);
-      setAppartament(responce.result.records);
-    });
+    if (addNew) {
+      runRpc({
+        action: "cs_appartament",
+        method: "Query",
+        data: [
+          {
+            select: "c_number,n_number,b_check,f_house,f_house___f_street",
+            sort: [
+              {
+                property: "n_number",
+                direction: "asc",
+              },
+            ],
+            filter: [
+              {
+                property: "f_house",
+                value: houseId,
+                operator: "=",
+              },
+              {
+                property: "f_house___f_street",
+                value: street,
+                operator: "=",
+              },
+            ],
+            limit: 1000,
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        setLoading(false);
+        setAppartament(responce.result.records);
+      });
+    } else {
+      runRpc({
+        action: "cf_bss_cs_appartament",
+        method: "Select",
+        data: [
+          {
+            sort: [
+              {
+                property: "n_number",
+                direction: "asc",
+              },
+            ],
+            params: [null, street, houseId],
+            limit: 1000,
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        setLoading(false);
+        setAppartament(responce.result.records);
+      });
+    }
   };
 
   useEffect(() => {
@@ -291,7 +329,11 @@ export const HouseDetail = ({
       {houseId && (
         <EditHouse
           id={houseId}
-          handleClose={() => history.push(match.path.replace(':streetId', streetId).replace(':houseId', ''))}
+          handleClose={() =>
+            history.push(
+              match.path.replace(":streetId", streetId).replace(":houseId", "")
+            )
+          }
           refreshPage={() => {
             refreshTable();
             // setSelectedHouse(null);
@@ -302,61 +344,63 @@ export const HouseDetail = ({
         <CircularProgress />
       ) : (
         <>
-          {addNew && <div className={classes.newHouse}>
-            <TextField
-              size="small"
-              error={error}
-              helperText={error}
-              variant="outlined"
-              value={appartamentNumber}
-              onChange={(e) => {
-                const value = e.target.value;
-                const item = appartament.find(
-                  (item) => item.c_number === value
-                );
-                if (item) {
-                  setError(`Квартира ${value} уже существует`);
-                } else {
-                  setError(null);
-                }
-                setAppartamentNumber(value);
-              }}
-              label="Номер квартиры"
-            />
-            <Button
-              className={classes.button}
-              disabled={!Boolean(appartamentNumber) || error}
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                // setLoading(true);
-                runRpc({
-                  action: "cs_appartament",
-                  method: "Add",
-                  data: [
-                    {
-                      c_number: appartamentNumber,
-                      n_number: Number.parseInt(appartamentNumber),
-                      f_house: houseId,
-                      b_off_range: false,
-                    },
-                  ],
-                  type: "rpc",
-                })
-                  .then(() => {
-                    // setLoading(false);
-                    loadData();
-                    setAppartamentNumber("");
+          {addNew && (
+            <div className={classes.newHouse}>
+              <TextField
+                size="small"
+                error={error}
+                helperText={error}
+                variant="outlined"
+                value={appartamentNumber}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const item = appartament.find(
+                    (item) => item.c_number === value
+                  );
+                  if (item) {
+                    setError(`Квартира ${value} уже существует`);
+                  } else {
+                    setError(null);
+                  }
+                  setAppartamentNumber(value);
+                }}
+                label="Номер квартиры"
+              />
+              <Button
+                className={classes.button}
+                disabled={!Boolean(appartamentNumber) || error}
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  // setLoading(true);
+                  runRpc({
+                    action: "cs_appartament",
+                    method: "Add",
+                    data: [
+                      {
+                        c_number: appartamentNumber,
+                        n_number: Number.parseInt(appartamentNumber),
+                        f_house: houseId,
+                        b_off_range: false,
+                      },
+                    ],
+                    type: "rpc",
                   })
-                  .catch((e) => {
-                    // setLoading(false);
-                    setAppartamentNumber("");
-                  });
-              }}
-            >
-              Добавить
-            </Button>
-          </div>}
+                    .then(() => {
+                      // setLoading(false);
+                      loadData();
+                      setAppartamentNumber("");
+                    })
+                    .catch((e) => {
+                      // setLoading(false);
+                      setAppartamentNumber("");
+                    });
+                }}
+              >
+                Добавить
+              </Button>
+            </div>
+          )}
           <div className={classes.grid}>
             {appartament.map((item) => {
               return (
