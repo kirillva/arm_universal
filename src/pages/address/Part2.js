@@ -1,28 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import {
   BoolFilter,
-  DateFilter,
-  NumberFilter,
   StringFilter,
 } from "components/table/Filters";
-import {
-  BoolCell,
-  DateCell,
-  NumberCell,
-  SelectCell,
-  StringCell,
-} from "components/table/Cell";
-import { SelectFilter } from "components/table/SelectFilter";
-import { BoolEditor, SelectEditor, DateEditor } from "components/table/Editors";
-import { getSelectByColumns } from "utils/helpers";
+import { BoolCell, StringCell } from "components/table/Cell";
 import { getUserId } from "utils/user";
-import { HouseListTable } from "./HouseListTable";
-import { AddStreet } from "./cards/AddStreet";
+import { Part2HouseTable } from "./Part2HouseTable";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
-import { Button, Drawer } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -51,8 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Part2 = () => {
-  const [params, setParams] = useState([getUserId()]);
-  const [open, setOpen] = useState(false);
+  const params = [getUserId()];
 
   const history = useHistory();
   const classes = useStyles();
@@ -91,43 +76,14 @@ export const Part2 = () => {
   return (
     <Switch>
       <Route path={`${match.path}/:streetId`}>
-        <HouseListTable/>
+        <Part2HouseTable />
       </Route>
       <Route path={match.path}>
         <div className={classes.content}>
           <div className={classes.toolbar} />
           <div className={classes.table}>
             <div className={classes.innerContent}>
-              <Drawer
-                PaperProps={{
-                  className: classes.drawer,
-                }}
-                anchor="right"
-                open={open}
-                onClose={() => {
-                  setOpen(false);
-                }}
-              >
-                <AddStreet
-                  refreshPage={() => {
-                    setParams([getUserId()]);
-                    setOpen(false);
-                  }}
-                />
-              </Drawer>
               <Table
-                buttons={
-                  <>
-                    <Button
-                      title={"Фильтры"}
-                      className={classes.iconButton}
-                      color={"black"}
-                      onClick={() => setOpen(true)}
-                    >
-                      <Add />
-                    </Button>
-                  </>
-                }
                 sortBy={[
                   {
                     id: "c_name",

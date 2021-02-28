@@ -9,8 +9,7 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getItem, getUsername, logout } from "utils/user";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle"
-import HomeIcon from '@material-ui/icons/Home';
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
@@ -118,67 +117,16 @@ export const SimpleMenu = () => {
 
 export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
-  // const history = useHistory();
 
-  // const drawer = (
-  //   <>
-  //     <div className={classes.toolbar}>
-  //       <ListItem
-  //         button
-  //         key={"/"}
-  //         component={Link}
-  //         to={"/"}
-  //         onClick={() => mobileOpen && handleDrawerToggle()}
-  //       >
-  //         <ListItemIcon>
-  //           <AccountCircleIcon />
-  //         </ListItemIcon>
-  //         <ListItemText primary={getUsername() || "Без имени"} />
-  //       </ListItem>
-  //       <ListItem
-  //         button
-  //         onClick={() => {
-  //           logout();
-  //           mobileOpen && handleDrawerToggle();
-  //           history.push("/");
-  //         }}
-  //       >
-  //         <ListItemIcon>
-  //           <ExitToAppIcon />
-  //         </ListItemIcon>
-  //         <ListItemText primary={"Выход"} />
-  //       </ListItem>
-  //     </div>
-  //     <Divider />
-  //     <List className={classes.grow}>
-  //       {data.map((item, index) => {
-  //         const { path, title, icon } = item;
-  //         const active = location.pathname === path;
-  //         return (
-  //           <ListItem
-  //             button
-  //             key={path}
-  //             component={Link}
-  //             to={path}
-  //             selected={active}
-  //             onClick={() => mobileOpen && handleDrawerToggle()}
-  //           >
-  //             <ListItemIcon>{React.createElement(icon)}</ListItemIcon>
-  //             <ListItemText primary={title} />
-  //           </ListItem>
-  //         );
-  //       })}
-  //     </List>
-  //   </>
-  // );
-  
   const location = useLocation();
-  
-  const item = data.find(item=>item.path === location.pathname);
+
+  debugger;
+
+  const item = data.find((item) => location.pathname.indexOf(item.path) === 0);
 
   return (
     <List className={classes.grow}>
-     <ListItem
+      <ListItem
         button
         // key={path}
         // component={Link}
@@ -186,10 +134,10 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
         // selected={active}
         // onClick={() => mobileOpen && handleDrawerToggle()}
       >
-        <ListItemIcon>
+        {/* <ListItemIcon>
           {React.createElement(item ? item.icon : HomeIcon, { color: "secondary" })}
-        </ListItemIcon>
-        <ListItemText primary={item ? item.title : ''} />
+        </ListItemIcon> */}
+        <ListItemText primary={item ? item.title : ""} />
       </ListItem>
       <Divider />
       <SimpleMenu />

@@ -26,6 +26,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { ArrowBack } from "@material-ui/icons";
+import { getSelectByColumns } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -68,18 +69,18 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   backButton: {
-    width: '120px'
-  }
+    width: "120px",
+  },
 }));
 
-export const HouseListTable = () => {
+export const Part3HouseTable = () => {
   const classes = useStyles();
   const { streetId } = useParams();
-  const [params, setParams] = useState([null, streetId, null]);
+  // const [params, setParams] = useState([null, streetId, null]);
   const [street, setStreet] = useState(null);
   const history = useHistory();
   const match = useRouteMatch();
-
+  
   const cs_house = React.useMemo(
     () => [
       {
@@ -94,16 +95,16 @@ export const HouseListTable = () => {
       {
         title: "Улица",
         Filter: StringFilter,
-        accessor: "c_name",
+        accessor: "f_street___c_name",
         Cell: ({ cell }) => {
-          const { c_short_type, c_name } = cell.row.original;
-          return `${c_short_type} ${c_name}`;
+          const { f_street___c_short_type, f_street___c_name } = cell.row.original;
+          return `${f_street___c_short_type} ${f_street___c_name}`;
         },
       },
       {
         title: "Округ ЧГСД",
         accessor: "f_subdivision",
-        mapAccessor: "c_subdivision",
+        mapAccessor: "f_subdivision___c_name",
         fieldProps: {
           idProperty: "id",
           nameProperty: "c_name",
@@ -138,19 +139,19 @@ export const HouseListTable = () => {
           width: "120px",
         },
       },
-      {
-        title: "Завершено",
-        Filter: BoolFilter,
-        Cell: ({ cell }) => {
-          if (cell.value === null) return "";
-          if (cell.value === true) return "Да";
-          if (cell.value === false) return "Нет";
-        },
-        accessor: "b_finish",
-        style: {
-          width: "120px",
-        },
-      },
+      // {
+      //   title: "Завершено",
+      //   Filter: BoolFilter,
+      //   Cell: ({ cell }) => {
+      //     if (cell.value === null) return "";
+      //     if (cell.value === true) return "Да";
+      //     if (cell.value === false) return "Нет";
+      //   },
+      //   accessor: "b_finish",
+      //   style: {
+      //     width: "120px",
+      //   },
+      // },
     ],
     []
   );
@@ -194,16 +195,16 @@ export const HouseListTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/part2/${streetId}`);
+                history.push(`/part3/${streetId}`);
               }}
             >
               <EditStreet
                 street={street}
                 id={streetId}
                 refreshPage={() => {
-                  setParams([...params]);
+                  // setParams([...params]);
                   loadData(streetId).then((record) => setStreet(record));
-                  history.push(`/part2/${streetId}`);
+                  history.push(`/part3/${streetId}`);
                 }}
               />
             </Drawer>
@@ -216,14 +217,14 @@ export const HouseListTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/part2/${streetId}`);
+                history.push(`/part3/${streetId}`);
               }}
             >
               <AddHouse
                 street={streetId}
                 refreshPage={() => {
-                  setParams([...params]);
-                  history.push(`/part2/${streetId}`);
+                  // setParams([...params]);
+                  history.push(`/part3/${streetId}`);
                 }}
               />
             </Drawer>
@@ -236,13 +237,14 @@ export const HouseListTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/part2/${streetId}`);
+                history.push(`/part3/${streetId}`);
               }}
             >
               <HouseDetail
+                addNew={true}
                 refreshTable={() => {
-                  setParams([...params]);
-                  history.push(`/part2/${streetId}`);
+                  // setParams([...params]);
+                  history.push(`/part3/${streetId}`);
                 }}
                 street={streetId}
                 // selectedHouse={selectedHouse}
@@ -251,7 +253,15 @@ export const HouseListTable = () => {
             </Drawer>
           </Route>
         </Switch>
-        <Button className={classes.backButton} color="primary" variant="contained" onClick={()=>history.push(`/part2`)}><ArrowBack />Назад</Button>
+        <Button
+          className={classes.backButton}
+          color="primary"
+          variant="contained"
+          onClick={() => history.push(`/part3`)}
+        >
+          <ArrowBack />
+          Назад
+        </Button>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
             {street ? `${street.c_short_type} ${street.c_name}` : ""}
@@ -260,7 +270,7 @@ export const HouseListTable = () => {
           <Button
             className={classes.button}
             onClick={() => {
-              history.push(`/part2/${streetId}/add`);
+              history.push(`/part3/${streetId}/add`);
             }}
           >
             <AddIcon />
@@ -269,7 +279,7 @@ export const HouseListTable = () => {
             className={classes.button}
             onClick={() => {
               // setDrawerState(EDIT_STREET);
-              history.push(`/part2/${streetId}/edit`);
+              history.push(`/part3/${streetId}/edit`);
             }}
           >
             <EditIcon />
@@ -283,19 +293,24 @@ export const HouseListTable = () => {
                 desc: false,
               },
             ]}
+            filter={[{
+              property: 'f_street',
+              operator: '=',
+              value: streetId
+            }]}
             title={"Дома"}
-            method="Select"
+            method="Query"
             columns={cs_house}
             getRowClassName={(row) =>
               row.original.b_finish ? classes.selectedRow : ""
             }
+            select={`${getSelectByColumns(cs_house)},f_street___c_short_type,id`}
             handleClick={(cell, row) => {
-              history.push(`/part2/${streetId}/${row.original.id}`);
+              history.push(`/part3/${streetId}/${row.original.id}`);
               // setSelectedHouse(row);
               // setDrawerState(EDIT_HOUSE);
             }}
-            params={params}
-            action="cf_bss_cs_house"
+            action="cs_house"
           />
         </div>
       </div>

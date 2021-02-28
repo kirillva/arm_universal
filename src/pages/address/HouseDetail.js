@@ -28,7 +28,7 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import { useFormik } from "formik";
 import { Appartament } from "./Appartament";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams, useRouteMatch } from "react-router-dom";
 
 const Window = ({ item = {}, reloadData, open, handleClose }) => {
   const {
@@ -104,11 +104,15 @@ const Window = ({ item = {}, reloadData, open, handleClose }) => {
 export const HouseDetail = ({
   refreshTable,
   street,
+  addNew = false
   // selectedHouse,
   // setSelectedHouse,
 }) => {
   
   const { houseId, streetId } = useParams();
+  
+  const match = useRouteMatch();
+
   const useStyles = makeStyles((theme) => ({
     // drawer: {
     //   width: 400,
@@ -287,7 +291,7 @@ export const HouseDetail = ({
       {houseId && (
         <EditHouse
           id={houseId}
-          handleClose={() => history.push(`/part2/${streetId}`)}
+          handleClose={() => history.push(match.path.replace(':streetId', streetId).replace(':houseId', ''))}
           refreshPage={() => {
             refreshTable();
             // setSelectedHouse(null);
@@ -298,7 +302,7 @@ export const HouseDetail = ({
         <CircularProgress />
       ) : (
         <>
-          <div className={classes.newHouse}>
+          {addNew && <div className={classes.newHouse}>
             <TextField
               size="small"
               error={error}
@@ -352,7 +356,7 @@ export const HouseDetail = ({
             >
               Добавить
             </Button>
-          </div>
+          </div>}
           <div className={classes.grid}>
             {appartament.map((item) => {
               return (

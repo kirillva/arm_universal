@@ -53,7 +53,7 @@ function ResponsiveDrawer() {
             <PrivateRoute path={item.path}>
               <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                  <IconButton
+                  {/* <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     edge="start"
@@ -61,7 +61,7 @@ function ResponsiveDrawer() {
                     className={classes.menuButton}
                   >
                     <MenuIcon />
-                  </IconButton>
+                  </IconButton> */}
                   <MainMenu
                     mobileOpen={mobileOpen}
                     data={menuItems}

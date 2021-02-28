@@ -247,6 +247,7 @@ export const Table = ({
   selectable = false,
   handleClick = null,
   editForm,
+  filter = null,
   className,
   onLoadData = () => {},
   pageIndex: innerPageIndex = 0,
@@ -446,6 +447,10 @@ export const Table = ({
 
       if (params) {
         data.params = params;
+      }
+      
+      if (filter) {
+        data.filter = filter;
       }
 
       if (select) {
