@@ -90,7 +90,7 @@ export const AddHouse = ({ street, refreshPage }) => {
   const onSubmitAndEdit = () => {
     submitForm().then((responce) => {
       if (responce) {
-        history.push(`/street/${street}/${values.id}`);
+        history.push(`/part2/${street}/${values.id}`);
       }
     });
   };

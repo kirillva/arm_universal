@@ -19,7 +19,7 @@ import { BoolEditor, SelectEditor, DateEditor } from "components/table/Editors";
 import { getSelectByColumns } from "utils/helpers";
 import { getUserId } from "utils/user";
 import { HouseListTable } from "./HouseListTable";
-import { AddStreet } from "./AddStreet";
+import { AddStreet } from "./cards/AddStreet";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { Button, Drawer } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AddressPanel = () => {
+export const Part2 = () => {
   const [params, setParams] = useState([getUserId()]);
   const [open, setOpen] = useState(false);
 
@@ -135,7 +135,7 @@ export const AddressPanel = () => {
                   },
                 ]}
                 title={"Улицы"}
-                handleClick={(cell, row) => history.push(`/street/${row.id}`)}
+                handleClick={(cell, row) => history.push(`/part2/${row.id}`)}
                 method="Select"
                 params={params}
                 columns={cs_street}

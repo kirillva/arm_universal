@@ -10,8 +10,8 @@ import { SelectCell, StringCell } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
 import { SelectEditor } from "components/table/Editors";
 import { HouseDetail } from "./HouseDetail";
-import { EditStreet } from "./EditStreet";
-import { AddHouse } from "./AddHouse";
+import { EditStreet } from "./cards/EditStreet";
+import { AddHouse } from "./cards/AddHouse";
 import { Button, Drawer, Paper, Typography } from "@material-ui/core";
 import { runRpc } from "utils/rpc";
 import EditIcon from "@material-ui/icons/Edit";
@@ -194,7 +194,7 @@ export const HouseListTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/street/${streetId}`);
+                history.push(`/part2/${streetId}`);
               }}
             >
               <EditStreet
@@ -203,7 +203,7 @@ export const HouseListTable = () => {
                 refreshPage={() => {
                   setParams([...params]);
                   loadData(streetId).then((record) => setStreet(record));
-                  history.push(`/street/${streetId}`);
+                  history.push(`/part2/${streetId}`);
                 }}
               />
             </Drawer>
@@ -216,14 +216,14 @@ export const HouseListTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/street/${streetId}`);
+                history.push(`/part2/${streetId}`);
               }}
             >
               <AddHouse
                 street={streetId}
                 refreshPage={() => {
                   setParams([...params]);
-                  history.push(`/street/${streetId}`);
+                  history.push(`/part2/${streetId}`);
                 }}
               />
             </Drawer>
@@ -236,13 +236,13 @@ export const HouseListTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/street/${streetId}`);
+                history.push(`/part2/${streetId}`);
               }}
             >
               <HouseDetail
                 refreshTable={() => {
                   setParams([...params]);
-                  history.push(`/street/${streetId}`);
+                  history.push(`/part2/${streetId}`);
                 }}
                 street={streetId}
                 // selectedHouse={selectedHouse}
@@ -251,7 +251,7 @@ export const HouseListTable = () => {
             </Drawer>
           </Route>
         </Switch>
-        <Button className={classes.backButton} color="primary" variant="contained" onClick={()=>history.push(`/street`)}><ArrowBack />Назад</Button>
+        <Button className={classes.backButton} color="primary" variant="contained" onClick={()=>history.push(`/part2`)}><ArrowBack />Назад</Button>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
             {street ? `${street.c_short_type} ${street.c_name}` : ""}
@@ -260,7 +260,7 @@ export const HouseListTable = () => {
           <Button
             className={classes.button}
             onClick={() => {
-              history.push(`/street/${streetId}/add`);
+              history.push(`/part2/${streetId}/add`);
             }}
           >
             <AddIcon />
@@ -269,7 +269,7 @@ export const HouseListTable = () => {
             className={classes.button}
             onClick={() => {
               // setDrawerState(EDIT_STREET);
-              history.push(`/street/${streetId}/edit`);
+              history.push(`/part2/${streetId}/edit`);
             }}
           >
             <EditIcon />
@@ -290,7 +290,7 @@ export const HouseListTable = () => {
               row.original.b_finish ? classes.selectedRow : ""
             }
             handleClick={(cell, row) => {
-              history.push(`/street/${streetId}/${row.original.id}`);
+              history.push(`/part2/${streetId}/${row.original.id}`);
               // setSelectedHouse(row);
               // setDrawerState(EDIT_HOUSE);
             }}

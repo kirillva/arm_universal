@@ -74,7 +74,7 @@ export const SimpleMenu = () => {
         <MenuItem
           button
           onClick={() => {
-            history.push("/address");
+            history.push("/part1");
             handleClose();
           }}
         >
@@ -83,11 +83,20 @@ export const SimpleMenu = () => {
         <MenuItem
           button
           onClick={() => {
-            history.push("/street");
+            history.push("/part2");
             handleClose();
           }}
         >
           II этап: подтверждение
+        </MenuItem>
+        <MenuItem
+          button
+          onClick={() => {
+            history.push("/part3");
+            handleClose();
+          }}
+        >
+          III этап: добавление
         </MenuItem>
         <MenuItem
           button

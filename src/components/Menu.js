@@ -11,7 +11,7 @@ export const menuItems = [
       "division",
     ],
     icon: HomeIcon,
-    path: "/address",
+    path: "/part1",
     title: "I этап: привязка домов",
   },
   {
@@ -23,7 +23,19 @@ export const menuItems = [
       "division",
     ],
     icon: AssignmentIcon,
-    path: "/street",
+    path: "/part2",
     title: "II этап: подтверждение",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/part3",
+    title: "III этап: добавление",
   }
 ];

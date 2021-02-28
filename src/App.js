@@ -74,7 +74,7 @@ function ResponsiveDrawer() {
           );
         })}
         <Route path="/">
-          <Redirect to="/address" />
+          <Redirect to="/part1" />
         </Route>
       </Switch>
     </div>

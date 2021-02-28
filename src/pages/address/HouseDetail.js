@@ -22,7 +22,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
 import { makeStyles } from "@material-ui/core/styles";
-import { EditHouse } from "./EditHouse";
+import { EditHouse } from "./cards/EditHouse";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
@@ -287,7 +287,7 @@ export const HouseDetail = ({
       {houseId && (
         <EditHouse
           id={houseId}
-          handleClose={() => history.push(`/street/${streetId}`)}
+          handleClose={() => history.push(`/part2/${streetId}`)}
           refreshPage={() => {
             refreshTable();
             // setSelectedHouse(null);

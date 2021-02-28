@@ -1,7 +1,6 @@
 import { SigninForm } from "pages/SigninForm";
-import { AddressPanel } from "pages/address/AddressPanel";
-// import { HouseListTable } from "pages/address/HouseListTable";
-import { HouseHistoryPanel } from "pages/HouseHistoryPanel";
+import { Part2 } from "pages/address/Part2";
+import { Part1 } from "pages/address/Part1";
 
 export const routeItems = [
   {
@@ -14,19 +13,19 @@ export const routeItems = [
   {
     claims: ["manager"],
     exact: true,
-    path: "/address",
-    component: HouseHistoryPanel,
+    path: "/part1",
+    component: Part1,
   },
   {
     claims: ["manager"],
     exact: true,
-    path: "/street",
-    component: AddressPanel,
+    path: "/part2",
+    component: Part2,
   },
-  // {
-  //   claims: ["manager"],
-  //   exact: true,
-  //   path: "/street/detail",
-  //   component: StreetDetailTable,
-  // },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/part3",
+    component: Part2,
+  },
 ];
