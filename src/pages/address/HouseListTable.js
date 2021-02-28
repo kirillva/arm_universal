@@ -25,6 +25,7 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
+import { ArrowBack } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -66,6 +67,9 @@ const useStyles = makeStyles((theme) => ({
   flexGrow: {
     flex: 1,
   },
+  backButton: {
+    width: '120px'
+  }
 }));
 
 export const HouseListTable = () => {
@@ -247,9 +251,10 @@ export const HouseListTable = () => {
             </Drawer>
           </Route>
         </Switch>
+        <Button className={classes.backButton} color="primary" variant="contained" onClick={()=>history.push(`/street`)}><ArrowBack />Назад</Button>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
-            Улица: {street ? street.c_name : ""}
+            {street ? `${street.c_short_type} ${street.c_name}` : ""}
           </Typography>
           <div className={classes.flexGrow} />
           <Button

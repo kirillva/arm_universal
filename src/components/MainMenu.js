@@ -180,7 +180,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
         <ListItemIcon>
           {React.createElement(item ? item.icon : HomeIcon, { color: "secondary" })}
         </ListItemIcon>
-        <ListItemText primary={item ? item.title : 'Заголовок страницы'} />
+        <ListItemText primary={item ? item.title : ''} />
       </ListItem>
       <Divider />
       <SimpleMenu />
