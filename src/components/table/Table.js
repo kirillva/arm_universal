@@ -656,7 +656,7 @@ export const Table = ({
             maxHeight: size.height - 116, 
             height: size.height - 116 ,
             
-            width: size.width, 
+            // width: size.width, 
           }}
           // className={className}
         >

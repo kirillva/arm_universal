@@ -119,9 +119,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
 
   const location = useLocation();
-
-  debugger;
-
+  
   const item = data.find((item) => location.pathname.indexOf(item.path) === 0);
 
   return (

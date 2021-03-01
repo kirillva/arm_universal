@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto 0 auto auto",
   },
   drawer: {
+    minWidth: 300,
     maxWidth: 700,
     overflowX: "hidden",
     width: "50%",

@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   drawer: {
+    minWidth: 300,
     maxWidth: 700,
     overflowX: "hidden",
     width: "50%",
