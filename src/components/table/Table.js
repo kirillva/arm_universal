@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   useTable,
   usePagination,
@@ -30,7 +30,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button, CircularProgress, TextField } from "@material-ui/core";
+import { Box, Button, CircularProgress, TextField } from "@material-ui/core";
 import {
   ArrowDropDown,
   ArrowDropUp,
@@ -50,14 +50,14 @@ import moment from "moment";
 import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2),
-  },
-  header: {},
+  // root: {
+  //   width: "100%",
+  // },
+  // paper: {
+  //   width: "100%",
+  //   // marginBottom: theme.spacing(2),
+  // },
+  // header: {},
   table: {
     color: theme.palette.text.main,
   },
@@ -83,9 +83,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     textOverflow: "ellipsis",
     // flex: 1,
-  },
-  container: {
-    maxHeight: "400px",
   },
   visuallyHidden: {
     border: 0,
@@ -127,6 +124,12 @@ const useStyles = makeStyles((theme) => ({
     height: 30,
     textAlign: "center",
   },
+  body: {
+    backgroundColor: '#FFFFFF'
+  },
+  container: {
+    backgroundColor: '#FAFAFA'
+  }
 }));
 
 const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
@@ -154,7 +157,7 @@ const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
       value={targetPage}
       className={classes.gotoPage}
       onKeyPress={(e) => {
-        if (e.key == "Enter" && isValid) gotoPage(Number(targetPage) - 1);
+        if (e.key === "Enter" && isValid) gotoPage(Number(targetPage) - 1);
       }}
       onChange={(e) => setTargetPage(e.target.value || "")}
     />
@@ -253,13 +256,17 @@ export const Table = ({
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
   getRowClassName = () => "",
-  buttons = null
+  buttons = null,
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
   const [selectedRow, setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [size, setSize] = useState({ width: 500, height: 300 });
+
+  const childRef = useRef(null);
+  const parentRef = useRef(null);
 
   const DefaultColumnFilter = ({ column, className }) => {
     const { filterValue } = column;
@@ -448,7 +455,7 @@ export const Table = ({
       if (params) {
         data.params = params;
       }
-      
+
       if (filter) {
         data.filter = filter;
       }
@@ -507,6 +514,15 @@ export const Table = ({
     action,
     params,
   ]);
+
+  useEffect(() => {
+    if (parentRef && parentRef.current && childRef && childRef.current) {
+      setSize({
+        width: parentRef.current.offsetWidth,
+        height: parentRef.current.offsetHeight,
+      });
+    }
+  }, [parentRef, childRef]);
 
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
@@ -611,7 +627,7 @@ export const Table = ({
   }
 
   return (
-    <>
+    <Box className={className} ref={parentRef}>
       <EditRowForm
         title={title}
         action={action}
@@ -621,7 +637,11 @@ export const Table = ({
         columns={columns}
         editForm={editForm}
       />
-      <Paper className={classes.paper}>
+      <Paper
+        className={classes.paper}
+        ref={childRef}
+        // style={{ width: size.width, height: size.height }}
+      >
         <EnhancedTableHead
           filters={filters}
           setFilterHidden={setFilterHidden}
@@ -630,8 +650,15 @@ export const Table = ({
           numSelected={Object.keys(selectedRowIds).length}
         />
         <TableContainer
-          {...getTableProps()}
-          className={classNames(classes.container, className)}
+          {...getTableProps()} 
+          className={classes.container}
+          style={{ 
+            maxHeight: size.height - 116, 
+            height: size.height - 116 ,
+            
+            width: size.width, 
+          }}
+          // className={className}
         >
           <MaterialTable
             stickyHeader
@@ -689,7 +716,7 @@ export const Table = ({
                 <CircularProgress className={classes.progress} />
               </div>
             ) : (
-              <TableBody>
+              <TableBody className={classes.body}>
                 {page.map((row) => {
                   prepareRow(row);
                   return (
@@ -749,7 +776,7 @@ export const Table = ({
               loading={loading}
             />
           )}
-          labelRowsPerPage="Записей на странице:"
+          labelRowsPerPage={size.width < 700 ? '' : "Записей на странице:"}
           rowsPerPageOptions={[10, 20, 30, 40, 50]}
           component="div"
           count={total}
@@ -759,6 +786,6 @@ export const Table = ({
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-    </>
+    </Box>
   );
 };

@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   table: {
-    maxHeight: 440,
     flex: 1,
   },
   selectColumn: {
@@ -154,22 +153,20 @@ export const Part1 = () => {
           />)}
         </Drawer>
       </div>
-      <Box height="100%">
-        <Table
-          className={classes.table}
-          handleClick={(cell, row) => setSelectedHouse(row.original)}
-          title="Список домов"
-          params={params}
-          columns={pd_users}
-          // onLoadData={(_data, total) => {
-          //   setData(_data);
-          //   setTotalPages(total);
-          // }}
-          // pageIndex={pageIndex}
-          action={"cf_tmp_cs_house_unknow"}
-          method="Select"
-        />
-      </Box>
+      <Table
+        className={classes.table}
+        handleClick={(cell, row) => setSelectedHouse(row.original)}
+        title="Список домов"
+        params={params}
+        columns={pd_users}
+        // onLoadData={(_data, total) => {
+        //   setData(_data);
+        //   setTotalPages(total);
+        // }}
+        // pageIndex={pageIndex}
+        action={"cf_tmp_cs_house_unknow"}
+        method="Select"
+      />
     </div>
   );
 };
