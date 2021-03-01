@@ -1,10 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import {
-  BoolFilter,
-  StringFilter,
-} from "components/table/Filters";
+import { BoolFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { getUserId } from "utils/user";
 import { Part2HouseTable } from "./Part2HouseTable";
@@ -14,6 +11,8 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
     padding: theme.spacing(3),
   },
   drawer: {
@@ -21,14 +20,12 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: "50%",
   },
+  table: {
+    flex: 1,
+  },
   formWrapper: {
     flexDirection: "column",
     gap: theme.spacing(2),
-    display: "flex",
-  },
-  innerContent: {
-    flexDirection: "row",
-    gap: theme.spacing(3),
     display: "flex",
   },
   selectedRow: {
@@ -81,27 +78,24 @@ export const Part2 = () => {
       <Route path={match.path}>
         <div className={classes.content}>
           <div className={classes.toolbar} />
-          <div className={classes.table}>
-            <div className={classes.innerContent}>
-              <Table
-                sortBy={[
-                  {
-                    id: "c_name",
-                    desc: false,
-                  },
-                ]}
-                title={"Улицы"}
-                handleClick={(cell, row) => history.push(`/part2/${row.id}`)}
-                method="Select"
-                params={params}
-                columns={cs_street}
-                getRowClassName={(row) =>
-                  row.original.b_finish ? classes.selectedRow : ""
-                }
-                action="cf_bss_cs_street"
-              />
-            </div>
-          </div>
+          <Table
+            className={classes.table}
+            sortBy={[
+              {
+                id: "c_name",
+                desc: false,
+              },
+            ]}
+            title={"Улицы"}
+            handleClick={(cell, row) => history.push(`/part2/${row.id}`)}
+            method="Select"
+            params={params}
+            columns={cs_street}
+            getRowClassName={(row) =>
+              row.original.b_finish ? classes.selectedRow : ""
+            }
+            action="cf_bss_cs_street"
+          />
         </div>
       </Route>
     </Switch>

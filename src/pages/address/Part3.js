@@ -15,6 +15,12 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  table: {
+    flex: 1,
   },
   drawer: {
     maxWidth: 700,
@@ -24,11 +30,6 @@ const useStyles = makeStyles((theme) => ({
   formWrapper: {
     flexDirection: "column",
     gap: theme.spacing(2),
-    display: "flex",
-  },
-  innerContent: {
-    flexDirection: "row",
-    gap: theme.spacing(3),
     display: "flex",
   },
   selectedRow: {
@@ -82,54 +83,53 @@ export const Part3 = () => {
       <Route path={match.path}>
         <div className={classes.content}>
           <div className={classes.toolbar} />
-          <div className={classes.innerContent}>
-            <Drawer
-              PaperProps={{
-                className: classes.drawer,
-              }}
-              anchor="right"
-              open={open}
-              onClose={() => {
+          <Drawer
+            PaperProps={{
+              className: classes.drawer,
+            }}
+            anchor="right"
+            open={open}
+            onClose={() => {
+              setOpen(false);
+            }}
+          >
+            <AddStreet
+              refreshPage={() => {
+                setParams([getUserId()]);
                 setOpen(false);
               }}
-            >
-              <AddStreet
-                refreshPage={() => {
-                  setParams([getUserId()]);
-                  setOpen(false);
-                }}
-              />
-            </Drawer>
-            <Table
-              buttons={
-                <>
-                  <Button
-                    title={"Фильтры"}
-                    className={classes.iconButton}
-                    color={"black"}
-                    onClick={() => setOpen(true)}
-                  >
-                    <Add />
-                  </Button>
-                </>
-              }
-              sortBy={[
-                {
-                  id: "c_name",
-                  desc: false,
-                },
-              ]}
-              title={"Улицы"}
-              handleClick={(cell, row) => history.push(`/part3/${row.id}`)}
-              method="Select"
-              params={params}
-              columns={cs_street}
-              getRowClassName={(row) =>
-                row.original.b_finish ? classes.selectedRow : ""
-              }
-              action="cf_bss_cs_street"
             />
-          </div>
+          </Drawer>
+          <Table
+            className={classes.table}
+            buttons={
+              <>
+                <Button
+                  title={"Фильтры"}
+                  className={classes.iconButton}
+                  color={"black"}
+                  onClick={() => setOpen(true)}
+                >
+                  <Add />
+                </Button>
+              </>
+            }
+            sortBy={[
+              {
+                id: "c_name",
+                desc: false,
+              },
+            ]}
+            title={"Улицы"}
+            handleClick={(cell, row) => history.push(`/part3/${row.id}`)}
+            method="Select"
+            params={params}
+            columns={cs_street}
+            getRowClassName={(row) =>
+              row.original.b_finish ? classes.selectedRow : ""
+            }
+            action="cf_bss_cs_street"
+          />
         </div>
       </Route>
     </Switch>

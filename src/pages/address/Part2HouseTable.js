@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     gap: theme.spacing(2),
     display: "flex",
+    height: '100%'
   },
   streetWrapper: {
     display: "flex",
@@ -247,29 +248,28 @@ export const Part2HouseTable = () => {
             <EditIcon />
           </Button>
         </Paper>
-        <div className={classes.table}>
-          <Table
-            sortBy={[
-              {
-                id: "n_number",
-                desc: false,
-              },
-            ]}
-            title={"Дома"}
-            method="Select"
-            columns={cs_house}
-            getRowClassName={(row) =>
-              row.original.b_finish ? classes.selectedRow : ""
-            }
-            handleClick={(cell, row) => {
-              history.push(`/part2/${streetId}/${row.original.id}`);
-              // setSelectedHouse(row);
-              // setDrawerState(EDIT_HOUSE);
-            }}
-            params={params}
-            action="cf_bss_cs_house"
-          />
-        </div>
+        <Table
+          className={classes.table}
+          sortBy={[
+            {
+              id: "n_number",
+              desc: false,
+            },
+          ]}
+          title={"Дома"}
+          method="Select"
+          columns={cs_house}
+          getRowClassName={(row) =>
+            row.original.b_finish ? classes.selectedRow : ""
+          }
+          handleClick={(cell, row) => {
+            history.push(`/part2/${streetId}/${row.original.id}`);
+            // setSelectedHouse(row);
+            // setDrawerState(EDIT_HOUSE);
+          }}
+          params={params}
+          action="cf_bss_cs_house"
+        />
       </div>
     </div>
   );
