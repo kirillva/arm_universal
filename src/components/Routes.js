@@ -1,7 +1,8 @@
 import { SigninForm } from "pages/SigninForm";
 import { Part1 } from "pages/address/Part1";
 import { Part2 } from "pages/address/Part2";
-import { Part3 } from "pages/address/Part3";
+import { VotersList } from "pages/VotersList";
+import { VoterSearchForm } from "pages/VoterSearchForm";
 
 export const routeItems = [
   {
@@ -27,6 +28,12 @@ export const routeItems = [
     claims: ["manager"],
     exact: true,
     path: "/part3",
-    component: Part3,
+    component: VotersList,
+  },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/voters",
+    component: VoterSearchForm,
   },
 ];

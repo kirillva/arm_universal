@@ -14,7 +14,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
-import { DateEditor, SelectEditorField } from "components/table/Editors";
+import { DateEditor, SelectEditor, SelectEditorField } from "components/table/Editors";
 import { DatePicker } from "@material-ui/pickers";
 import { getUserId } from "utils/user";
 import { parse } from "query-string";
@@ -200,6 +200,7 @@ export const VoterSearchForm = ({ className }) => {
                 nameProperty: "c_name",
               }}
               value={street}
+              setInputValue
               setFieldValue={(name, value) => {
                 setStreet(value);
                 setHouse(null);

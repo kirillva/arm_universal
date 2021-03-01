@@ -1,26 +1,36 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, StringFilter } from "components/table/Filters";
-import { BoolCell, StringCell } from "components/table/Cell";
-import { getUserId } from "utils/user";
-import { Part3HouseTable } from "./Part3HouseTable";
-import { AddStreet } from "./cards/AddStreet";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
-import { Button, Drawer } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
+import {
+  BoolFilter,
+  NumberFilter,
+  StringFilter,
+} from "components/table/Filters";
+import {
+  BoolCell,
+  NumberCell,
+  SelectCell,
+  StringCell,
+} from "components/table/Cell";
+import { SelectFilter } from "components/table/SelectFilter";
+import { EditHouseHistory } from "../../components/EditHouseHistory";
+import { Box, Button, Drawer } from "@material-ui/core";
+import { Part3EditHouse } from "./cards/Part3EditHouse";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
+    overflow: "auto",
     flexGrow: 1,
-    padding: theme.spacing(3),
-    height: "100%",
     display: "flex",
     flexDirection: "column",
+    padding: theme.spacing(3),
   },
   table: {
     flex: 1,
+  },
+  selectColumn: {
+    width: 250,
   },
   drawer: {
     minWidth: 300,
@@ -28,26 +38,28 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: "50%",
   },
-  formWrapper: {
-    flexDirection: "column",
-    gap: theme.spacing(2),
-    display: "flex",
-  },
-  selectedRow: {
-    backgroundColor: "#0096005c",
-  },
 }));
 
 export const Part3 = () => {
-  const [params, setParams] = useState([getUserId()]);
-  const [open, setOpen] = useState(false);
-
-  const history = useHistory();
   const classes = useStyles();
-  const match = useRouteMatch();
+  const [selectedHouse, setSelectedHouse] = useState(null);
+  const [params, setParams] = useState([]);
+  // const [data, setData] = useState([]);
+  // const [pageIndex, setPageIndex] = useState(0);
+  // const [totalPages, setTotalPages] = useState(0);
 
-  const cs_street = React.useMemo(
+  const pd_users = React.useMemo(
     () => [
+      {
+        title: "#",
+        accessor: "n_row",
+        Filter: () => null,
+        Cell: NumberCell,
+        style: {
+          textAlign: "center",
+          width: "30px",
+        },
+      },
       {
         title: "Тип",
         accessor: "c_short_type",
@@ -64,75 +76,105 @@ export const Part3 = () => {
         Cell: StringCell,
       },
       {
-        title: "Завершен",
-        Filter: BoolFilter,
-        Cell: BoolCell,
+        title: "Округ ЧГСД",
+        accessor: "f_subdivision",
+        mapAccessor: "c_subdivision",
+        fieldProps: {
+          idProperty: "id",
+          nameProperty: "c_name",
+          table: "sd_subdivisions",
+        },
+        Filter: SelectFilter,
+        Cell: SelectCell,
         style: {
+          textAlign: "center",
+          width: "130px",
+        },
+      },
+      {
+        title: "УИК",
+        accessor: "n_uik",
+        Filter: NumberFilter,
+        Cell: StringCell,
+        style: {
+          textAlign: "center",
           width: "80px",
         },
-        accessor: "b_finish",
+      },
+      {
+        title: "Номер",
+        accessor: "c_full_number",
+        Filter: StringFilter,
+        Cell: StringCell,
+        style: {
+          textAlign: "center",
+          width: "80px",
+        },
+      },
+      {
+        title: "Изменил",
+        accessor: "c_first_name",
+        Filter: StringFilter,
+        Cell: StringCell,
+        style: {
+          textAlign: "center",
+          width: "80px",
+        },
+      },
+      {
+        title: "Квартир",
+        accessor: "n_premise_count",
+        Filter: () => null,
+        Cell: StringCell,
+        style: {
+          textAlign: "center",
+          width: "80px",
+        },
       },
     ],
     []
   );
 
   return (
-    <Switch>
-      <Route path={`${match.path}/:streetId`}>
-        <Part3HouseTable />
-      </Route>
-      <Route path={match.path}>
-        <div className={classes.content}>
-          <div className={classes.toolbar} />
-          <Drawer
-            PaperProps={{
-              className: classes.drawer,
-            }}
-            anchor="right"
-            open={open}
-            onClose={() => {
-              setOpen(false);
-            }}
-          >
-            <AddStreet
+    <div className={classes.content}>
+      <div className={classes.toolbar} />
+      <div className={classes.text}>
+        <Drawer
+          PaperProps={{
+            className: classes.drawer,
+          }}
+          anchor="right"
+          open={Boolean(selectedHouse)}
+          onClose={() => {
+            setSelectedHouse(null);
+          }}
+        >
+          {selectedHouse && (
+            <Part3EditHouse
+              id={selectedHouse.id}
+              handleClose={() => setSelectedHouse(null)}
               refreshPage={() => {
-                setParams([getUserId()]);
-                setOpen(false);
+                setParams([]);
+                setSelectedHouse(null);
               }}
             />
-          </Drawer>
-          <Table
-            className={classes.table}
-            buttons={
-              <>
-                <Button
-                  title={"Фильтры"}
-                  className={classes.iconButton}
-                  color={"black"}
-                  onClick={() => setOpen(true)}
-                >
-                  <Add />
-                </Button>
-              </>
-            }
-            sortBy={[
-              {
-                id: "c_name",
-                desc: false,
-              },
-            ]}
-            title={"Улицы"}
-            handleClick={(cell, row) => history.push(`/part3/${row.id}`)}
-            method="Select"
-            params={params}
-            columns={cs_street}
-            getRowClassName={(row) =>
-              row.original.b_finish ? classes.selectedRow : ""
-            }
-            action="cf_bss_cs_street"
-          />
-        </div>
-      </Route>
-    </Switch>
+          )}
+        </Drawer>
+      </div>
+      <Table
+        className={classes.table}
+        handleClick={(cell, row) => setSelectedHouse(row.original)}
+        title="Список домов"
+        params={params}
+        columns={pd_users}
+        // onLoadData={(_data, total) => {
+        //   setData(_data);
+        //   setTotalPages(total);
+        // }}
+        // pageIndex={pageIndex}
+        action={"cf_tmp_cs_house_unknow"}
+        method="Select"
+      />
+    </div>
   );
 };
