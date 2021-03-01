@@ -8,6 +8,7 @@ import {
   useExpanded,
   useRowSelect,
   useAsyncDebounce,
+  useFlexLayout,
 } from "react-table";
 import { runRpc } from "utils/rpc";
 
@@ -19,18 +20,13 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Box, Button, CircularProgress, TextField } from "@material-ui/core";
+import { Box, Button, CircularProgress, ListItem, ListItemText, TextField } from "@material-ui/core";
 import {
   ArrowDropDown,
   ArrowDropUp,
@@ -48,16 +44,9 @@ import classNames from "classnames";
 import { EditRowForm } from "./EditRowForm";
 import moment from "moment";
 import * as Yup from "yup";
+import { FixedSizeList } from "react-window";
 
 const useStyles = makeStyles((theme) => ({
-  // root: {
-  //   width: "100%",
-  // },
-  // paper: {
-  //   width: "100%",
-  //   // marginBottom: theme.spacing(2),
-  // },
-  // header: {},
   table: {
     color: theme.palette.text.main,
   },
@@ -82,7 +71,6 @@ const useStyles = makeStyles((theme) => ({
   headerTitleText: {
     overflow: "hidden",
     textOverflow: "ellipsis",
-    // flex: 1,
   },
   visuallyHidden: {
     border: 0,
@@ -125,11 +113,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   body: {
-    backgroundColor: '#FFFFFF'
+    backgroundColor: "#FFFFFF",
   },
   container: {
-    backgroundColor: '#FAFAFA'
-  }
+    backgroundColor: "#FAFAFA",
+  },
 }));
 
 const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
@@ -145,6 +133,7 @@ const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
       .validate(targetPage)
       .then(() => setError(null))
       .catch((err) => setError(err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetPage]);
 
   const isValid = error && error.errors.length ? false : true;
@@ -328,7 +317,7 @@ export const Table = ({
       initialState: {
         sortBy: innerSortBy,
         pageIndex: innerPageIndex,
-        pageSize: 10,
+        pageSize: 1000,
       },
       columns,
       data,
@@ -353,6 +342,7 @@ export const Table = ({
     useSortBy,
     useExpanded,
     usePagination,
+    useFlexLayout,
     useRowSelect,
     (hooks) => {
       hooks.visibleColumns.push((columns) => {
@@ -591,6 +581,50 @@ export const Table = ({
     });
   };
 
+  function renderRow(props) {
+    const { index, style } = props;
+
+    const row = page[index];
+    prepareRow(row);
+    return (
+      <div
+        hover
+        role="checkbox"
+        tabIndex={-1}
+        {...row.getRowProps()}
+        style={style}
+        className={getRowClassName(row)}
+      >
+        {row.cells.map((cell) => {
+          const filterProps = cell.column.fieldProps;
+          if (!selectable && cell.column.id === "selection") {
+            return null;
+          } else {
+            return (
+              <span
+                title={
+                  cell.column.mapAccessor
+                    ? cell.row.original[cell.column.mapAccessor]
+                    : cell.value
+                }
+                onClick={editable ? onEdit(cell, row) : onClick(cell, row)}
+                align="left"
+                {...cell.getCellProps()}
+                className={classes.cell}
+                style={cell.column.style || {}}
+              >
+                {cell.render("Cell", {
+                  ...(filterProps || {}),
+                  editable: false,
+                })}
+              </span>
+            );
+          }
+        })}
+      </div>
+    );
+  }
+
   function EnhancedTableHead(props) {
     const { title, numSelected, classes, setFilterHidden, filters } = props;
 
@@ -626,6 +660,8 @@ export const Table = ({
     );
   }
 
+  const height = size.height - 116;
+
   return (
     <Box className={className} ref={parentRef}>
       <EditRowForm
@@ -649,18 +685,18 @@ export const Table = ({
           classes={classes}
           numSelected={Object.keys(selectedRowIds).length}
         />
-        <TableContainer
-          {...getTableProps()} 
+        <div
+          {...getTableProps()}
           className={classes.container}
-          style={{ 
-            maxHeight: size.height - 116, 
-            height: size.height - 116 ,
-            
-            // width: size.width, 
+          style={{
+            maxHeight: height,
+            height: height,
+
+            // width: size.width,
           }}
           // className={className}
         >
-          <MaterialTable
+          <div
             stickyHeader
             {...getTableBodyProps()}
             className={classes.table}
@@ -668,7 +704,7 @@ export const Table = ({
             size={"small"}
             aria-label="enhanced table"
           >
-            <MaterialTableHead>
+            <div>
               {headers.map((column) => {
                 let filterProps = { hidden: filterHidden };
                 if (column.fieldProps) {
@@ -710,60 +746,25 @@ export const Table = ({
                   );
                 }
               })}
-            </MaterialTableHead>
+            </div>
             {loading ? (
               <div className={classes.progressWrapper}>
                 <CircularProgress className={classes.progress} />
               </div>
             ) : (
-              <TableBody className={classes.body}>
-                {page.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      {...row.getRowProps()}
-                      className={getRowClassName(row)}
-                    >
-                      {row.cells.map((cell) => {
-                        const filterProps = cell.column.fieldProps;
-                        if (!selectable && cell.column.id === "selection") {
-                          return null;
-                        } else {
-                          return (
-                            <TableCell
-                              title={
-                                cell.column.mapAccessor
-                                  ? cell.row.original[cell.column.mapAccessor]
-                                  : cell.value
-                              }
-                              onClick={
-                                editable
-                                  ? onEdit(cell, row)
-                                  : onClick(cell, row)
-                              }
-                              align="left"
-                              {...cell.getCellProps()}
-                              className={classes.cell}
-                              style={cell.column.style || {}}
-                            >
-                              {cell.render("Cell", {
-                                ...(filterProps || {}),
-                                editable: false,
-                              })}
-                            </TableCell>
-                          );
-                        }
-                      })}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
+              page && (
+                <FixedSizeList
+                  height={height - 51}
+                  width={size.width}
+                  itemSize={56}
+                  itemCount={page.length}
+                >
+                  {renderRow}
+                </FixedSizeList>
+              )
             )}
-          </MaterialTable>
-        </TableContainer>
+          </div>
+        </div>
         <TablePagination
           labelDisplayedRows={({ from, to, count }) =>
             `${from}-${to} из ${count}`
@@ -776,8 +777,8 @@ export const Table = ({
               loading={loading}
             />
           )}
-          labelRowsPerPage={size.width < 700 ? '' : "Записей на странице:"}
-          rowsPerPageOptions={[10, 20, 30, 40, 50]}
+          labelRowsPerPage={size.width < 700 ? "" : "Записей на странице:"}
+          rowsPerPageOptions={[100, 200, 400, 500, 1000]}
           component="div"
           count={total}
           rowsPerPage={pageSize}
