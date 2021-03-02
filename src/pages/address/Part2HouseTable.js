@@ -26,6 +26,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { ArrowBack } from "@material-ui/icons";
+import { getUserId } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -74,10 +75,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export const Part2HouseTable = () => {
+export const Part2HouseTable = ({ uik }) => {
   const classes = useStyles();
   const { streetId } = useParams();
-  const [params, setParams] = useState([null, streetId, null]);
+  const [params, setParams] = useState([getUserId(), streetId, null]);
   const [street, setStreet] = useState(null);
   const history = useHistory();
   const match = useRouteMatch();
@@ -251,6 +252,10 @@ export const Part2HouseTable = () => {
         </Paper>
         <Table
           className={classes.table}
+          filter={[{
+            id: "n_uik",
+            value: uik,
+          }]}
           sortBy={[
             {
               id: "n_number",

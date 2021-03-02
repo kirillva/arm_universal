@@ -296,8 +296,7 @@ export const Part3HouseTable = () => {
             },
           ]}
           filter={[{
-            property: 'f_street',
-            operator: '=',
+            id: 'f_street',
             value: streetId
           }]}
           title={"Дома"}
@@ -309,8 +308,6 @@ export const Part3HouseTable = () => {
           select={`${getSelectByColumns(cs_house)},f_street___c_short_type,id`}
           handleClick={(cell, row) => {
             history.push(`/${match.path}/${streetId}/${row.original.id}`);
-            // setSelectedHouse(row);
-            // setDrawerState(EDIT_HOUSE);
           }}
           action="cs_house"
         />

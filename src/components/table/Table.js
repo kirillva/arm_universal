@@ -250,13 +250,15 @@ export const Table = ({
   selectable = false,
   handleClick = null,
   editForm,
-  filter = null,
   className,
   onLoadData = () => {},
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
+  filter: innerFilter = [],
   getRowClassName = () => "",
   buttons = null,
+  state: innerState = {},
+  setState = () => {},
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -314,21 +316,15 @@ export const Table = ({
     previousPage,
     setPageSize,
     // selectedFlatRows,
-    state: {
-      pageIndex,
-      pageSize,
-      sortBy,
-      groupBy,
-      expanded,
-      filters,
-      selectedRowIds,
-    },
+    state,
   } = useTable(
     {
       initialState: {
+        filters: innerFilter,
         sortBy: innerSortBy,
         pageIndex: innerPageIndex,
         pageSize: 10,
+        ...innerState
       },
       columns,
       data,
@@ -377,12 +373,28 @@ export const Table = ({
     }
   );
 
+  const {
+    pageIndex,
+    pageSize,
+    sortBy,
+    groupBy,
+    expanded,
+    filters,
+    selectedRowIds,
+  } = state;
+
   const classes = useStyles();
+
+  useEffect(()=>{
+    gotoPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
       const _filters = [];
       filters.forEach((item) => {
+        if (!item.value || !item.value.operator) return;
         switch (item.value.operator) {
           case "date":
             if (item.value.start) {
@@ -437,6 +449,13 @@ export const Table = ({
                 operator: item.value.operator,
               });
             }
+            if (item.value && !item.value.value) {
+              _filters.push({
+                property: item.id,
+                value: item.value,
+                operator: '=',
+              });
+            }
             break;
         }
       });
@@ -456,9 +475,9 @@ export const Table = ({
         data.params = params;
       }
 
-      if (filter) {
-        data.filter = filter;
-      }
+      // if (filter) {
+      //   data.filter = filter;
+      // }
 
       if (select) {
         data.select = select;
@@ -625,6 +644,10 @@ export const Table = ({
       </Toolbar>
     );
   }
+
+  useEffect(()=>{
+    setState(state);
+  }, [state]);
 
   return (
     <Box className={className} ref={parentRef}>

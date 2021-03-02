@@ -41,13 +41,23 @@ function applyFilter(filterValue, value, setFilter, operator) {
 
 const applyFilterDebounced = _.debounce(applyFilter, 1000);
 
+function getFilterValue (filterValue) {
+  if (filterValue && filterValue.value) {
+    return filterValue.value
+  }
+  if (filterValue && !filterValue.value) {
+    return filterValue
+  }
+  return "";
+}
+
 export const NumberFilter = ({
   column: { filterValue, setFilter },
   className,
   allowNegative = true,
   hidden,
 }) => {
-  const [value, setValue] = useState(filterValue ? filterValue.value : "");
+  const [value, setValue] = useState(getFilterValue(filterValue));
   const InputProps = {};
 
   const inputProps = {};
@@ -105,7 +115,7 @@ export const StringFilter = ({
   hidden,
 }) => {
   const classes = useStyles();
-  const [value, setValue] = useState(filterValue ? filterValue.value : "");
+  const [value, setValue] = useState(getFilterValue(filterValue));
   return (
     <TextField
       fullWidth
@@ -150,7 +160,7 @@ export const UserFilter = ({
   column: { filterValue, setFilter },
   className,
 }) => {
-  const [value, setValue] = useState(filterValue ? filterValue.value : "");
+  const [value, setValue] = useState(getFilterValue(filterValue));
   return (
     <TextField
       disabled
@@ -211,7 +221,7 @@ export const BoolFilter = ({
       select
       fullWidth
       style={{ display: hidden ? "none" : "unset" }}
-      value={filterValue ? filterValue.value : ""}
+      value={getFilterValue(filterValue)}
       variant="outlined"
       margin="dense"
       className={className}
