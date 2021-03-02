@@ -15,7 +15,6 @@ import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import {
   SelectEditor,
-  SelectEditorField,
 } from "components/table/Editors";
 import { getUserId } from "utils/user";
 import { parse } from "query-string";
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(1),
-    // minWidth: 300,
+    minWidth: 300,
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },

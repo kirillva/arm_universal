@@ -4,6 +4,7 @@ import { runRpc } from "utils/rpc";
 
 export const SelectUik = ({
   subdivision,
+  division,
   value,
   error,
   handleChange,
@@ -11,6 +12,7 @@ export const SelectUik = ({
   margin = "dense",
   size = "medium",
   name,
+  className
 }) => {
   const [uik, setUik] = useState([]);
 
@@ -22,26 +24,34 @@ export const SelectUik = ({
         value: subdivision,
         operator: "=",
       });
-      runRpc({
-        action: "cv_uik_ref",
-        method: "Query",
-        data: [
-          {
-            limit: 1000,
-            sort: [{ property: "f_uik", direction: "asc" }],
-            filter: filter,
-          },
-        ],
-        type: "rpc",
-      }).then((responce) => {
-        setUik(responce.result.records);
+    }
+    if (division) {
+      filter.push({
+        property: "f_division",
+        value: division,
+        operator: "=",
       });
     }
+    runRpc({
+      action: "cv_uik_ref",
+      method: "Query",
+      data: [
+        {
+          limit: 1000,
+          sort: [{ property: "f_uik", direction: "asc" }],
+          filter: filter,
+        },
+      ],
+      type: "rpc",
+    }).then((responce) => {
+      setUik(responce.result.records);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subdivision]);
 
   return (
     <TextField
+      className={className}
       select
       margin={margin}
       size={size}

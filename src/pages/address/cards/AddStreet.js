@@ -10,7 +10,7 @@ import {
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import * as Yup from "yup";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { GetGUID } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +43,8 @@ export const AddStreet = ({ refreshPage }) => {
     c_short_type: "",
   };
 
+  const match = useRouteMatch();
+
   const {
     handleSubmit,
     handleChange,
@@ -73,9 +75,9 @@ export const AddStreet = ({ refreshPage }) => {
   });
 
   const onSubmitAndEdit = () => {
-    submitForm().then((responce)=>{
+    submitForm().then((responce) => {
       if (responce) {
-        history.push(`/part2/${values.id}`);
+        history.push(`${match.path}/${values.id}`);
       }
     });
   };

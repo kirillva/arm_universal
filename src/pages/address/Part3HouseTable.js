@@ -197,7 +197,7 @@ export const Part3HouseTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/part3/${streetId}`);
+                history.push(`/${match.path}/${streetId}`);
               }}
             >
               <EditStreet
@@ -206,7 +206,7 @@ export const Part3HouseTable = () => {
                 refreshPage={() => {
                   // setParams([...params]);
                   loadData(streetId).then((record) => setStreet(record));
-                  history.push(`/part3/${streetId}`);
+                  history.push(`/${match.path}/${streetId}`);
                 }}
               />
             </Drawer>
@@ -219,14 +219,14 @@ export const Part3HouseTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/part3/${streetId}`);
+                history.push(`/${match.path}/${streetId}`);
               }}
             >
               <AddHouse
                 street={streetId}
                 refreshPage={() => {
                   // setParams([...params]);
-                  history.push(`/part3/${streetId}`);
+                  history.push(`/${match.path}/${streetId}`);
                 }}
               />
             </Drawer>
@@ -246,7 +246,7 @@ export const Part3HouseTable = () => {
                 addNew={true}
                 refreshTable={() => {
                   // setParams([...params]);
-                  history.push(`/part3/${streetId}`);
+                  history.push(`/${match.path}/${streetId}`);
                 }}
                 street={streetId}
                 // selectedHouse={selectedHouse}
@@ -259,7 +259,7 @@ export const Part3HouseTable = () => {
           className={classes.backButton}
           color="primary"
           variant="contained"
-          onClick={() => history.push(`/part3`)}
+          onClick={() => history.push(`/${match.path}`)}
         >
           <ArrowBack />
           Назад
@@ -272,7 +272,7 @@ export const Part3HouseTable = () => {
           <Button
             className={classes.button}
             onClick={() => {
-              history.push(`/part3/${streetId}/add`);
+              history.push(`/${match.path}/${streetId}/add`);
             }}
           >
             <AddIcon />
@@ -281,7 +281,7 @@ export const Part3HouseTable = () => {
             className={classes.button}
             onClick={() => {
               // setDrawerState(EDIT_STREET);
-              history.push(`/part3/${streetId}/edit`);
+              history.push(`/${match.path}/${streetId}/edit`);
             }}
           >
             <EditIcon />
@@ -308,7 +308,7 @@ export const Part3HouseTable = () => {
           }
           select={`${getSelectByColumns(cs_house)},f_street___c_short_type,id`}
           handleClick={(cell, row) => {
-            history.push(`/part3/${streetId}/${row.original.id}`);
+            history.push(`/${match.path}/${streetId}/${row.original.id}`);
             // setSelectedHouse(row);
             // setDrawerState(EDIT_HOUSE);
           }}

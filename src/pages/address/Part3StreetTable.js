@@ -122,7 +122,7 @@ export const Part3StreetTable = () => {
               },
             ]}
             title={"Улицы"}
-            handleClick={(cell, row) => history.push(`/part3/${row.id}`)}
+            handleClick={(cell, row) => history.push(`/${match.path}/${row.id}`)}
             method="Select"
             params={params}
             columns={cs_street}

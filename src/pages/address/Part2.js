@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { BoolFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
-import { getUserId } from "utils/user";
+import { getItem, getUserId } from "utils/user";
 import { Part2HouseTable } from "./Part2HouseTable";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { SelectUik } from "components/SelectUik";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -32,15 +33,34 @@ const useStyles = makeStyles((theme) => ({
   selectedRow: {
     backgroundColor: "#0096005c",
   },
+  selectUik: {
+    maxWidth: '200px'
+  },
 }));
 
 export const Part2 = () => {
-  const params = [getUserId()];
-
   const history = useHistory();
   const classes = useStyles();
   const match = useRouteMatch();
+  const [uik, setUik] = useState(null);
 
+  const login = getItem("login");
+  let division = null;
+  switch (login) {
+    case "kalinin":
+      division = 1;
+      break;
+    case "lenin":
+      division = 7;
+      break;
+    case "moscow":
+      division = 8;
+      break;
+    default:
+      break;
+  }
+
+  const params = [getUserId(), uik];
   const cs_street = React.useMemo(
     () => [
       {
@@ -79,6 +99,17 @@ export const Part2 = () => {
       <Route path={match.path}>
         <div className={classes.content}>
           <div className={classes.toolbar} />
+          <SelectUik
+            margin="dense"
+            size="small"
+            name="n_uik"
+            division={division}
+            value={uik}
+            className={classes.selectUik}
+            // error={errors.n_uik}
+            handleChange={(e) => setUik(e.target.value)}
+            // isSubmitting={isSubmitting}
+          />
           <Table
             className={classes.table}
             sortBy={[

@@ -95,6 +95,15 @@ export const SimpleMenu = () => {
             handleClose();
           }}
         >
+          III этап: избиратели
+        </MenuItem>
+        <MenuItem
+          button
+          onClick={() => {
+            history.push("/part3edit");
+            handleClose();
+          }}
+        >
           III этап: добавление
         </MenuItem>
         <MenuItem
