@@ -14,10 +14,15 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
     padding: theme.spacing(3),
   },
   drawer: {
     width: 500,
+  },
+  table: {
+    flex: 1,
   },
 }));
 
@@ -58,6 +63,7 @@ export const VotersList = () => {
       {useMemo(() => {
         return (
           <Table
+            className={classes.table}
             title={"Избиратели"}
             method="Select"
             columns={cs_appartament}

@@ -10,16 +10,19 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
-import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
-import { DateEditor, SelectEditor, SelectEditorField } from "components/table/Editors";
-import { DatePicker } from "@material-ui/pickers";
+import {
+  SelectEditor,
+  SelectEditorField,
+} from "components/table/Editors";
 import { getUserId } from "utils/user";
 import { parse } from "query-string";
 import { useLocation } from "react-router-dom";
-// import { getUserId } from "utils/user";
+import * as Yup from "yup";
+import { GetGUID } from "utils/helpers";
+
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -33,8 +36,11 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   searchForm: {
-    height: 200,
-    minWidth: 300,
+    height: 170,
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(1),
+    // minWidth: 300,
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
@@ -103,6 +109,8 @@ const AddNewItem = ({ loadData, appartament }) => {
         value={values.c_first_name}
         onChange={handleChange}
         variant="outlined"
+        margin="none"
+        size="small"
         name="c_first_name"
       />
       <TextField
@@ -110,6 +118,8 @@ const AddNewItem = ({ loadData, appartament }) => {
         value={values.c_last_name}
         onChange={handleChange}
         variant="outlined"
+        margin="none"
+        size="small"
         name="c_last_name"
       />
       <TextField
@@ -117,6 +127,8 @@ const AddNewItem = ({ loadData, appartament }) => {
         value={values.c_middle_name}
         onChange={handleChange}
         variant="outlined"
+        margin="none"
+        size="small"
         name="c_middle_name"
       />
       <TextField
@@ -124,6 +136,8 @@ const AddNewItem = ({ loadData, appartament }) => {
         value={values.n_birth_year}
         onChange={handleChange}
         variant="outlined"
+        margin="none"
+        size="small"
         name="n_birth_year"
       />
       <Button
@@ -139,50 +153,88 @@ const AddNewItem = ({ loadData, appartament }) => {
 };
 
 export const VoterSearchForm = ({ className }) => {
+  const classes = useStyles();
+
   const [data, setData] = useState([]);
   const location = useLocation();
   const { f_house, f_street, f_appartment } = parse(location.search);
 
   const [loading, setLoading] = useState(false);
-  const [street, setStreet] = useState(f_house);
-  const [house, setHouse] = useState(f_street);
-  const [appartament, setAppartament] = useState(f_appartment);
-  const userId = null;
 
-  const classes = useStyles();
-
-  const loadData = () => {
-    if (appartament) {
-      setLoading(true);
+  const {
+    // handleSubmit,
+    // handleChange,
+    values,
+    // isSubmitting,
+    setSubmitting,
+    // setValues,
+    setFieldValue,
+    errors,
+  } = useFormik({
+    validationSchema: Yup.object().shape({
+      c_house_number: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      n_uik: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      f_subdivision: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      f_street: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      b_check: Yup.boolean().typeError('Должно быть указано одно из значений')
+    }),
+    initialValues: {
+      id: GetGUID(),
+      f_house: "",
+      f_street: "",
+      f_appartment: "",
+    },
+    onSubmit: (values) => {
       runRpc({
-        action: "cf_bss_cs_appartament_info",
-        method: "Select",
-        data: [
-          {
-            limit: 1000,
-            params: [appartament],
-            sort: [
-              { property: "c_first_name", direction: "asc" },
-              { property: "c_last_name", direction: "asc" },
-              { property: "c_middle_name", direction: "asc" },
-              { property: "c_name", direction: "asc" },
-            ],
-          },
-        ],
+        action: "cs_house",
+        method: "Update",
+        data: [{ ...values, f_user: getUserId() }],
         type: "rpc",
       }).then((responce) => {
-        setData(responce.result.records);
-        setLoading(false);
+        // refreshPage();
+        setSubmitting(false);
       });
-    } else {
-      setData([]);
-    }
-  };
+    },
+  });
+  const loadData = () => {}
+  // const loadData = () => {
+  //   if (f_appartment) {
+  //     setLoading(true);
+  //     runRpc({
+  //       action: "cf_bss_cs_appartament_info",
+  //       method: "Select",
+  //       data: [
+  //         {
+  //           limit: 1000,
+  //           params: [f_appartment],
+  //           sort: [
+  //             { property: "c_first_name", direction: "asc" },
+  //             { property: "c_last_name", direction: "asc" },
+  //             { property: "c_middle_name", direction: "asc" },
+  //             { property: "c_name", direction: "asc" },
+  //           ],
+  //         },
+  //       ],
+  //       type: "rpc",
+  //     }).then((responce) => {
+  //       setData(responce.result.records);
+  //       setLoading(false);
+  //     });
+  //   } else {
+  //     setData([]);
+  //   }
+  // };
 
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appartament]);
+  // useEffect(() => {
+  //   loadData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [f_appartment]);
 
   return (
     <div className={classes.content}>
@@ -190,7 +242,7 @@ export const VoterSearchForm = ({ className }) => {
       <div className={classes.innerContent}>
         <div className={classes.formContainer}>
           <Paper className={classes.searchForm}>
-            <SelectEditorField
+            {/* <SelectEditorField
               fieldProps={{
                 sortBy: "c_name",
                 params: [null],
@@ -207,46 +259,60 @@ export const VoterSearchForm = ({ className }) => {
                 setAppartament(null);
               }}
               label="Улица"
+            /> */}
+            <SelectEditor
+              name={"f_street"}
+              fieldProps={{
+                margin: "none",
+                size: "small",
+                helperText: errors.f_street,
+                error: errors.f_street,
+                idProperty: "id",
+                nameProperty: "c_name",
+                table: "cv_street",
+              }}
+              label="Улица"
+              value={values.f_street}
+              setFieldValue={setFieldValue}
             />
-            {street && (
-              <SelectEditorField
+            {values.f_street && (
+              <SelectEditor
+                name={"f_house"}
                 fieldProps={{
-                  sortBy: "n_number",
-                  params: [userId, street, null],
-                  method: "Select",
+                  margin: "none",
+                  size: "small",
+                  helperText: errors.f_house,
+                  error: errors.f_house,
                   idProperty: "id",
-                  table: "cf_bss_cs_house",
-                  nameProperty: "c_full_number",
-                }}
-                value={house}
-                setFieldValue={(name, value) => {
-                  setHouse(value);
-                  setAppartament(null);
+                  nameProperty: "c_house_number",
+                  table: "cs_house",
                 }}
                 label="Дом"
+                value={values.f_house}
+                setFieldValue={setFieldValue}
               />
             )}
-            {house && (
-              <SelectEditorField
+            {values.f_house && (
+              <SelectEditor
+                name={"f_appartment"}
                 fieldProps={{
-                  sortBy: "n_number",
-                  params: [userId, street, house],
-                  method: "Select",
+                  margin: "none",
+                  size: "small",
+                  helperText: errors.f_appartment,
+                  error: errors.f_appartment,
                   idProperty: "id",
-                  table: "cf_bss_cs_appartament",
                   nameProperty: "c_number",
-                }}
-                value={house}
-                setFieldValue={(name, value) => {
-                  setAppartament(value);
+                  table: "cs_appartament",
                 }}
                 label="Квартира"
+                value={values.f_appartment}
+                setFieldValue={setFieldValue}
               />
             )}
           </Paper>
-          {appartament && (
+          {values.f_appartment && (
             <Paper className={classes.addNewItem}>
-              <AddNewItem loadData={loadData} appartament={appartament} />
+              <AddNewItem loadData={loadData} appartament={values.f_appartment} />
             </Paper>
           )}
         </div>
