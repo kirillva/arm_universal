@@ -13,15 +13,13 @@ import { runRpc } from "utils/rpc";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
-import {
-  SelectEditor,
-} from "components/table/Editors";
+import { SelectEditor } from "components/table/Editors";
 import { getUserId } from "utils/user";
 import { parse } from "query-string";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import * as Yup from "yup";
 import { GetGUID } from "utils/helpers";
-
+import { ArrowBack } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -56,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(3),
     display: "flex",
   },
+  backButton: {
+    marginBottom: theme.spacing(1),
+  }
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {
@@ -151,14 +152,24 @@ const AddNewItem = ({ loadData, appartament }) => {
   );
 };
 
-export const VoterSearchForm = ({ className }) => {
+export const VoterSearchForm = ({
+  f_house,
+  f_street,
+  f_appartment,
+  className,
+}) => {
   const classes = useStyles();
 
   const [data, setData] = useState([]);
   const location = useLocation();
-  const { f_house, f_street, f_appartment } = parse(location.search);
+  // const { f_house, f_street, f_appartment } = parse(location.search);
 
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
+  const match = useRouteMatch();
+
+
+  // console.log('street', f_house, f_street, f_appartment);
 
   const {
     // handleSubmit,
@@ -181,13 +192,13 @@ export const VoterSearchForm = ({ className }) => {
       f_street: Yup.string()
         .nullable()
         .required("Не заполнено обязательное поле"),
-      b_check: Yup.boolean().typeError('Должно быть указано одно из значений')
+      b_check: Yup.boolean().typeError("Должно быть указано одно из значений"),
     }),
     initialValues: {
       id: GetGUID(),
-      f_house: "",
-      f_street: "",
-      f_appartment: "",
+      f_house: f_house,
+      f_street: f_street,
+      f_appartment: f_appartment,
     },
     onSubmit: (values) => {
       runRpc({
@@ -201,153 +212,141 @@ export const VoterSearchForm = ({ className }) => {
       });
     },
   });
-  const loadData = () => {}
-  // const loadData = () => {
-  //   if (f_appartment) {
-  //     setLoading(true);
-  //     runRpc({
-  //       action: "cf_bss_cs_appartament_info",
-  //       method: "Select",
-  //       data: [
-  //         {
-  //           limit: 1000,
-  //           params: [f_appartment],
-  //           sort: [
-  //             { property: "c_first_name", direction: "asc" },
-  //             { property: "c_last_name", direction: "asc" },
-  //             { property: "c_middle_name", direction: "asc" },
-  //             { property: "c_name", direction: "asc" },
-  //           ],
-  //         },
-  //       ],
-  //       type: "rpc",
-  //     }).then((responce) => {
-  //       setData(responce.result.records);
-  //       setLoading(false);
-  //     });
-  //   } else {
-  //     setData([]);
-  //   }
-  // };
+  
+  const loadData = () => {
+    if (f_appartment) {
+      setLoading(true);
+      runRpc({
+        action: "cf_bss_cs_appartament_info",
+        method: "Select",
+        data: [
+          {
+            limit: 1000,
+            params: [f_appartment],
+            sort: [
+              { property: "c_first_name", direction: "asc" },
+              { property: "c_last_name", direction: "asc" },
+              { property: "c_middle_name", direction: "asc" },
+              { property: "c_name", direction: "asc" },
+            ],
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        setData(responce.result.records);
+        setLoading(false);
+      });
+    } else {
+      setData([]);
+    }
+  };
 
-  // useEffect(() => {
-  //   loadData();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [f_appartment]);
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [f_appartment]);
 
   return (
-    <div className={classes.content}>
-      <div className={classes.toolbar} />
-      <div className={classes.innerContent}>
-        <div className={classes.formContainer}>
-          <Paper className={classes.searchForm}>
-            {/* <SelectEditorField
-              fieldProps={{
-                sortBy: "c_name",
-                params: [null],
-                method: "Select",
-                idProperty: "id",
-                table: "cf_bss_cs_street",
-                nameProperty: "c_name",
-              }}
-              value={street}
-              setInputValue
-              setFieldValue={(name, value) => {
-                setStreet(value);
-                setHouse(null);
-                setAppartament(null);
-              }}
-              label="Улица"
-            /> */}
+    <div className={classes.innerContent}>
+      <div className={classes.formContainer}>
+        <Button
+          className={classes.backButton}
+          color="primary"
+          variant="contained"
+          onClick={() => history.push(`/part3`)}
+        >
+          <ArrowBack />
+          Назад
+        </Button>
+        <Paper className={classes.searchForm}>
+          <SelectEditor
+            name={"f_street"}
+            fieldProps={{
+              margin: "none",
+              size: "small",
+              helperText: errors.f_street,
+              error: errors.f_street,
+              idProperty: "id",
+              nameProperty: "c_name",
+              table: "cv_street",
+            }}
+            label="Улица"
+            value={values.f_street}
+            setFieldValue={setFieldValue}
+          />
+          {values.f_street && (
             <SelectEditor
-              name={"f_street"}
+              name={"f_house"}
               fieldProps={{
                 margin: "none",
                 size: "small",
-                helperText: errors.f_street,
-                error: errors.f_street,
+                helperText: errors.f_house,
+                error: errors.f_house,
                 idProperty: "id",
-                nameProperty: "c_name",
-                table: "cv_street",
+                nameProperty: "c_house_number",
+                table: "cs_house",
               }}
-              label="Улица"
-              value={values.f_street}
+              label="Дом"
+              value={values.f_house}
               setFieldValue={setFieldValue}
             />
-            {values.f_street && (
-              <SelectEditor
-                name={"f_house"}
-                fieldProps={{
-                  margin: "none",
-                  size: "small",
-                  helperText: errors.f_house,
-                  error: errors.f_house,
-                  idProperty: "id",
-                  nameProperty: "c_house_number",
-                  table: "cs_house",
-                }}
-                label="Дом"
-                value={values.f_house}
-                setFieldValue={setFieldValue}
-              />
-            )}
-            {values.f_house && (
-              <SelectEditor
-                name={"f_appartment"}
-                fieldProps={{
-                  margin: "none",
-                  size: "small",
-                  helperText: errors.f_appartment,
-                  error: errors.f_appartment,
-                  idProperty: "id",
-                  nameProperty: "c_number",
-                  table: "cs_appartament",
-                }}
-                label="Квартира"
-                value={values.f_appartment}
-                setFieldValue={setFieldValue}
-              />
-            )}
-          </Paper>
-          {values.f_appartment && (
-            <Paper className={classes.addNewItem}>
-              <AddNewItem loadData={loadData} appartament={values.f_appartment} />
-            </Paper>
           )}
-        </div>
+          {values.f_house && (
+            <SelectEditor
+              name={"f_appartment"}
+              fieldProps={{
+                margin: "none",
+                size: "small",
+                helperText: errors.f_appartment,
+                error: errors.f_appartment,
+                idProperty: "id",
+                nameProperty: "c_number",
+                table: "cs_appartament",
+              }}
+              label="Квартира"
+              value={values.f_appartment}
+              setFieldValue={setFieldValue}
+            />
+          )}
+        </Paper>
+        {values.f_appartment && (
+          <Paper className={classes.addNewItem}>
+            <AddNewItem loadData={loadData} appartament={values.f_appartment} />
+          </Paper>
+        )}
+      </div>
 
-        <List className={className}>
-          {loading ? (
-            <div className={className}>
-              <CircularProgress />
-            </div>
-          ) : data && data.length ? (
-            data.map((item) => {
-              const { c_first_name, c_last_name, c_middle_name, c_name } = item;
-              let primaryText = "";
-              if (c_first_name || c_last_name || c_middle_name) {
-                primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
-                  c_middle_name || ""
-                }`;
-              } else {
-                primaryText = "Не указано";
-              }
-              return (
-                <ListItem>
-                  <ListItemText primary={primaryText} secondary={c_name} />
-                  {/* <Button color="primary" variant="contained">
+      <List className={className}>
+        {loading ? (
+          <div className={className}>
+            <CircularProgress />
+          </div>
+        ) : data && data.length ? (
+          data.map((item) => {
+            const { c_first_name, c_last_name, c_middle_name, c_name } = item;
+            let primaryText = "";
+            if (c_first_name || c_last_name || c_middle_name) {
+              primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
+                c_middle_name || ""
+              }`;
+            } else {
+              primaryText = "Не указано";
+            }
+            return (
+              <ListItem>
+                <ListItemText primary={primaryText} secondary={c_name} />
+                {/* <Button color="primary" variant="contained">
                   <DeleteIcon /> Удалить
                 </Button> */}
-                </ListItem>
-              );
-            })
-          ) : (
-            <ListItem>
-              <ListItemText primary={"Нет данных"} />
-            </ListItem>
-          )}
-        </List>
-      </div>
+              </ListItem>
+            );
+          })
+        ) : (
+          <ListItem>
+            <ListItemText primary={"Нет данных"} />
+          </ListItem>
+        )}
+      </List>
     </div>
   );
 };

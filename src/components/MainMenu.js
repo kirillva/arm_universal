@@ -99,15 +99,6 @@ export const SimpleMenu = () => {
         </MenuItem>
         <MenuItem
           button
-          onClick={() => {
-            history.push("/part3edit");
-            handleClose();
-          }}
-        >
-          III этап: добавление
-        </MenuItem>
-        <MenuItem
-          button
           key={"/"}
           component={Link}
           to={"/"}

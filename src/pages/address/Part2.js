@@ -134,9 +134,7 @@ export const Part2 = () => {
             division={division}
             value={uik}
             className={classes.selectUik}
-            // error={errors.n_uik}
             handleChange={(e) => setUik(e.target.value)}
-            // isSubmitting={isSubmitting}
           />
           {StreetsTable}
         </div>

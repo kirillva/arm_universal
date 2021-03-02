@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 // import { Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { getUserId } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,9 +26,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const VotersList = () => {
+export const VotersList = ({
+  state,
+  setState,
+  setHouse,
+  setStreet,
+  setAppartment,
+}) => {
   const classes = useStyles();
   const history = useHistory();
+  const match = useRouteMatch();
 
   const cs_appartament = useMemo(
     () => [
@@ -58,41 +65,22 @@ export const VotersList = () => {
   );
 
   return (
-    <div className={classes.content}>
-      <div className={classes.toolbar} />
-      {useMemo(() => {
-        return (
-          <Table
-            className={classes.table}
-            title={"Избиратели"}
-            method="Select"
-            columns={cs_appartament}
-            handleClick={(cell, row) => {
-              const { f_house, f_street, id } = row.original;
-              history.push({
-                pathname: "/voters",
-                search: `?f_house=${f_house}&f_street=${f_street}&f_appartment=${id}`,
-              });
-            }}
-            params={[getUserId(), null, null]}
-            action="cf_bss_cs_appartament"
-          />
-        );
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])}
-
-      {/* <Drawer
-        anchor={"right"}
-        open={Boolean(selectedRow)}
-        onClose={() => {
-          setSelectedRow(null);
-          // history.push({
-          //   pathname: "/voters",
-          // });
-        }}
-      >
-        <VoterSearchForm className={classes.drawer} selectedRow={selectedRow} />
-      </Drawer> */}
-    </div>
+    <Table
+      state={state}
+      setState={setState}
+      className={classes.table}
+      title={"Избиратели"}
+      method="Select"
+      columns={cs_appartament}
+      handleClick={(cell, row) => {
+        const { f_house, f_street, id } = row.original;
+        setHouse(f_house);
+        setStreet(f_street);
+        setAppartment(id);
+        history.push(`${match.path}/search`);
+      }}
+      params={[getUserId(), null, null]}
+      action="cf_bss_cs_appartament"
+    />
   );
 };
