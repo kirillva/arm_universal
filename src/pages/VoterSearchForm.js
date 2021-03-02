@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(1),
-    minWidth: 300,
+    minWidth: 450,
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
   addNewItem: {
-    minWidth: 300,
+    minWidth: 450,
     padding: theme.spacing(2),
   },
   formContainer: {
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backButton: {
     marginBottom: theme.spacing(1),
-  }
+  },
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {
@@ -66,10 +66,25 @@ const AddNewItem = ({ loadData, appartament }) => {
     handleSubmit,
     handleChange,
     values,
+    errors,
     isSubmitting,
     setSubmitting,
     resetForm,
   } = useFormik({
+    validationSchema: Yup.object().shape({
+      c_first_name: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      c_last_name: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      c_middle_name: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      n_birth_year: Yup.number()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+    }),
     initialValues: {
       c_first_name: "",
       c_last_name: "",
@@ -107,6 +122,8 @@ const AddNewItem = ({ loadData, appartament }) => {
       <TextField
         label="Фамилия"
         value={values.c_first_name}
+        error={errors.c_first_name}
+        helperText={errors.c_first_name}
         onChange={handleChange}
         variant="outlined"
         margin="none"
@@ -116,6 +133,8 @@ const AddNewItem = ({ loadData, appartament }) => {
       <TextField
         label="Имя"
         value={values.c_last_name}
+        error={errors.c_last_name}
+        helperText={errors.c_last_name}
         onChange={handleChange}
         variant="outlined"
         margin="none"
@@ -125,6 +144,8 @@ const AddNewItem = ({ loadData, appartament }) => {
       <TextField
         label="Отчество"
         value={values.c_middle_name}
+        error={errors.c_middle_name}
+        helperText={errors.c_middle_name}
         onChange={handleChange}
         variant="outlined"
         margin="none"
@@ -134,6 +155,8 @@ const AddNewItem = ({ loadData, appartament }) => {
       <TextField
         label="Год рождения"
         value={values.n_birth_year}
+        error={errors.n_birth_year}
+        helperText={errors.n_birth_year}
         onChange={handleChange}
         variant="outlined"
         margin="none"
@@ -161,23 +184,13 @@ export const VoterSearchForm = ({
   const classes = useStyles();
 
   const [data, setData] = useState([]);
-  const location = useLocation();
-  // const { f_house, f_street, f_appartment } = parse(location.search);
 
   const [loading, setLoading] = useState(false);
   const history = useHistory();
-  const match = useRouteMatch();
-
-
-  // console.log('street', f_house, f_street, f_appartment);
 
   const {
-    // handleSubmit,
-    // handleChange,
     values,
-    // isSubmitting,
     setSubmitting,
-    // setValues,
     setFieldValue,
     errors,
   } = useFormik({
