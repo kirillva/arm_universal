@@ -227,7 +227,7 @@ export const VoterSearchForm = ({
   });
   
   const loadData = () => {
-    if (f_appartment) {
+    if (values.f_appartment) {
       setLoading(true);
       runRpc({
         action: "cf_bss_cs_appartament_info",
@@ -235,7 +235,7 @@ export const VoterSearchForm = ({
         data: [
           {
             limit: 1000,
-            params: [f_appartment],
+            params: [values.f_appartment],
             sort: [
               { property: "c_first_name", direction: "asc" },
               { property: "c_last_name", direction: "asc" },
@@ -257,7 +257,7 @@ export const VoterSearchForm = ({
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [f_appartment]);
+  }, [values.f_appartment]);
 
   return (
     <div className={classes.innerContent}>
