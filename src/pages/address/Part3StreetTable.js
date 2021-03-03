@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, StringFilter } from "components/table/Filters";
+import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { getUserId } from "utils/user";
 import { Part3HouseTable } from "./Part3HouseTable";
@@ -51,6 +51,7 @@ export const Part3StreetTable = () => {
       {
         title: "Тип",
         accessor: "c_short_type",
+        operator: Operators.string,
         style: {
           width: "80px",
         },
@@ -61,6 +62,7 @@ export const Part3StreetTable = () => {
         title: "Улица",
         Filter: StringFilter,
         accessor: "c_name",
+        operator: Operators.string,
         Cell: StringCell,
       },
       {
@@ -71,6 +73,7 @@ export const Part3StreetTable = () => {
           width: "80px",
         },
         accessor: "b_finish",
+        operator: Operators.bool
       },
     ],
     []

@@ -4,6 +4,7 @@ import { Table } from "components/table/Table";
 import {
   BoolFilter,
   NumberFilter,
+  Operators,
   StringFilter,
 } from "components/table/Filters";
 import { SelectCell, StringCell } from "components/table/Cell";
@@ -90,6 +91,7 @@ export const Part3HouseTable = () => {
         Filter: NumberFilter,
         Cell: StringCell,
         accessor: "n_uik",
+        operator: Operators.number,
         style: {
           width: "80px",
         },
@@ -98,6 +100,7 @@ export const Part3HouseTable = () => {
         title: "Улица",
         Filter: StringFilter,
         accessor: "f_street___c_name",
+        operator: Operators.string,
         Cell: ({ cell }) => {
           const { f_street___c_short_type, f_street___c_name } = cell.row.original;
           return `${f_street___c_short_type} ${f_street___c_name}`;
@@ -106,6 +109,7 @@ export const Part3HouseTable = () => {
       {
         title: "Округ ЧГСД",
         accessor: "f_subdivision",
+        operator: Operators.number,
         mapAccessor: "f_subdivision___c_name",
         fieldProps: {
           idProperty: "id",
@@ -124,6 +128,7 @@ export const Part3HouseTable = () => {
         Filter: StringFilter,
         Cell: StringCell,
         accessor: "c_full_number",
+        operator: Operators.string,
         style: {
           width: "120px",
         },
@@ -137,6 +142,7 @@ export const Part3HouseTable = () => {
           if (cell.value === false) return "Нет";
         },
         accessor: "b_check",
+        operator: Operators.bool,
         style: {
           width: "120px",
         },

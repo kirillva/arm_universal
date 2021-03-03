@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import {
   BoolFilter,
-  DateFilter,
+  // DateFilter,
   NumberFilter,
   StringFilter,
 } from "components/table/Filters";
@@ -57,13 +57,13 @@ export const RoutesPanel = () => {
         Cell: StringCell,
         Editor: StringEditor,
       },
-      {
-        title: "Дата",
-        accessor: "d_date",
-        Filter: DateFilter,
-        Cell: DateCell,
-        Editor: DateEditor
-      }
+      // {
+      //   title: "Дата",
+      //   accessor: "d_date",
+      //   Filter: DateFilter,
+      //   Cell: DateCell,
+      //   Editor: DateEditor
+      // }
     ],
     []
   );

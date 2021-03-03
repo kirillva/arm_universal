@@ -4,6 +4,7 @@ import { Table } from "components/table/Table";
 import {
   BoolFilter,
   NumberFilter,
+  Operators,
   StringFilter,
 } from "components/table/Filters";
 import { SelectCell, StringCell } from "components/table/Cell";
@@ -90,6 +91,7 @@ export const Part2HouseTable = ({ uik }) => {
         Filter: NumberFilter,
         Cell: StringCell,
         accessor: "n_uik",
+        operator: Operators.number,
         style: {
           width: "80px",
         },
@@ -98,6 +100,7 @@ export const Part2HouseTable = ({ uik }) => {
         title: "Улица",
         Filter: StringFilter,
         accessor: "c_name",
+        operator: Operators.string,
         Cell: ({ cell }) => {
           const { c_short_type, c_name } = cell.row.original;
           return `${c_short_type} ${c_name}`;
@@ -106,6 +109,7 @@ export const Part2HouseTable = ({ uik }) => {
       {
         title: "Округ ЧГСД",
         accessor: "f_subdivision",
+        operator: Operators.number,
         mapAccessor: "c_subdivision",
         fieldProps: {
           idProperty: "id",
@@ -124,6 +128,7 @@ export const Part2HouseTable = ({ uik }) => {
         Filter: StringFilter,
         Cell: StringCell,
         accessor: "c_full_number",
+        operator: Operators.string,
         style: {
           width: "120px",
         },
@@ -137,6 +142,7 @@ export const Part2HouseTable = ({ uik }) => {
           if (cell.value === false) return "Нет";
         },
         accessor: "b_check",
+        operator: Operators.bool,
         style: {
           width: "120px",
         },
@@ -150,6 +156,7 @@ export const Part2HouseTable = ({ uik }) => {
           if (cell.value === false) return "Нет";
         },
         accessor: "b_finish",
+        operator: Operators.bool,
         style: {
           width: "120px",
         },

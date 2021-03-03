@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, NumberFilter, StringFilter } from "components/table/Filters";
+import { BoolFilter, NumberFilter, Operators, StringFilter } from "components/table/Filters";
 import {
   BoolCell,
   NumberCell,
@@ -48,6 +48,7 @@ export const Part1 = () => {
       {
         title: "#",
         accessor: "n_row",
+        operator: Operators.string,
         Filter: () => null,
         Cell: NumberCell,
         style: {
@@ -58,6 +59,7 @@ export const Part1 = () => {
       {
         title: "Тип",
         accessor: "c_short_type",
+        operator: Operators.string,
         style: {
           width: '80px'
         },
@@ -68,11 +70,13 @@ export const Part1 = () => {
         title: "Улица",
         Filter: StringFilter,
         accessor: "c_name",
+        operator: Operators.string,
         Cell: StringCell,
       },
       {
         title: "Округ ЧГСД",
         accessor: "f_subdivision",
+        operator: Operators.number,
         mapAccessor: "c_subdivision",
         fieldProps: {
           idProperty: "id",
@@ -89,6 +93,7 @@ export const Part1 = () => {
       {
         title: "УИК",
         accessor: "n_uik",
+        operator: Operators.number,
         Filter: NumberFilter,
         Cell: StringCell,
         style: {
@@ -99,6 +104,7 @@ export const Part1 = () => {
       {
         title: "Номер",
         accessor: "c_full_number",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
         style: {
@@ -109,6 +115,7 @@ export const Part1 = () => {
       {
         title: "Изменил",
         accessor: "c_first_name",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
         style: {
@@ -119,6 +126,7 @@ export const Part1 = () => {
       {
         title: "Квартир",
         accessor: "n_premise_count",
+        operator: Operators.string,
         Filter: () => null,
         Cell: StringCell,
         style: {

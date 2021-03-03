@@ -29,27 +29,18 @@ export const Operators = {
   status: "status",
 };
 
-function applyFilter(filterValue, value, setFilter, operator) {
-  if (!filterValue || value !== filterValue.value) {
-    if (value) {
-      setFilter({ value, operator });
-    } else {
-      setFilter(null);
-    }
+function applyFilter(filterValue, value, setFilter) {
+  if (!filterValue || value !== filterValue) {
+    setFilter(value);
+    // if (value) {
+    // } else {
+    //   setFilter(null);
+    // }
   }
 }
 
 const applyFilterDebounced = _.debounce(applyFilter, 1000);
 
-function getFilterValue (filterValue) {
-  if (filterValue && filterValue.value) {
-    return filterValue.value
-  }
-  if (filterValue && !filterValue.value) {
-    return filterValue
-  }
-  return "";
-}
 
 export const NumberFilter = ({
   column: { filterValue, setFilter },
@@ -57,7 +48,7 @@ export const NumberFilter = ({
   allowNegative = true,
   hidden,
 }) => {
-  const [value, setValue] = useState(getFilterValue(filterValue));
+  const [value, setValue] = useState(filterValue);
   const InputProps = {};
 
   const inputProps = {};
@@ -87,8 +78,7 @@ export const NumberFilter = ({
           applyFilterDebounced(
             filterValue,
             e.target.value,
-            setFilter,
-            Operators.number
+            setFilter
           );
         }
       }}
@@ -98,8 +88,7 @@ export const NumberFilter = ({
             applyFilter(
               filterValue,
               e.target.value,
-              setFilter,
-              Operators.number
+              setFilter
             );
             applyFilterDebounced.cancel();
           }
@@ -115,7 +104,7 @@ export const StringFilter = ({
   hidden,
 }) => {
   const classes = useStyles();
-  const [value, setValue] = useState(getFilterValue(filterValue));
+  const [value, setValue] = useState(filterValue);
   return (
     <TextField
       fullWidth
@@ -144,11 +133,11 @@ export const StringFilter = ({
       }}
       onChange={(e) => {
         setValue(e.target.value);
-        applyFilterDebounced(filterValue, e.target.value, setFilter, "like");
+        applyFilterDebounced(filterValue, e.target.value, setFilter);
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          applyFilter(filterValue, e.target.value, setFilter, "like");
+          applyFilter(filterValue, e.target.value, setFilter);
           applyFilterDebounced.cancel();
         }
       }}
@@ -160,7 +149,7 @@ export const UserFilter = ({
   column: { filterValue, setFilter },
   className,
 }) => {
-  const [value, setValue] = useState(getFilterValue(filterValue));
+  const [value, setValue] = useState(filterValue);
   return (
     <TextField
       disabled
@@ -179,7 +168,7 @@ export const UserFilter = ({
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          applyFilter(filterValue, e.target.value, setFilter, Operators.user);
+          applyFilter(filterValue, e.target.value, setFilter);
           applyFilterDebounced.cancel();
         }
       }}
@@ -187,27 +176,27 @@ export const UserFilter = ({
   );
 };
 
-export const DateFilter = ({
-  column: { filterValue = { start: null, finish: null }, setFilter },
-  className,
-  hidden,
-}) => {
-  return (
-    <DatePicker
-      style={{ display: hidden ? "none" : "unset" }}
-      value={filterValue}
-      className={className}
-      onChange={(props) => {
-        setFilter({ ...filterValue, ...props, operator: Operators.date });
-      }}
-      initialDateStart={filterValue.start}
-      initialDateFinish={filterValue.finish}
-    />
-  );
-};
+// export const DateFilter = ({
+//   column: { filterValue = { start: null, finish: null }, setFilter },
+//   className,
+//   hidden,
+// }) => {
+//   return (
+//     <DatePicker
+//       style={{ display: hidden ? "none" : "unset" }}
+//       value={filterValue}
+//       className={className}
+//       onChange={(props) => {
+//         setFilter({ ...filterValue, ...props, operator: Operators.date });
+//       }}
+//       initialDateStart={filterValue.start}
+//       initialDateFinish={filterValue.finish}
+//     />
+//   );
+// };
 
 export const BoolFilter = ({
-  column: { filterValue, setFilter },
+  column,
   className,
   hidden,
 }) => {
@@ -215,23 +204,24 @@ export const BoolFilter = ({
     BOOL_TRUE: "Да",
     BOOL_FALSE: "Нет",
   };
-
+  const { filterValue, setFilter, id } = column;
   return (
     <TextField
       select
       fullWidth
       style={{ display: hidden ? "none" : "unset" }}
-      value={getFilterValue(filterValue)}
+      value={filterValue}
       variant="outlined"
       margin="dense"
+      name={column.id}
       className={className}
-      onChange={(e) =>
-        setFilter({ value: e.target.value, operator: Operators.bool })
-      }
+      onChange={(e) => {
+        setFilter(e.target.value)
+      }}
     >
       <MenuItem value={""}>Все</MenuItem>
-      <MenuItem value={true}>{defaultProps.BOOL_TRUE}</MenuItem>
-      <MenuItem value={false}>{defaultProps.BOOL_FALSE}</MenuItem>
+      <MenuItem value={"true"}>{defaultProps.BOOL_TRUE}</MenuItem>
+      <MenuItem value={"false"}>{defaultProps.BOOL_FALSE}</MenuItem>
     </TextField>
   );
 };

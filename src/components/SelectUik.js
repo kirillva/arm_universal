@@ -66,7 +66,7 @@ export const SelectUik = ({
     >
       <MenuItem value={null}>Не выбрано</MenuItem>
       {uik.map((item) => (
-        <MenuItem value={item.f_uik}>{item.f_uik}</MenuItem>
+        <MenuItem key={item.f_uik} value={item.f_uik}>{item.f_uik} ({item.c_subdivision})</MenuItem>
       ))}
     </TextField>
   );

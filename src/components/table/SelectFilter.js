@@ -29,7 +29,7 @@ export function SelectFilter({
 
   const onChange = (event, newValue) => {
     if (newValue) {
-      setFilter({ value: newValue[idProperty], operator: "=" });
+      setFilter(newValue[idProperty]);
     } else {
       setFilter(null);
     }

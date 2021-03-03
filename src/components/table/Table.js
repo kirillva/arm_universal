@@ -266,6 +266,7 @@ export const Table = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(false);
   const [size, setSize] = useState({ width: 500, height: 300 });
+  const [filterHidden, setFilterHidden] = useState(false);
 
   const childRef = useRef(null);
   const parentRef = useRef(null);
@@ -298,9 +299,7 @@ export const Table = ({
     }),
     []
   );
-
-  const [filterHidden, setFilterHidden] = useState(true);
-
+  
   const {
     getTableProps,
     getTableBodyProps,
@@ -335,7 +334,7 @@ export const Table = ({
       autoResetGroupBy: false,
       autoResetSelectedRows: false,
       autoResetSortBy: false,
-      autoResetFilters: false,
+      // autoResetFilters: false,
       autoResetRowState: false,
       getRowId: (row, relativeIndex) => {
         return row[idProperty];
@@ -394,28 +393,30 @@ export const Table = ({
     return new Promise((resolve) => {
       const _filters = [];
       filters.forEach((item) => {
-        if (!item.value || !item.value.operator) return;
-        switch (item.value.operator) {
+        const column = columns.find(column=>column.accessor === item.id);
+        
+        // if (!item.value) return;
+        switch (column.operator) {
           case "date":
-            if (item.value.start) {
-              _filters.push({
-                property: item.id,
-                value: moment(item.value.start).toISOString(true),
-                operator: "gt",
-              });
-            }
+            // if (item.value.start) {
+            //   _filters.push({
+            //     property: item.id,
+            //     value: moment(item.value.start).toISOString(true),
+            //     operator: "gt",
+            //   });
+            // }
 
-            if (item.value.finish) {
-              _filters.push({
-                property: item.id,
-                value: moment(item.value.finish).toISOString(true),
-                operator: "lt",
-              });
-            }
+            // if (item.value.finish) {
+            //   _filters.push({
+            //     property: item.id,
+            //     value: moment(item.value.finish).toISOString(true),
+            //     operator: "lt",
+            //   });
+            // }
             break;
 
           case "bool":
-            if (item.value && item.value.value === true) {
+            if (item.value === "true") {
               _filters.push({
                 property: item.id,
                 value: true,
@@ -428,7 +429,7 @@ export const Table = ({
               });
             }
 
-            if (item.value && item.value.value === false) {
+            if (item.value === "false") {
               _filters.push({
                 property: item.id,
                 value: false,
@@ -441,19 +442,23 @@ export const Table = ({
               });
             }
             break;
-          default:
-            if (item.value && item.value.value) {
-              _filters.push({
-                property: item.id,
-                value: item.value.value,
-                operator: item.value.operator,
-              });
-            }
-            if (item.value && !item.value.value) {
+
+          case 'number': 
+            if (item.value) {
               _filters.push({
                 property: item.id,
                 value: item.value,
                 operator: '=',
+              });
+            }
+            break;
+
+          default:
+            if (item.value) {
+              _filters.push({
+                property: item.id,
+                value: item.value,
+                operator: 'like',
               });
             }
             break;

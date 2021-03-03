@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, StringFilter } from "components/table/Filters";
+import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { getItem, getUserId } from "utils/user";
 import { Part2HouseTable } from "./Part2HouseTable";
@@ -67,6 +67,7 @@ export const Part2 = () => {
       {
         title: "Тип",
         accessor: "c_short_type",
+        operator: Operators.string,
         style: {
           width: "80px",
         },
@@ -77,6 +78,7 @@ export const Part2 = () => {
         title: "Улица",
         Filter: StringFilter,
         accessor: "c_name",
+        operator: Operators.string,
         Cell: StringCell,
       },
       {
@@ -87,6 +89,7 @@ export const Part2 = () => {
           width: "80px",
         },
         accessor: "b_finish",
+        operator: Operators.bool,
       },
     ],
     []

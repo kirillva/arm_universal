@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
 import { Table } from "components/table/Table";
-import { StringFilter } from "components/table/Filters";
+import { Operators, StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { getUserId } from "utils/user";
@@ -43,6 +43,7 @@ export const VotersList = ({
         title: "Улица",
         Filter: StringFilter,
         accessor: "c_name",
+        operator: Operators.string,
         Cell: ({ cell }) => {
           const { c_short_type, c_name } = cell.row.original;
           return `${c_short_type} ${c_name}`;
@@ -51,12 +52,14 @@ export const VotersList = ({
       {
         title: "Номер дома",
         accessor: "c_full_number",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "Номер квартиры",
         accessor: "c_number",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
