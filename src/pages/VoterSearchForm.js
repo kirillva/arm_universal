@@ -285,12 +285,22 @@ export const VoterSearchForm = ({
             }}
             label="Улица"
             value={values.f_street}
-            setFieldValue={setFieldValue}
+            setFieldValue={(name, value)=>{
+              setFieldValue('f_house', '');
+              setFieldValue('f_appartment', '');
+              setFieldValue(name, value);
+            }}
           />
           {values.f_street && (
             <SelectEditor
               name={"f_house"}
               fieldProps={{
+                filter: [{
+                  property: 'f_street',
+                  value: values.f_street,
+                  operator: '='
+                }],
+                sortBy: 'n_number',
                 margin: "none",
                 size: "small",
                 helperText: errors.f_house,
@@ -300,14 +310,23 @@ export const VoterSearchForm = ({
                 table: "cs_house",
               }}
               label="Дом"
-              value={values.f_house}
-              setFieldValue={setFieldValue}
+              value={values.f_house}            
+              setFieldValue={(name, value)=>{
+                setFieldValue('f_appartment', '');
+                setFieldValue(name, value);
+              }}
             />
           )}
           {values.f_house && (
             <SelectEditor
               name={"f_appartment"}
               fieldProps={{
+                filter: [{
+                  property: 'f_house',
+                  value: values.f_house,
+                  operator: '='
+                }],
+                sortBy: 'n_number',
                 margin: "none",
                 size: "small",
                 helperText: errors.f_appartment,

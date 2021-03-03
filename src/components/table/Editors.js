@@ -142,7 +142,6 @@ export function SelectEditorField({
     nameProperty,
     table,
     params,
-    filter: propFilter,
     method = "Query",
     sortBy,
     error,
@@ -170,9 +169,6 @@ export function SelectEditorField({
         value: inputValue,
         operator: operator || "like",
       });
-    }
-    if (propFilter) {
-      filter = filter.concat(propFilter);
     }
     const rpcData = {
       limit: 50,
