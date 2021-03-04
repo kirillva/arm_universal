@@ -57,6 +57,13 @@ const useStyles = makeStyles((theme) => ({
   backButton: {
     marginBottom: theme.spacing(1),
   },
+  fieldWrapper: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  field: {
+    flex: 1,
+  },
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {
@@ -176,9 +183,9 @@ const AddNewItem = ({ loadData, appartament }) => {
 };
 
 export const VoterSearchForm = ({
-  f_house,
-  f_street,
-  f_appartment,
+  // f_house,
+  // f_street,
+  // f_appartment,
   className,
 }) => {
   const classes = useStyles();
@@ -187,13 +194,9 @@ export const VoterSearchForm = ({
 
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const { house, street, appartment } = parse(useLocation().search);
 
-  const {
-    values,
-    setSubmitting,
-    setFieldValue,
-    errors,
-  } = useFormik({
+  const { values, setSubmitting, setFieldValue, errors } = useFormik({
     validationSchema: Yup.object().shape({
       c_house_number: Yup.string()
         .nullable()
@@ -209,9 +212,9 @@ export const VoterSearchForm = ({
     }),
     initialValues: {
       id: GetGUID(),
-      f_house: f_house,
-      f_street: f_street,
-      f_appartment: f_appartment,
+      f_house: house,
+      f_street: street,
+      f_appartment: appartment,
     },
     onSubmit: (values) => {
       runRpc({
@@ -225,7 +228,7 @@ export const VoterSearchForm = ({
       });
     },
   });
-  
+
   const loadData = () => {
     if (values.f_appartment) {
       setLoading(true);
@@ -272,73 +275,107 @@ export const VoterSearchForm = ({
           Назад
         </Button>
         <Paper className={classes.searchForm}>
-          <SelectEditor
-            name={"f_street"}
-            fieldProps={{
-              margin: "none",
-              size: "small",
-              helperText: errors.f_street,
-              error: errors.f_street,
-              idProperty: "id",
-              nameProperty: "c_name",
-              table: "cv_street",
-            }}
-            label="Улица"
-            value={values.f_street}
-            setFieldValue={(name, value)=>{
-              setFieldValue('f_house', '');
-              setFieldValue('f_appartment', '');
-              setFieldValue(name, value);
-            }}
-          />
-          {values.f_street && (
+          <div className={classes.fieldWrapper}>
             <SelectEditor
-              name={"f_house"}
+              className={classes.field}
+              name={"f_street"}
               fieldProps={{
-                filter: [{
-                  property: 'f_street',
-                  value: values.f_street,
-                  operator: '='
-                }],
-                sortBy: 'n_number',
                 margin: "none",
                 size: "small",
-                helperText: errors.f_house,
-                error: errors.f_house,
+                helperText: errors.f_street,
+                error: errors.f_street,
                 idProperty: "id",
-                nameProperty: "c_house_number",
-                table: "cs_house",
+                nameProperty: "c_name",
+                table: "cv_street",
               }}
-              label="Дом"
-              value={values.f_house}            
-              setFieldValue={(name, value)=>{
-                setFieldValue('f_appartment', '');
+              label="Улица"
+              value={values.f_street}
+              setFieldValue={(name, value) => {
+                setFieldValue("f_house", "");
+                setFieldValue("f_appartment", "");
                 setFieldValue(name, value);
               }}
             />
+            <Button
+              disabled={!values.f_street}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                history.push(`/part3edit/${values.f_street}/edit`);
+              }}
+            >
+              Редактировать
+            </Button>
+          </div>
+          {values.f_street && (
+            <div className={classes.fieldWrapper}>
+              <SelectEditor
+                className={classes.field}
+                name={"f_house"}
+                fieldProps={{
+                  filter: [
+                    {
+                      property: "f_street",
+                      value: values.f_street,
+                      operator: "=",
+                    },
+                  ],
+                  sortBy: "n_number",
+                  margin: "none",
+                  size: "small",
+                  helperText: errors.f_house,
+                  error: errors.f_house,
+                  idProperty: "id",
+                  nameProperty: "c_house_number",
+                  table: "cs_house",
+                }}
+                label="Дом"
+                value={values.f_house}
+                setFieldValue={(name, value) => {
+                  setFieldValue("f_appartment", "");
+                  setFieldValue(name, value);
+                }}
+              />
+              <Button
+                disabled={!values.f_house}
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  history.push(
+                    `/part3edit/${values.f_street}/${values.f_house}`
+                  );
+                }}
+              >
+                Редактировать
+              </Button>
+            </div>
           )}
           {values.f_house && (
-            <SelectEditor
-              name={"f_appartment"}
-              fieldProps={{
-                filter: [{
-                  property: 'f_house',
-                  value: values.f_house,
-                  operator: '='
-                }],
-                sortBy: 'n_number',
-                margin: "none",
-                size: "small",
-                helperText: errors.f_appartment,
-                error: errors.f_appartment,
-                idProperty: "id",
-                nameProperty: "c_number",
-                table: "cs_appartament",
-              }}
-              label="Квартира"
-              value={values.f_appartment}
-              setFieldValue={setFieldValue}
-            />
+            <div className={classes.fieldWrapper}>
+              <SelectEditor
+                name={"f_appartment"}
+                fieldProps={{
+                  filter: [
+                    {
+                      property: "f_house",
+                      value: values.f_house,
+                      operator: "=",
+                    },
+                  ],
+                  sortBy: "n_number",
+                  margin: "none",
+                  size: "small",
+                  helperText: errors.f_appartment,
+                  error: errors.f_appartment,
+                  idProperty: "id",
+                  nameProperty: "c_number",
+                  table: "cs_appartament",
+                }}
+                label="Квартира"
+                value={values.f_appartment}
+                setFieldValue={setFieldValue}
+              />
+            </div>
           )}
         </Paper>
         {values.f_appartment && (

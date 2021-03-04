@@ -136,6 +136,7 @@ export function SelectEditorField({
   setValue,
   setInputValue,
   label,
+  className
 }) {
   const {
     idProperty,
@@ -233,6 +234,7 @@ export function SelectEditorField({
   return (
     <Autocomplete
       fullWidth
+      className={className}
       noOptionsText="Нет данных"
       loadingText="Загрузка..."
       getOptionSelected={(option, value) =>

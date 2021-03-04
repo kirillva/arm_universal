@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
 export const VotersList = ({
   state,
   setState,
-  setHouse,
-  setStreet,
-  setAppartment,
+  // setHouse,
+  // setStreet,
+  // setAppartment,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -77,10 +77,10 @@ export const VotersList = ({
       columns={cs_appartament}
       handleClick={(cell, row) => {
         const { f_house, f_street, id } = row.original;
-        setHouse(f_house);
-        setStreet(f_street);
-        setAppartment(id);
-        history.push(`${match.path}/search`);
+        // setHouse(f_house);
+        // setStreet(f_street);
+        // setAppartment(id);
+        history.push(`${match.path}/search?house=${f_house}&street=${f_street}&appartment=${id}`);
       }}
       params={[getUserId(), null, null]}
       action="cf_bss_cs_appartament"

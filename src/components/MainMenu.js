@@ -97,7 +97,7 @@ export const SimpleMenu = () => {
         >
           III этап: избиратели
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           button
           onClick={() => {
             history.push("/part3edit");
@@ -105,7 +105,7 @@ export const SimpleMenu = () => {
           }}
         >
           III этап: редактирование
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           button
           key={"/"}

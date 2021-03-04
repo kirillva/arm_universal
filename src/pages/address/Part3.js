@@ -33,28 +33,16 @@ export const Part3 = () => {
   const [state, setState] = useState(null);
   const match = useRouteMatch();
 
-  const [house, setHouse] = useState(null);
-  const [street, setStreet] = useState(null);
-  const [appartment, setAppartment] = useState(null);
-
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <Switch>
         <Route path={`${match.path}/search`}>
-          <VoterSearchForm
-            f_house={house}
-            f_street={street}
-            f_appartment={appartment}
-          />
+          <VoterSearchForm />
         </Route>
         <Route path={match.path}>
           <VotersList
             state={state}
-            setState={setState}
-            setHouse={setHouse}
-            setStreet={setStreet}
-            setAppartment={setAppartment}
           />
         </Route>
       </Switch>
