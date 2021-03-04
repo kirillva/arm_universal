@@ -125,11 +125,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   body: {
-    backgroundColor: '#FFFFFF'
+    backgroundColor: "#FFFFFF",
   },
   container: {
-    backgroundColor: '#FAFAFA'
-  }
+    backgroundColor: "#FAFAFA",
+  },
 }));
 
 const GotoPageField = ({ pageCount, gotoPage, pageIndex }) => {
@@ -299,7 +299,7 @@ export const Table = ({
     }),
     []
   );
-  
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -323,7 +323,7 @@ export const Table = ({
         sortBy: innerSortBy,
         pageIndex: innerPageIndex,
         pageSize: 10,
-        ...innerState
+        ...innerState,
       },
       columns,
       data,
@@ -384,86 +384,94 @@ export const Table = ({
 
   const classes = useStyles();
 
-  useEffect(()=>{
+  useEffect(() => {
     gotoPage(0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
       const _filters = [];
       filters.forEach((item) => {
-        const column = columns.find(column=>column.accessor === item.id);
-        
-        // if (!item.value) return;
-        switch (column.operator) {
-          case "date":
-            // if (item.value.start) {
-            //   _filters.push({
-            //     property: item.id,
-            //     value: moment(item.value.start).toISOString(true),
-            //     operator: "gt",
-            //   });
-            // }
+        const column = columns.find((column) => column.accessor === item.id);
 
-            // if (item.value.finish) {
-            //   _filters.push({
-            //     property: item.id,
-            //     value: moment(item.value.finish).toISOString(true),
-            //     operator: "lt",
-            //   });
-            // }
-            break;
+        if (column) {
+          switch (column.operator) {
+            case "date":
+              // if (item.value.start) {
+              //   _filters.push({
+              //     property: item.id,
+              //     value: moment(item.value.start).toISOString(true),
+              //     operator: "gt",
+              //   });
+              // }
 
-          case "bool":
-            if (item.value === "true") {
-              _filters.push({
-                property: item.id,
-                value: true,
-                operator: "=",
-              });
-              _filters.push({
-                property: item.id,
-                value: null,
-                operator: "isnot",
-              });
-            }
+              // if (item.value.finish) {
+              //   _filters.push({
+              //     property: item.id,
+              //     value: moment(item.value.finish).toISOString(true),
+              //     operator: "lt",
+              //   });
+              // }
+              break;
 
-            if (item.value === "false") {
-              _filters.push({
-                property: item.id,
-                value: false,
-                operator: "=",
-              });
-              _filters.push({
-                property: item.id,
-                value: null,
-                operator: "isnot",
-              });
-            }
-            break;
+            case "bool":
+              if (item.value === "true") {
+                _filters.push({
+                  property: item.id,
+                  value: true,
+                  operator: "=",
+                });
+                _filters.push({
+                  property: item.id,
+                  value: null,
+                  operator: "isnot",
+                });
+              }
 
-          case 'number': 
-            if (item.value) {
-              _filters.push({
-                property: item.id,
-                value: item.value,
-                operator: '=',
-              });
-            }
-            break;
+              if (item.value === "false") {
+                _filters.push({
+                  property: item.id,
+                  value: false,
+                  operator: "=",
+                });
+                _filters.push({
+                  property: item.id,
+                  value: null,
+                  operator: "isnot",
+                });
+              }
+              break;
 
-          default:
-            if (item.value) {
-              _filters.push({
-                property: item.id,
-                value: item.value,
-                operator: 'like',
-              });
-            }
-            break;
+            case "number":
+              if (item.value) {
+                _filters.push({
+                  property: item.id,
+                  value: item.value,
+                  operator: "=",
+                });
+              }
+              break;
+
+            default:
+              if (item.value) {
+                _filters.push({
+                  property: item.id,
+                  value: item.value,
+                  operator: "like",
+                });
+              }
+              break;
+          }
+        } else {
+          _filters.push({
+            property: item.id,
+            value: item.value,
+            operator: '=',
+          });
         }
       });
+      
 
       const data = {
         page: pageIndex,
@@ -650,7 +658,7 @@ export const Table = ({
     );
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     setState(state);
   }, [state]);
 
@@ -678,13 +686,13 @@ export const Table = ({
           numSelected={Object.keys(selectedRowIds).length}
         />
         <TableContainer
-          {...getTableProps()} 
+          {...getTableProps()}
           className={classes.container}
-          style={{ 
-            maxHeight: size.height - 116, 
-            height: size.height - 116 ,
-            
-            // width: size.width, 
+          style={{
+            maxHeight: size.height - 116,
+            height: size.height - 116,
+
+            // width: size.width,
           }}
           // className={className}
         >
@@ -804,7 +812,7 @@ export const Table = ({
               loading={loading}
             />
           )}
-          labelRowsPerPage={size.width < 700 ? '' : "Записей на странице:"}
+          labelRowsPerPage={size.width < 700 ? "" : "Записей на странице:"}
           rowsPerPageOptions={[10, 20, 30, 40, 50]}
           component="div"
           count={total}

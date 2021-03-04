@@ -247,7 +247,7 @@ export const Part2HouseTable = ({ uik }) => {
             {street ? `${street.c_short_type} ${street.c_name}` : ""}
           </Typography>
           <div className={classes.flexGrow} />
-          <Button
+          {/* <Button
             className={classes.button}
             onClick={() => {
               // setDrawerState(EDIT_STREET);
@@ -255,7 +255,7 @@ export const Part2HouseTable = ({ uik }) => {
             }}
           >
             <EditIcon />
-          </Button>
+          </Button> */}
         </Paper>
         <Table
           className={classes.table}

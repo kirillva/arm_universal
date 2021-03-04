@@ -83,6 +83,10 @@ export const Part3HouseTable = () => {
   const [street, setStreet] = useState(null);
   const history = useHistory();
   const match = useRouteMatch();
+  // const [tableFilter, setTableFilter] = useState([{
+  //   id: 'f_street',
+  //   value: streetId
+  // }]);
   
   const cs_house = React.useMemo(
     () => [
@@ -203,16 +207,16 @@ export const Part3HouseTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/${match.path}/${streetId}`);
+                history.push(`${match.url}`);
               }}
             >
               <EditStreet
                 street={street}
                 id={streetId}
                 refreshPage={() => {
-                  // setParams([...params]);
+                  // setTableFilter([...tableFilter]);
                   loadData(streetId).then((record) => setStreet(record));
-                  history.push(`/${match.path}/${streetId}`);
+                  // history.push(`${match.path}/${streetId}`);
                 }}
               />
             </Drawer>
@@ -225,14 +229,14 @@ export const Part3HouseTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/${match.path}/${streetId}`);
+                history.push(`${match.url}`);
               }}
             >
               <AddHouse
                 street={streetId}
                 refreshPage={() => {
-                  // setParams([...params]);
-                  history.push(`/${match.path}/${streetId}`);
+                  // setTableFilter([...tableFilter]);
+                  history.push(`${match.url}`);
                 }}
               />
             </Drawer>
@@ -245,14 +249,14 @@ export const Part3HouseTable = () => {
               anchor={"right"}
               open={true}
               onClose={() => {
-                history.push(`/part3/${streetId}`);
+                history.push(`${match.url}`);
               }}
             >
               <HouseDetail
                 addNew={true}
                 refreshTable={() => {
-                  // setParams([...params]);
-                  history.push(`/${match.path}/${streetId}`);
+                  // setTableFilter([...tableFilter]);
+                  history.push(`${match.url}`);
                 }}
                 street={streetId}
                 // selectedHouse={selectedHouse}
@@ -265,7 +269,7 @@ export const Part3HouseTable = () => {
           className={classes.backButton}
           color="primary"
           variant="contained"
-          onClick={() => history.push(`/${match.path}`)}
+          onClick={() => history.push(`/part3edit`)}
         >
           <ArrowBack />
           Назад
@@ -278,7 +282,7 @@ export const Part3HouseTable = () => {
           <Button
             className={classes.button}
             onClick={() => {
-              history.push(`/${match.path}/${streetId}/add`);
+              history.push(`${match.url}/add`);
             }}
           >
             <AddIcon />
@@ -287,7 +291,7 @@ export const Part3HouseTable = () => {
             className={classes.button}
             onClick={() => {
               // setDrawerState(EDIT_STREET);
-              history.push(`/${match.path}/${streetId}/edit`);
+              history.push(`${match.url}/edit`);
             }}
           >
             <EditIcon />
@@ -313,7 +317,7 @@ export const Part3HouseTable = () => {
           }
           select={`${getSelectByColumns(cs_house)},f_street___c_short_type,id`}
           handleClick={(cell, row) => {
-            history.push(`/${match.path}/${streetId}/${row.original.id}`);
+            history.push(`${match.url}/${row.original.id}`);
           }}
           action="cs_house"
         />

@@ -329,11 +329,11 @@ export const HouseDetail = ({
       {houseId && (
         <EditHouse
           id={houseId}
-          handleClose={() =>
+          handleClose={() => {
             history.push(
-              match.path.replace(":streetId", streetId).replace(":houseId", "")
+              match.path.replace(":streetId", streetId).replace("/:houseId", "")
             )
-          }
+          }}
           refreshPage={() => {
             refreshTable();
             // setSelectedHouse(null);
