@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
   streetWrapper: {
     display: "flex",
     padding: theme.spacing(2),
+    height: '64px'
   },
   button: {
     margin: "auto 0 auto auto",
@@ -72,8 +73,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   backButton: {
-    width: '120px'
-  }
+    width: "120px",
+  },
 }));
 
 export const Part2HouseTable = ({ uik }) => {
@@ -244,18 +245,8 @@ export const Part2HouseTable = ({ uik }) => {
         <Button className={classes.backButton} color="primary" variant="contained" onClick={()=>history.push(`/part2`)}><ArrowBack />Назад</Button>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
-            {street ? `${street.c_short_type} ${street.c_name}` : ""}
+            {street ? `${street.c_short_type} ${street.c_name}` : " "}
           </Typography>
-          <div className={classes.flexGrow} />
-          {/* <Button
-            className={classes.button}
-            onClick={() => {
-              // setDrawerState(EDIT_STREET);
-              history.push(`/part2/${streetId}/edit`);
-            }}
-          >
-            <EditIcon />
-          </Button> */}
         </Paper>
         <Table
           className={classes.table}
@@ -277,8 +268,6 @@ export const Part2HouseTable = ({ uik }) => {
           }
           handleClick={(cell, row) => {
             history.push(`/part2/${streetId}/${row.original.id}`);
-            // setSelectedHouse(row);
-            // setDrawerState(EDIT_HOUSE);
           }}
           params={params}
           action="cf_bss_cs_house"

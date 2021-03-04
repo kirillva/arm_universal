@@ -660,7 +660,7 @@ export const Table = ({
 
   useEffect(() => {
     setState(state);
-  }, [state]);
+  }, [state.filters, state.pageSize]);
 
   return (
     <Box className={className} ref={parentRef}>

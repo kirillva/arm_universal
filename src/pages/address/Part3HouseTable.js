@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
   streetWrapper: {
     display: "flex",
     padding: theme.spacing(2),
+    height: '64px'
   },
   button: {
     margin: "auto 0 auto auto",
@@ -276,7 +277,7 @@ export const Part3HouseTable = () => {
         </Button>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
-            {street ? `${street.c_short_type} ${street.c_name}` : ""}
+            {street ? `${street.c_short_type} ${street.c_name}` : " "}
           </Typography>
           <div className={classes.flexGrow} />
           <Button
