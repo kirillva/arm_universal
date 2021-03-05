@@ -91,6 +91,7 @@ export const EditHouseHistory = ({
       const b_tmp_kalinin = values.b_tmp_kalinin || login === "kalinin";
       const b_tmp_lenin = values.b_tmp_lenin || login === "lenin";
       const b_tmp_moscow = values.b_tmp_moscow || login === "moscow";
+      const b_tmp_nov = values.b_tmp_nov || login === "nov";
 
       const {
         id,
@@ -117,6 +118,7 @@ export const EditHouseHistory = ({
               b_tmp_kalinin,
               b_tmp_lenin,
               b_tmp_moscow,
+              b_tmp_nov,
               c_notice
             ],
           },
@@ -347,6 +349,17 @@ export const EditHouseHistory = ({
               />
             }
             label="Московский"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={Boolean(values.b_tmp_nov)}
+                onChange={handleChange}
+                disabled={true}
+              />
+            }
+            label="Новочебоксарск"
           />
         </div>
         <TextField

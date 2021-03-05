@@ -57,6 +57,10 @@ export const Part2 = () => {
     case "moscow":
       division = 8;
       break;
+    case "nov":
+      division = 10;
+      break;
+
     default:
       break;
   }

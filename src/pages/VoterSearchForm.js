@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
   field: {
     flex: 1,
   },
+  button: {
+    maxHeight: '40px'
+  },
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {

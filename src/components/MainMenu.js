@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
@@ -31,9 +32,17 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   avatar: {
-    maxWidth: 200,
+    width: 200,
     textAlign: "center",
+    flexDirection: "row",
+    display: "flex",
+    columnGap: theme.spacing(1),
+    alignItems: 'center'
   },
+  username: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }
 }));
 
 export const SimpleMenu = () => {
@@ -51,18 +60,15 @@ export const SimpleMenu = () => {
 
   return (
     <>
-      <ListItem
-        button
+      <div
         className={classes.avatar}
-        aria-controls="simple-menu"
-        aria-haspopup="true"
         onClick={handleClick}
       >
-        <ListItemText primary={getUsername() || getItem("login")} />
-        <ListItemIcon>
-          <AccountCircleIcon color="secondary" />
-        </ListItemIcon>
-      </ListItem>
+        <Typography variant="body1" className={classes.username}>
+          {getUsername() || getItem("login")}
+        </Typography>
+        <AccountCircleIcon color="secondary" />
+      </div>
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
