@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
-import { BoolFilter, NumberFilter, Operators, StringFilter } from "components/table/Filters";
+import {
+  BoolFilter,
+  NumberFilter,
+  Operators,
+  StringFilter,
+} from "components/table/Filters";
 import {
   BoolCell,
   NumberCell,
@@ -11,6 +16,7 @@ import {
 import { SelectFilter } from "components/table/SelectFilter";
 import { EditHouseHistory } from "../../components/EditHouseHistory";
 import { Box, Button, Drawer } from "@material-ui/core";
+import { getItem } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -30,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     minWidth: 300,
     maxWidth: 700,
-    overflowX: 'hidden',
+    overflowX: "hidden",
     width: "50%",
   },
 }));
@@ -43,6 +49,8 @@ export const Part1 = () => {
   // const [pageIndex, setPageIndex] = useState(0);
   // const [totalPages, setTotalPages] = useState(0);
 
+  const login = getItem("login");
+
   const pd_users = React.useMemo(
     () => [
       {
@@ -52,16 +60,16 @@ export const Part1 = () => {
         Filter: () => null,
         Cell: NumberCell,
         style: {
-          textAlign: 'center',
-          width: '30px'
-        }
+          textAlign: "center",
+          width: "30px",
+        },
       },
       {
         title: "Тип",
         accessor: "c_short_type",
         operator: Operators.string,
         style: {
-          width: '80px'
+          width: "80px",
         },
         Filter: StringFilter,
         Cell: StringCell,
@@ -86,9 +94,9 @@ export const Part1 = () => {
         Filter: SelectFilter,
         Cell: SelectCell,
         style: {
-          textAlign: 'center',
-          width: '130px'
-        }
+          textAlign: "center",
+          width: "130px",
+        },
       },
       {
         title: "УИК",
@@ -97,9 +105,9 @@ export const Part1 = () => {
         Filter: NumberFilter,
         Cell: StringCell,
         style: {
-          textAlign: 'center',
-          width: '80px'
-        }
+          textAlign: "center",
+          width: "80px",
+        },
       },
       {
         title: "Номер",
@@ -108,9 +116,9 @@ export const Part1 = () => {
         Filter: StringFilter,
         Cell: StringCell,
         style: {
-          textAlign: 'center',
-          width: '80px'
-        }
+          textAlign: "center",
+          width: "80px",
+        },
       },
       {
         title: "Изменил",
@@ -119,9 +127,9 @@ export const Part1 = () => {
         Filter: StringFilter,
         Cell: StringCell,
         style: {
-          textAlign: 'center',
-          width: '80px'
-        }
+          textAlign: "center",
+          width: "80px",
+        },
       },
       {
         title: "Квартир",
@@ -130,9 +138,9 @@ export const Part1 = () => {
         Filter: () => null,
         Cell: StringCell,
         style: {
-          textAlign: 'center',
-          width: '80px'
-        }
+          textAlign: "center",
+          width: "80px",
+        },
       },
     ],
     []
@@ -152,14 +160,16 @@ export const Part1 = () => {
             setSelectedHouse(null);
           }}
         >
-            {selectedHouse && (<EditHouseHistory
-            setSelectedHouse={setSelectedHouse}
-            selectedHouse={selectedHouse}
-            refreshPage={() => {
-              setParams([]);
-              setSelectedHouse(null);
-            }}
-          />)}
+          {selectedHouse && (
+            <EditHouseHistory
+              setSelectedHouse={setSelectedHouse}
+              selectedHouse={selectedHouse}
+              refreshPage={() => {
+                setParams([]);
+                setSelectedHouse(null);
+              }}
+            />
+          )}
         </Drawer>
       </div>
       <Table
@@ -168,6 +178,14 @@ export const Part1 = () => {
         title="Список домов"
         params={params}
         columns={pd_users}
+        filter={[
+          login == "nov"
+            ? {
+                id: "f_main_division",
+                value: 10,
+              }
+            : null,
+        ].filter(item=>item)}
         // onLoadData={(_data, total) => {
         //   setData(_data);
         //   setTotalPages(total);
