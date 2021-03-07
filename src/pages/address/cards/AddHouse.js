@@ -12,7 +12,7 @@ import { getUserId } from "utils/user";
 import * as Yup from "yup";
 import { runRpc } from "utils/rpc";
 import { SelectEditor } from "components/table/Editors";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { GetGUID } from "utils/helpers";
 import { SelectSubdivision } from "components/SelectSubdivision";
 import { SelectUik } from "components/SelectUik";
@@ -40,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
 
 export const AddHouse = ({ street, refreshPage }) => {
   const history = useHistory();
+  const match = useRouteMatch();
+
   const initialValues = {
     id: GetGUID(),
     c_house_number: "",
@@ -90,7 +92,7 @@ export const AddHouse = ({ street, refreshPage }) => {
   const onSubmitAndEdit = () => {
     submitForm().then((responce) => {
       if (responce) {
-        history.push(`/part2/${street}/${values.id}`);
+        history.push(match.path.replace(':streetId/add', `${street}/${values.id}`));
       }
     });
   };

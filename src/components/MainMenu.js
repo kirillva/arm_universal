@@ -93,6 +93,15 @@ export const SimpleMenu = ({ setAuth }) => {
             II этап: подтверждение
           </MenuItem>
         ) : null}
+         <MenuItem
+          button
+          onClick={() => {
+            history.push("/part3edit");
+            handleClose();
+          }}
+        >
+          III этап: адреса
+        </MenuItem>
         <MenuItem
           button
           onClick={() => {
@@ -102,15 +111,6 @@ export const SimpleMenu = ({ setAuth }) => {
         >
           III этап: избиратели
         </MenuItem>
-        {/* <MenuItem
-          button
-          onClick={() => {
-            history.push("/part3edit");
-            handleClose();
-          }}
-        >
-          III этап: редактирование
-        </MenuItem> */}
         <MenuItem
           button
           key={"/"}

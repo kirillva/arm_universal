@@ -84,11 +84,11 @@ export const Part3HouseTable = () => {
   const [street, setStreet] = useState(null);
   const history = useHistory();
   const match = useRouteMatch();
-  // const [tableFilter, setTableFilter] = useState([{
-  //   id: 'f_street',
-  //   value: streetId
-  // }]);
-  
+  const [tableFilter, setTableFilter] = useState([{
+    id: 'f_street',
+    value: streetId
+  }]);
+
   const cs_house = React.useMemo(
     () => [
       {
@@ -215,7 +215,7 @@ export const Part3HouseTable = () => {
                 street={street}
                 id={streetId}
                 refreshPage={() => {
-                  // setTableFilter([...tableFilter]);
+                  setTableFilter([...tableFilter]);
                   loadData(streetId).then((record) => setStreet(record));
                   history.push(`${match.path.replace(':streetId', streetId)}`)
                 }}
@@ -236,7 +236,7 @@ export const Part3HouseTable = () => {
               <AddHouse
                 street={streetId}
                 refreshPage={() => {
-                  // setTableFilter([...tableFilter]);
+                  setTableFilter([...tableFilter]);
                   history.push(`${match.url}`);
                 }}
               />
@@ -256,7 +256,7 @@ export const Part3HouseTable = () => {
               <HouseDetail
                 addNew={true}
                 refreshTable={() => {
-                  // setTableFilter([...tableFilter]);
+                  setTableFilter([...tableFilter]);
                   history.push(`${match.url}`);
                 }}
                 street={streetId}
@@ -306,10 +306,7 @@ export const Part3HouseTable = () => {
               desc: false,
             },
           ]}
-          filter={[{
-            id: 'f_street',
-            value: streetId
-          }]}
+          filter={tableFilter}
           title={"Дома"}
           method="Query"
           columns={cs_house}
