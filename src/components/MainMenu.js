@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     display: "flex",
     columnGap: theme.spacing(1),
-    alignItems: 'center'
+    alignItems: "center",
   },
   username: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  }
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
 }));
 
 export const SimpleMenu = () => {
@@ -60,10 +60,7 @@ export const SimpleMenu = () => {
 
   return (
     <>
-      <div
-        className={classes.avatar}
-        onClick={handleClick}
-      >
+      <div className={classes.avatar} onClick={handleClick}>
         <Typography variant="body1" className={classes.username}>
           {getUsername() || getItem("login")}
         </Typography>
@@ -85,15 +82,17 @@ export const SimpleMenu = () => {
         >
           I этап: привязка домов
         </MenuItem>
-        <MenuItem
-          button
-          onClick={() => {
-            history.push("/part2");
-            handleClose();
-          }}
-        >
-          II этап: подтверждение
-        </MenuItem>
+        {getItem("login") !== "nov" ? (
+          <MenuItem
+            button
+            onClick={() => {
+              history.push("/part2");
+              handleClose();
+            }}
+          >
+            II этап: подтверждение
+          </MenuItem>
+        ) : null}
         <MenuItem
           button
           onClick={() => {
@@ -134,7 +133,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
   const classes = useStyles();
 
   const location = useLocation();
-  
+
   const item = data.find((item) => location.pathname.indexOf(item.path) === 0);
 
   return (

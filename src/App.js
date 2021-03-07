@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { MainMenu } from "components/MainMenu";
 import { menuItems } from "components/Menu";
 import { routeItems } from "components/Routes";
-import { getClaims, isAuthorized } from "utils/user";
+import { getClaims, getItem, isAuthorized } from "utils/user";
 import { Redirect, Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,7 +74,7 @@ function ResponsiveDrawer() {
           );
         })}
         <Route path="/">
-          <Redirect to="/part2" />
+          <Redirect to={getItem("login") =='nov' ? "/part3" : "/part2"} />
         </Route>
       </Switch>
     </div>
