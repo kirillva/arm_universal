@@ -20,6 +20,7 @@ import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import * as Yup from "yup";
 import { GetGUID } from "utils/helpers";
 import { ArrowBack } from "@material-ui/icons";
+import { SelectVoterType } from "components/SelectVoterType";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -59,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldWrapper: {
     display: "flex",
+    gap: theme.spacing(1),
     flexDirection: "row",
   },
   field: {
@@ -94,12 +96,16 @@ const AddNewItem = ({ loadData, appartament }) => {
       n_birth_year: Yup.number()
         .nullable()
         .required("Не заполнено обязательное поле"),
+      f_type: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
     }),
     initialValues: {
       c_first_name: "",
       c_last_name: "",
       c_middle_name: "",
       n_birth_year: "",
+      f_type: "",
     },
     onSubmit: (values) => {
       runRpc({
@@ -109,7 +115,6 @@ const AddNewItem = ({ loadData, appartament }) => {
           {
             ...values,
             f_user: getUserId(),
-            f_type: 1,
             f_appartament: appartament,
           },
         ],
@@ -172,6 +177,15 @@ const AddNewItem = ({ loadData, appartament }) => {
         margin="none"
         size="small"
         name="n_birth_year"
+      />
+      <SelectVoterType 
+        value={values.f_type}
+        error={errors.f_type}
+        helperText={errors.f_type}
+        handleChange={handleChange}
+        name="f_type"
+        margin="none"
+        size="small"
       />
       <Button
         type="submit"
@@ -241,7 +255,7 @@ export const VoterSearchForm = ({
         data: [
           {
             limit: 1000,
-            select: 'id,c_first_name,c_last_name,c_middle_name,f_type___c_name',
+            select: 'id,c_first_name,c_last_name,c_middle_name,n_birth_year,f_type___c_name',
             filter: [{
               property: 'f_appartament',
               value: values.f_appartament,
@@ -305,6 +319,7 @@ export const VoterSearchForm = ({
               }}
             />
             <Button
+              className={classes.button}
               disabled={!values.f_street}
               variant="outlined"
               color="primary"
@@ -312,7 +327,7 @@ export const VoterSearchForm = ({
                 history.push(`/part3edit/${values.f_street}/edit`);
               }}
             >
-              Редактировать
+              Открыть
             </Button>
           </div>
           {values.f_street && (
@@ -345,6 +360,7 @@ export const VoterSearchForm = ({
                 }}
               />
               <Button
+                className={classes.button}
                 disabled={!values.f_house}
                 variant="outlined"
                 color="primary"
@@ -354,7 +370,7 @@ export const VoterSearchForm = ({
                   );
                 }}
               >
-                Редактировать
+                Открыть
               </Button>
             </div>
           )}
@@ -400,12 +416,12 @@ export const VoterSearchForm = ({
           </div>
         ) : data && data.length ? (
           data.map((item) => {
-            const { c_first_name, c_last_name, c_middle_name, f_type___c_name } = item;
+            const { c_first_name, c_last_name, c_middle_name, f_type___c_name, n_birth_year } = item;
             let primaryText = "";
             if (c_first_name || c_last_name || c_middle_name) {
               primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
                 c_middle_name || ""
-              }`;
+              } ${n_birth_year || ""}г.`;
             } else {
               primaryText = "Не указано";
             }

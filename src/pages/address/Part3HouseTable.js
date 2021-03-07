@@ -217,7 +217,7 @@ export const Part3HouseTable = () => {
                 refreshPage={() => {
                   // setTableFilter([...tableFilter]);
                   loadData(streetId).then((record) => setStreet(record));
-                  // history.push(`${match.path}/${streetId}`);
+                  history.push(`${match.path.replace(':streetId', streetId)}`)
                 }}
               />
             </Drawer>

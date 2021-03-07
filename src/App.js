@@ -84,14 +84,9 @@ function ResponsiveDrawer() {
           );
         })}
         {auth ? (
-          <>
-            {/* <Route path="/auth">
-              <Redirect to={login == "nov" ? "/part3" : "/part2"} />
-            </Route> */}
-            <Route path="/">
-              <Redirect to={login == "nov" ? "/part3" : "/part2"} />
-            </Route>
-          </>
+          <Route path="/">
+            <Redirect to={login == "nov" ? "/part1" : "/part2"} />
+          </Route>
         ) : (
           <Route path="/">
             <Redirect to="/auth" />

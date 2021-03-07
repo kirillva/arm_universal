@@ -118,7 +118,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
             margin="none"
             error={errors.b_disabled}
             helperText={errors.b_disabled}
-            label="Выключено"
+            label="Отключена"
             name="b_disabled"
             value={values.b_disabled}
             onChange={handleChange}
