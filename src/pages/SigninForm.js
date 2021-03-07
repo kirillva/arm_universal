@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SigninForm = withRouter(({ history }) => {
+export const SigninForm = withRouter(({ history, setAuth }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { handleSubmit, handleChange, values, isSubmitting } = useFormik({
     initialValues: {
@@ -55,6 +55,7 @@ export const SigninForm = withRouter(({ history }) => {
         password: values.password,
         persist: true,
       }).then(() => {
+        setAuth(true);
         history.push("/");
       });
     },

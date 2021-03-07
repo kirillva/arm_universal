@@ -10,7 +10,13 @@ import { MainMenu } from "components/MainMenu";
 import { menuItems } from "components/Menu";
 import { routeItems } from "components/Routes";
 import { getClaims, getItem, isAuthorized } from "utils/user";
-import { Redirect, Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
+import {
+  Redirect,
+  Route,
+  Switch,
+  useLocation,
+  useRouteMatch,
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,7 +37,8 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer() {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  
+  const [auth, setAuth] = useState(false);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -40,6 +47,8 @@ function ResponsiveDrawer() {
     return isAuthorized() ? <Route {...rest} /> : <Redirect to="/auth" />;
   };
 
+  const login = getItem("login");
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -47,7 +56,7 @@ function ResponsiveDrawer() {
         {routeItems.map((item) => {
           return item.public ? (
             <Route path={item.path}>
-              {React.createElement(item.component)}
+              {React.createElement(item.component, { auth, setAuth })}
             </Route>
           ) : (
             <PrivateRoute path={item.path}>
@@ -66,16 +75,28 @@ function ResponsiveDrawer() {
                     mobileOpen={mobileOpen}
                     data={menuItems}
                     handleDrawerToggle={handleDrawerToggle}
+                    setAuth={setAuth}
                   />
                 </Toolbar>
               </AppBar>
-              {React.createElement(item.component)}
+              {React.createElement(item.component, { auth, setAuth })}
             </PrivateRoute>
           );
         })}
-        <Route path="/">
-          <Redirect to={getItem("login") =='nov' ? "/part3" : "/part2"} />
-        </Route>
+        {auth ? (
+          <>
+            {/* <Route path="/auth">
+              <Redirect to={login == "nov" ? "/part3" : "/part2"} />
+            </Route> */}
+            <Route path="/">
+              <Redirect to={login == "nov" ? "/part3" : "/part2"} />
+            </Route>
+          </>
+        ) : (
+          <Route path="/">
+            <Redirect to="/auth" />
+          </Route>
+        )}
       </Switch>
     </div>
   );

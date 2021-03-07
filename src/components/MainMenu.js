@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SimpleMenu = () => {
+export const SimpleMenu = ({ setAuth }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
@@ -120,6 +120,7 @@ export const SimpleMenu = () => {
             logout();
             history.push("/");
             handleClose();
+            setAuth(false);
           }}
         >
           Выход
@@ -129,7 +130,7 @@ export const SimpleMenu = () => {
   );
 };
 
-export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
+export const MainMenu = ({ data, mobileOpen, handleDrawerToggle, setAuth }) => {
   const classes = useStyles();
 
   const location = useLocation();
@@ -152,7 +153,7 @@ export const MainMenu = ({ data, mobileOpen, handleDrawerToggle }) => {
         <ListItemText primary={item ? item.title : ""} />
       </ListItem>
       <Divider />
-      <SimpleMenu />
+      <SimpleMenu setAuth={setAuth} />
     </List>
   );
   // return (
