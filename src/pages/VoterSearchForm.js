@@ -334,7 +334,7 @@ export const VoterSearchForm = ({
                   helperText: errors.f_house,
                   error: errors.f_house,
                   idProperty: "id",
-                  nameProperty: "c_house_number",
+                  nameProperty: "c_full_number",
                   table: "cs_house",
                 }}
                 label="Дом"
