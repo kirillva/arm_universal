@@ -185,3 +185,23 @@ export const getSelectByColumns = (columns) => {
   }
 };
 
+
+
+export const getDivisionByLogin = (login) => {
+  switch (login) {
+    case "kalinin":
+      return 1;
+      
+    case "lenin":
+      return 7;
+      
+    case "moscow":
+      return 8;
+      
+    case "nov":
+      return 10;
+
+    default:
+      return null
+  }
+} 

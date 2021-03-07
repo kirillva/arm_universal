@@ -7,6 +7,7 @@ import { getItem, getUserId } from "utils/user";
 import { Part2HouseTable } from "./Part2HouseTable";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { SelectUik } from "components/SelectUik";
+import { getDivisionByLogin } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -46,25 +47,8 @@ export const Part2 = () => {
   const [state, setState] = useState(null);
 
   const login = getItem("login");
-  let division = null;
-  switch (login) {
-    case "kalinin":
-      division = 1;
-      break;
-    case "lenin":
-      division = 7;
-      break;
-    case "moscow":
-      division = 8;
-      break;
-    case "nov":
-      division = 10;
-      break;
-
-    default:
-      break;
-  }
-
+  let division = getDivisionByLogin(login);
+  
   const params = [getUserId(), uik];
   const cs_street = React.useMemo(
     () => [

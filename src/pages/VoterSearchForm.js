@@ -188,7 +188,7 @@ const AddNewItem = ({ loadData, appartament }) => {
 export const VoterSearchForm = ({
   // f_house,
   // f_street,
-  // f_appartment,
+  // f_appartament,
   className,
 }) => {
   const classes = useStyles();
@@ -197,7 +197,7 @@ export const VoterSearchForm = ({
 
   const [loading, setLoading] = useState(false);
   const history = useHistory();
-  const { house, street, appartment } = parse(useLocation().search);
+  const { house, street, appartament } = parse(useLocation().search);
 
   const { values, setSubmitting, setFieldValue, errors } = useFormik({
     validationSchema: Yup.object().shape({
@@ -217,7 +217,7 @@ export const VoterSearchForm = ({
       id: GetGUID(),
       f_house: house,
       f_street: street,
-      f_appartment: appartment,
+      f_appartament: appartament,
     },
     onSubmit: (values) => {
       runRpc({
@@ -233,20 +233,25 @@ export const VoterSearchForm = ({
   });
 
   const loadData = () => {
-    if (values.f_appartment) {
+    if (values.f_appartament) {
       setLoading(true);
       runRpc({
-        action: "cf_bss_cs_appartament_info",
-        method: "Select",
+        action: "cd_people",
+        method: "Query",
         data: [
           {
             limit: 1000,
-            params: [values.f_appartment],
+            select: 'id,c_first_name,c_last_name,c_middle_name,f_type___c_name',
+            filter: [{
+              property: 'f_appartament',
+              value: values.f_appartament,
+              operator: '='
+            }],
             sort: [
               { property: "c_first_name", direction: "asc" },
               { property: "c_last_name", direction: "asc" },
               { property: "c_middle_name", direction: "asc" },
-              { property: "c_name", direction: "asc" },
+              { property: "f_type___c_name", direction: "asc" },
             ],
           },
         ],
@@ -263,7 +268,7 @@ export const VoterSearchForm = ({
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.f_appartment]);
+  }, [values.f_appartament]);
 
   return (
     <div className={classes.innerContent}>
@@ -295,7 +300,7 @@ export const VoterSearchForm = ({
               value={values.f_street}
               setFieldValue={(name, value) => {
                 setFieldValue("f_house", "");
-                setFieldValue("f_appartment", "");
+                setFieldValue("f_appartament", "");
                 setFieldValue(name, value);
               }}
             />
@@ -335,7 +340,7 @@ export const VoterSearchForm = ({
                 label="Дом"
                 value={values.f_house}
                 setFieldValue={(name, value) => {
-                  setFieldValue("f_appartment", "");
+                  setFieldValue("f_appartament", "");
                   setFieldValue(name, value);
                 }}
               />
@@ -356,7 +361,7 @@ export const VoterSearchForm = ({
           {values.f_house && (
             <div className={classes.fieldWrapper}>
               <SelectEditor
-                name={"f_appartment"}
+                name={"f_appartament"}
                 fieldProps={{
                   filter: [
                     {
@@ -368,22 +373,22 @@ export const VoterSearchForm = ({
                   sortBy: "n_number",
                   margin: "none",
                   size: "small",
-                  helperText: errors.f_appartment,
-                  error: errors.f_appartment,
+                  helperText: errors.f_appartament,
+                  error: errors.f_appartament,
                   idProperty: "id",
                   nameProperty: "c_number",
                   table: "cs_appartament",
                 }}
                 label="Квартира"
-                value={values.f_appartment}
+                value={values.f_appartament}
                 setFieldValue={setFieldValue}
               />
             </div>
           )}
         </Paper>
-        {values.f_appartment && (
+        {values.f_appartament && (
           <Paper className={classes.addNewItem}>
-            <AddNewItem loadData={loadData} appartament={values.f_appartment} />
+            <AddNewItem loadData={loadData} appartament={values.f_appartament} />
           </Paper>
         )}
       </div>
@@ -395,7 +400,7 @@ export const VoterSearchForm = ({
           </div>
         ) : data && data.length ? (
           data.map((item) => {
-            const { c_first_name, c_last_name, c_middle_name, c_name } = item;
+            const { c_first_name, c_last_name, c_middle_name, f_type___c_name } = item;
             let primaryText = "";
             if (c_first_name || c_last_name || c_middle_name) {
               primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
@@ -406,7 +411,7 @@ export const VoterSearchForm = ({
             }
             return (
               <ListItem>
-                <ListItemText primary={primaryText} secondary={c_name} />
+                <ListItemText primary={primaryText} secondary={f_type___c_name} />
                 {/* <Button color="primary" variant="contained">
                   <DeleteIcon /> Удалить
                 </Button> */}

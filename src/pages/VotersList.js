@@ -8,7 +8,8 @@ import { Table } from "components/table/Table";
 import { Operators, StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { getUserId } from "utils/user";
+import { getItem, getUserId } from "utils/user";
+import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -31,7 +32,7 @@ export const VotersList = ({
   setState,
   // setHouse,
   // setStreet,
-  // setAppartment,
+  // setAppartament,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -42,16 +43,16 @@ export const VotersList = ({
       {
         title: "Улица",
         Filter: StringFilter,
-        accessor: "c_name",
+        accessor: "f_house___f_street___c_name",
         operator: Operators.string,
         Cell: ({ cell }) => {
-          const { c_short_type, c_name } = cell.row.original;
-          return `${c_short_type} ${c_name}`;
+          const { f_house___f_street___c_short_type, f_house___f_street___c_name } = cell.row.original;
+          return `${f_house___f_street___c_short_type} ${f_house___f_street___c_name}`;
         },
       },
       {
         title: "Номер дома",
-        accessor: "c_full_number",
+        accessor: "f_house___c_full_number",
         operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
@@ -73,17 +74,32 @@ export const VotersList = ({
       setState={setState}
       className={classes.table}
       title={"Избиратели"}
-      method="Select"
+      method="Query"
       columns={cs_appartament}
+      filter={[{
+        id: "sd_subdivisions.f_division",
+        value: getDivisionByLogin(getItem("login")),
+      }]}
+      sortBy={[{
+        id: 'f_house___f_street___c_name',
+        desc: false
+      },{
+        id: 'f_house___n_number',
+        desc: false
+      },{
+        id: 'n_number',
+        desc: false
+      }]}
+      select={`id,${getSelectByColumns(cs_appartament)},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`}
       handleClick={(cell, row) => {
-        const { f_house, f_street, id } = row.original;
+        const { f_house___f_street, f_house, id } = row.original;
         // setHouse(f_house);
         // setStreet(f_street);
-        // setAppartment(id);
-        history.push(`${match.path}/search?house=${f_house}&street=${f_street}&appartment=${id}`);
+        // setAppartament(id);
+        history.push(`${match.path}/search?house=${f_house}&street=${f_house___f_street}&appartament=${id}`);
       }}
-      params={[getUserId(), null, null]}
-      action="cf_bss_cs_appartament"
+      // params={[getUserId(), null, null]}
+      action="cs_appartament"
     />
   );
 };
