@@ -67,7 +67,6 @@ export const SimpleMenu = ({ setAuth }) => {
         <AccountCircleIcon color="secondary" />
       </div>
       <Menu
-        id="simple-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}

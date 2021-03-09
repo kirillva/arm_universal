@@ -13,11 +13,12 @@ import {
 } from "@material-ui/core";
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
-import { BoolEditor, SelectEditor } from "components/table/Editors";
+import { SelectEditor } from "components/table/Editors";
 import { SelectUik } from "components/SelectUik";
 import { SelectSubdivision } from "components/SelectSubdivision";
 import * as Yup from "yup";
 import { AddHouse } from "./AddHouse";
+import { AddNewAppartament, useAppartament } from "../AddNewAppartament";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -265,11 +266,15 @@ export const useHouse = (props) => {
   const handleSave = () => {
     onSave();
   };
+  const { addNewForm, appartaments } = useAppartament({
+    houseId: house,
+    street: street,
+  });
 
   return {
-    openHouse: (f_house) => {
+    openHouse: (f_street, f_house) => {
       setHouse(f_house);
-      setStreet(null);
+      setStreet(f_street);
     },
     addHouse: (f_street) => {
       setHouse(null);
@@ -277,13 +282,17 @@ export const useHouse = (props) => {
     },
     component: (
       <>
-        {street && <AddHouse street={street} refreshPage={handleSave} />}
-        {house && (
-          <EditHouse
-            id={house}
-            refreshPage={handleSave}
-            handleClose={() => {}}
-          />
+        {street && !house && <AddHouse street={street} refreshPage={handleSave} />}
+        {street && house && (
+          <>
+            <EditHouse
+              id={house}
+              refreshPage={handleSave}
+              handleClose={() => {}}
+            />
+            {addNewForm}
+            {appartaments}
+          </>
         )}
       </>
     ),

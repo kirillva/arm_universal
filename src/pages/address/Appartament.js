@@ -4,14 +4,15 @@ import React, { useState } from 'react';
 export const Appartament = ({
   classes,
   item,
-  reloadData,
   onClick: _onClick,
   setAnchorEl,
 }) => {
 
   const handleClick = (event) => {
-    _onClick();
-    setAnchorEl(event.currentTarget);
+    if (_onClick) {
+      _onClick();
+      setAnchorEl(event.currentTarget);
+    } 
   };
 
   let color = "#FFFFFF";

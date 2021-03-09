@@ -20,7 +20,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   drawer: {
-    width: 500,
+    minWidth: 300,
+    maxWidth: 700,
+    overflowX: "hidden",
+    width: "50%",
   },
   table: {
     flex: 1,

@@ -70,6 +70,12 @@ const useStyles = makeStyles((theme) => ({
   button: {
     maxHeight: "40px",
   },
+  drawer: {
+    minWidth: 300,
+    maxWidth: 700,
+    overflowX: "hidden",
+    width: "50%",
+  },
 }));
 
 const AddNewItem = ({ loadData, appartament }) => {
@@ -410,7 +416,7 @@ export const VoterSearchForm = ({
                 color="primary"
                 onClick={() => {
                   setHouseOpen(true);
-                  openHouse(values.f_house);
+                  openHouse(values.f_street, values.f_house);
                   // setSelectedHouse(values.f_house);
                   // history.push(`/part3edit/${values.f_street}/edit`);
                 }}
