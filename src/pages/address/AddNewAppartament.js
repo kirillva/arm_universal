@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(2),
     margin: theme.spacing(2),
   },
+  button: {
+    height: '40px'
+  }
 }));
 
 export const AddNewAppartament = ({

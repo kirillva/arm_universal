@@ -467,7 +467,9 @@ export const VoterSearchForm = ({
 
       <Drawer
         anchor="right"
-        className={classes.drawer}
+        PaperProps={{
+          className: classes.drawer,
+        }}
         open={streetOpen}
         onClose={() => setStreetOpen(false)}
       >
@@ -475,7 +477,9 @@ export const VoterSearchForm = ({
       </Drawer>
       <Drawer
         anchor="right"
-        className={classes.drawer}
+        PaperProps={{
+          className: classes.drawer,
+        }}
         open={houseOpen}
         onClose={() => setHouseOpen(false)}
       >
