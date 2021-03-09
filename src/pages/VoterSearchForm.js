@@ -218,21 +218,15 @@ export const VoterSearchForm = ({
   const [loading, setLoading] = useState(false);
   
   const history = useHistory();
-  const { house, street, appartament } = parse(useLocation().search);
-  
-  const [streetOpen, setStreetOpen] = useState(false);
-  const { openStreet, addStreet, component: streetEditor } = useStreet({
-    onSave: () => {
-      setStreetOpen(false);
-    },
-  });
 
-  const [houseOpen, setHouseOpen] = useState(false);
-  const { openHouse, addHouse, component: houseEditor } = useHouse({
-    onSave: () => {
-      setHouseOpen(false);
-    },
-  });
+  const [state, setState] = useState(parse(useLocation().search));
+  const { house, street, appartament } = state;
+
+  const initialValues =  {
+    f_house: house,
+    f_street: street,
+    f_appartament: appartament,
+  };
 
   const { values, setSubmitting, setFieldValue, errors } = useFormik({
     validationSchema: Yup.object().shape({
@@ -250,9 +244,7 @@ export const VoterSearchForm = ({
     }),
     initialValues: {
       id: GetGUID(),
-      f_house: house,
-      f_street: street,
-      f_appartament: appartament,
+      ...initialValues
     },
     onSubmit: (values) => {
       runRpc({
@@ -265,6 +257,26 @@ export const VoterSearchForm = ({
       });
     },
   });
+  
+  const [streetOpen, setStreetOpen] = useState(false);
+  const { openStreet, addStreet, component: streetEditor } = useStreet({
+    onSave: () => {
+      setStreetOpen(false);
+    },
+  });
+
+  const [houseOpen, setHouseOpen] = useState(false);
+  const { openHouse, addHouse, component: houseEditor } = useHouse({
+    onSave: () => {
+      // setValues({...initialValues});
+      setHouseOpen(false);
+    },
+    onCancel: () => {
+      // setValues({...initialValues});
+      setHouseOpen(false);
+    },
+  });
+
 
   const loadData = () => {
     if (values.f_appartament) {

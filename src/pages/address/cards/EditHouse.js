@@ -259,12 +259,14 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
 };
 
 export const useHouse = (props) => {
-  const { onSave = () => {} } = props || {};
+  const { onSave = () => {}, onCancel = () => {} } = props || {};
   const [house, setHouse] = useState(null);
   const [street, setStreet] = useState(null);
 
   const handleSave = () => {
     onSave();
+    setHouse(null);
+    setStreet(null);
   };
   const { addNewForm, appartaments } = useAppartament({
     houseId: house,
@@ -288,7 +290,11 @@ export const useHouse = (props) => {
             <EditHouse
               id={house}
               refreshPage={handleSave}
-              handleClose={() => {}}
+              handleClose={() => {
+                onCancel();
+                setHouse(null);
+                setStreet(null);
+              }}
             />
             {addNewForm}
             {appartaments}
