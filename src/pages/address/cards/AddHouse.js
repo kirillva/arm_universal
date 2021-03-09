@@ -11,8 +11,8 @@ import { getUserId } from "utils/user";
 
 import * as Yup from "yup";
 import { runRpc } from "utils/rpc";
-import { SelectEditor } from "components/table/Editors";
-import { useHistory, useRouteMatch } from "react-router-dom";
+// import { SelectEditor } from "components/table/Editors";
+// import { useHistory, useRouteMatch } from "react-router-dom";
 import { GetGUID } from "utils/helpers";
 import { SelectSubdivision } from "components/SelectSubdivision";
 import { SelectUik } from "components/SelectUik";
@@ -39,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddHouse = ({ street, refreshPage }) => {
-  const history = useHistory();
-  const match = useRouteMatch();
+  // const history = useHistory();
+  // const match = useRouteMatch();
 
   const initialValues = {
     id: GetGUID(),
@@ -89,13 +89,13 @@ export const AddHouse = ({ street, refreshPage }) => {
     },
   });
 
-  const onSubmitAndEdit = () => {
-    submitForm().then((responce) => {
-      if (responce) {
-        history.push(match.path.replace(':streetId/add', `${street}/${values.id}`));
-      }
-    });
-  };
+  // const onSubmitAndEdit = () => {
+  //   submitForm().then((responce) => {
+  //     if (responce) {
+  //       history.push(match.path.replace(':streetId/add', `${street}/${values.id}`));
+  //     }
+  //   });
+  // };
 
   const classes = useStyles();
   return (
@@ -188,14 +188,14 @@ export const AddHouse = ({ street, refreshPage }) => {
         >
           Добавить дом
         </Button>
-        <Button
+        {/* <Button
           onClick={onSubmitAndEdit}
           color="primary"
           variant="outlined"
           disabled={isSubmitting}
         >
           Добавить и редактировать дом
-        </Button>
+        </Button> */}
       </form>
     </Paper>
   );

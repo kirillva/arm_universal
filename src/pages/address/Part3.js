@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { VotersList } from "pages/VotersList";
 import { VoterSearchForm } from "pages/VoterSearchForm";
-import { Part2HouseTable } from "./Part2HouseTable";
+// import { EditStreet } from "./cards/EditStreet";
+// import { Drawer } from "@material-ui/core";
+// import { AddStreet } from "./cards/AddStreet";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -31,6 +33,12 @@ const useStyles = makeStyles((theme) => ({
 export const Part3 = () => {
   const classes = useStyles();
   const [state, setState] = useState(null);
+
+  // const [open, setOpen] = useState(false);
+
+  // const [selectedStreet, setSelectedStreet] = useState(null);
+  // const [selectedHouse, setSelectedHouse] = useState(null);
+
   const match = useRouteMatch();
 
   return (
@@ -38,12 +46,70 @@ export const Part3 = () => {
       <div className={classes.toolbar} />
       <Switch>
         <Route path={`${match.path}/search`}>
-          <VoterSearchForm />
+          <VoterSearchForm
+            // setSelectedStreet={(id) => {
+            //   setSelectedStreet(id);
+            //   setOpen(true);
+            // }}
+            // setSelectedHouse={(id) => {
+            //   setSelectedHouse(id);
+            //   setOpen(true);
+            // }}
+          />
+          {/* <Drawer
+            anchor="right"
+            className={classes.drawer}
+            open={open}
+            onClose={() => {
+              setSelectedStreet(null);
+              setOpen(false);
+            }}
+          >
+            <EditStreet
+              id={selectedStreet}
+              refreshPage={() => {
+                setSelectedStreet(null);
+                setOpen(false);
+              }}
+            />
+          </Drawer>
+          <Drawer
+            anchor="right"
+            className={classes.drawer}
+            open={open}
+            onClose={() => {
+              setSelectedStreet(null);
+              setOpen(false);
+            }}
+          >
+            <AddStreet
+              // id={selectedStreet}
+              refreshPage={() => {
+                setSelectedStreet(null);
+                setOpen(false);
+              }}
+            />
+          </Drawer> */}
+          {/* <Drawer
+            anchor="right"
+            className={classes.drawer}
+            open={open}
+            onClose={() => {
+              setSelectedHouse(null);
+              setOpen(false);
+            }}
+          >
+            <EditStreet
+              id={selectedHouse}
+              refreshPage={() => {
+                setSelectedHouse(null);
+                setOpen(false);
+              }}
+            />
+          </Drawer> */}
         </Route>
         <Route path={match.path}>
-          <VotersList
-            state={state}
-          />
+          <VotersList state={state} />
         </Route>
       </Switch>
     </div>

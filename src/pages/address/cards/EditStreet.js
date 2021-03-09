@@ -10,6 +10,8 @@ import {
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import { BoolEditor } from "components/table/Editors";
+import { GetGUID } from "utils/helpers";
+import { AddStreet } from "./AddStreet";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -27,11 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldWrapper: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",      
+    gridTemplateColumns: "1fr 1fr",
     gap: theme.spacing(2),
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
-  }
+  },
 }));
 
 export const EditStreet = ({ id, refreshPage, street }) => {
@@ -137,4 +139,48 @@ export const EditStreet = ({ id, refreshPage, street }) => {
       </form>
     </Paper>
   );
+};
+
+export const useStreet = (props) => {
+  const { onSave = () => {} } = props || {};
+  const [street, setStreet] = useState(null);
+  const [id, setId] = useState(null);
+
+  useEffect(() => {
+    if (id && id != 'new') {
+      runRpc({
+        action: "cs_street",
+        method: "Query",
+        data: [
+          {
+            limit: 1000,
+            filter: [
+              {
+                property: "id",
+                value: id,
+                operator: "=",
+              },
+            ],
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        responce && setStreet(responce.result.records[0]);
+      });
+    }
+  }, [id]);
+
+  const handleSave = () => {
+    onSave();
+  }
+
+  return {
+    openStreet: (id) => {
+      setId(id);
+    },
+    addStreet: () => {
+      setId('new');
+    },
+    component: id == 'new' ? <AddStreet refreshPage={handleSave} /> : <EditStreet id={id} refreshPage={handleSave} street={street} />,
+  };
 };

@@ -17,6 +17,7 @@ import { BoolEditor, SelectEditor } from "components/table/Editors";
 import { SelectUik } from "components/SelectUik";
 import { SelectSubdivision } from "components/SelectSubdivision";
 import * as Yup from "yup";
+import { AddHouse } from "./AddHouse";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -62,7 +63,7 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
       f_street: Yup.string()
         .nullable()
         .required("Не заполнено обязательное поле"),
-      b_check: Yup.boolean().typeError('Должно быть указано одно из значений')
+      b_check: Yup.boolean().typeError("Должно быть указано одно из значений"),
     }),
     initialValues: {
       id: id,
@@ -136,7 +137,7 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
               }
               label="Подтверждаю"
             />
-            <FormHelperText>{errors.b_check || ''}</FormHelperText>
+            <FormHelperText>{errors.b_check || ""}</FormHelperText>
           </FormControl>
           <FormControl
             required
@@ -155,7 +156,7 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
               }
               label="Не подтверждаю"
             />
-            <FormHelperText>{errors.b_check || ''}</FormHelperText>
+            <FormHelperText>{errors.b_check || ""}</FormHelperText>
           </FormControl>
         </div>
         <div className={classes.fieldWrapper}>
@@ -254,4 +255,37 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
       </form>
     </Paper>
   );
+};
+
+export const useHouse = (props) => {
+  const { onSave = () => {} } = props || {};
+  const [house, setHouse] = useState(null);
+  const [street, setStreet] = useState(null);
+
+  const handleSave = () => {
+    onSave();
+  };
+
+  return {
+    openHouse: (f_house) => {
+      setHouse(f_house);
+      setStreet(null);
+    },
+    addHouse: (f_street) => {
+      setHouse(null);
+      setStreet(f_street);
+    },
+    component: (
+      <>
+        {street && <AddHouse street={street} refreshPage={handleSave} />}
+        {house && (
+          <EditHouse
+            id={house}
+            refreshPage={handleSave}
+            handleClose={() => {}}
+          />
+        )}
+      </>
+    ),
+  };
 };

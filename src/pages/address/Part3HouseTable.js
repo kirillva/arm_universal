@@ -266,7 +266,7 @@ export const Part3HouseTable = () => {
             </Drawer>
           </Route>
         </Switch>
-        <Button
+        {/* <Button
           className={classes.backButton}
           color="primary"
           variant="contained"
@@ -274,7 +274,7 @@ export const Part3HouseTable = () => {
         >
           <ArrowBack />
           Назад
-        </Button>
+        </Button> */}
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
             {street ? `${street.c_short_type} ${street.c_name}` : " "}

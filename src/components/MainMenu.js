@@ -101,7 +101,7 @@ export const SimpleMenu = ({ setAuth }) => {
           }}
         >
           III этап: адреса
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           button
           onClick={() => {
@@ -110,7 +110,7 @@ export const SimpleMenu = ({ setAuth }) => {
           }}
         >
           III этап: избиратели
-        </MenuItem> */}
+        </MenuItem>
         <MenuItem
           button
           key={"/"}

@@ -10,7 +10,7 @@ import {
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import * as Yup from "yup";
-import { useHistory, useRouteMatch } from "react-router-dom";
+// import { useHistory, useRouteMatch } from "react-router-dom";
 import { GetGUID } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddStreet = ({ refreshPage }) => {
-  const history = useHistory();
+  // const history = useHistory();
   const initialValues = {
     id: GetGUID(),
     c_name: "",
@@ -43,7 +43,7 @@ export const AddStreet = ({ refreshPage }) => {
     c_short_type: "",
   };
 
-  const match = useRouteMatch();
+  // const match = useRouteMatch();
 
   const {
     handleSubmit,
@@ -52,7 +52,7 @@ export const AddStreet = ({ refreshPage }) => {
     isSubmitting,
     setSubmitting,
     submitForm,
-    validateForm,
+    // validateForm,
     errors,
     isValid,
   } = useFormik({
@@ -74,13 +74,14 @@ export const AddStreet = ({ refreshPage }) => {
     },
   });
 
-  const onSubmitAndEdit = () => {
-    submitForm().then((responce) => {
-      if (responce) {
-        history.push(`${match.path}/${values.id}`);
-      }
-    });
-  };
+  // const onSubmitAndEdit = () => {
+  //   submitForm()
+  //   // .then((responce) => {
+  //   //   if (responce) {
+  //   //     history.push(`${match.path}/${values.id}`);
+  //   //   }
+  //   // });
+  // };
 
   const classes = useStyles();
   return (
@@ -135,14 +136,14 @@ export const AddStreet = ({ refreshPage }) => {
         >
           Добавить
         </Button>
-        <Button
+        {/* <Button
           onClick={onSubmitAndEdit}
           color="primary"
           variant="outlined"
           disabled={isSubmitting}
         >
           Добавить и редактировать улицу
-        </Button>
+        </Button> */}
       </form>
     </Paper>
   );

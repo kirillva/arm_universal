@@ -1,14 +1,11 @@
+import React, { useEffect, useState } from "react";
 import {
   Button,
-  CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
+  Drawer,
   Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
@@ -16,11 +13,15 @@ import { useFormik } from "formik";
 import { SelectEditor } from "components/table/Editors";
 import { getUserId } from "utils/user";
 import { parse } from "query-string";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import * as Yup from "yup";
 import { GetGUID } from "utils/helpers";
 import { ArrowBack } from "@material-ui/icons";
 import { SelectVoterType } from "components/SelectVoterType";
+import CreateIcon from "@material-ui/icons/Create";
+import { useStreet } from "./address/cards/EditStreet";
+import { VoterPeopleList } from "./VoterPeopleList";
+import { useHouse } from "./address/cards/EditHouse";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -67,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   button: {
-    maxHeight: '40px'
+    maxHeight: "40px",
   },
 }));
 
@@ -178,7 +179,7 @@ const AddNewItem = ({ loadData, appartament }) => {
         size="small"
         name="n_birth_year"
       />
-      <SelectVoterType 
+      <SelectVoterType
         value={values.f_type}
         error={errors.f_type}
         helperText={errors.f_type}
@@ -200,18 +201,32 @@ const AddNewItem = ({ loadData, appartament }) => {
 };
 
 export const VoterSearchForm = ({
-  // f_house,
-  // f_street,
-  // f_appartament,
   className,
+  // setSelectedStreet,
+  // setSelectedHouse,
 }) => {
   const classes = useStyles();
 
   const [data, setData] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  
   const history = useHistory();
   const { house, street, appartament } = parse(useLocation().search);
+  
+  const [streetOpen, setStreetOpen] = useState(false);
+  const { openStreet, addStreet, component: streetEditor } = useStreet({
+    onSave: () => {
+      setStreetOpen(false);
+    },
+  });
+
+  const [houseOpen, setHouseOpen] = useState(false);
+  const { openHouse, addHouse, component: houseEditor } = useHouse({
+    onSave: () => {
+      setHouseOpen(false);
+    },
+  });
 
   const { values, setSubmitting, setFieldValue, errors } = useFormik({
     validationSchema: Yup.object().shape({
@@ -240,7 +255,6 @@ export const VoterSearchForm = ({
         data: [{ ...values, f_user: getUserId() }],
         type: "rpc",
       }).then((responce) => {
-        // refreshPage();
         setSubmitting(false);
       });
     },
@@ -255,12 +269,15 @@ export const VoterSearchForm = ({
         data: [
           {
             limit: 1000,
-            select: 'id,c_first_name,c_last_name,c_middle_name,n_birth_year,f_type___c_name',
-            filter: [{
-              property: 'f_appartament',
-              value: values.f_appartament,
-              operator: '='
-            }],
+            select:
+              "id,c_first_name,c_last_name,c_middle_name,n_birth_year,f_type___c_name",
+            filter: [
+              {
+                property: "f_appartament",
+                value: values.f_appartament,
+                operator: "=",
+              },
+            ],
             sort: [
               { property: "c_first_name", direction: "asc" },
               { property: "c_last_name", direction: "asc" },
@@ -324,10 +341,22 @@ export const VoterSearchForm = ({
               variant="outlined"
               color="primary"
               onClick={() => {
-                history.push(`/part3edit/${values.f_street}/edit`);
+                setStreetOpen(true);
+                addStreet()
               }}
             >
-              Открыть
+              <AddIcon />
+            </Button>
+            <Button
+              className={classes.button}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                setStreetOpen(true);
+                openStreet(values.f_street)
+              }}
+            >
+              <CreateIcon />
             </Button>
           </div>
           {values.f_street && (
@@ -365,12 +394,28 @@ export const VoterSearchForm = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => {
-                  history.push(
-                    `/part3edit/${values.f_street}/${values.f_house}`
-                  );
+                  setHouseOpen(true);
+                  addHouse(values.f_street);
+                  // setSelectedHouse(GetGUID());
+                  // history.push(
+                  //   `/part3edit/${values.f_street}/${values.f_house}`
+                  // );
                 }}
               >
-                Открыть
+                <AddIcon />
+              </Button>
+              <Button
+                className={classes.button}
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  setHouseOpen(true);
+                  openHouse(values.f_house);
+                  // setSelectedHouse(values.f_house);
+                  // history.push(`/part3edit/${values.f_street}/edit`);
+                }}
+              >
+                <CreateIcon />
               </Button>
             </div>
           )}
@@ -404,42 +449,32 @@ export const VoterSearchForm = ({
         </Paper>
         {values.f_appartament && (
           <Paper className={classes.addNewItem}>
-            <AddNewItem loadData={loadData} appartament={values.f_appartament} />
+            <AddNewItem
+              loadData={loadData}
+              appartament={values.f_appartament}
+            />
           </Paper>
         )}
       </div>
 
-      <List className={className}>
-        {loading ? (
-          <div className={className}>
-            <CircularProgress />
-          </div>
-        ) : data && data.length ? (
-          data.map((item) => {
-            const { c_first_name, c_last_name, c_middle_name, f_type___c_name, n_birth_year } = item;
-            let primaryText = "";
-            if (c_first_name || c_last_name || c_middle_name) {
-              primaryText = `${c_first_name || ""}	${c_last_name || ""}	${
-                c_middle_name || ""
-              } ${n_birth_year || ""}г.`;
-            } else {
-              primaryText = "Не указано";
-            }
-            return (
-              <ListItem>
-                <ListItemText primary={primaryText} secondary={f_type___c_name} />
-                {/* <Button color="primary" variant="contained">
-                  <DeleteIcon /> Удалить
-                </Button> */}
-              </ListItem>
-            );
-          })
-        ) : (
-          <ListItem>
-            <ListItemText primary={"Нет данных"} />
-          </ListItem>
-        )}
-      </List>
+      <VoterPeopleList className={className} loading={loading} data={data} />
+
+      <Drawer
+        anchor="right"
+        className={classes.drawer}
+        open={streetOpen}
+        onClose={() => setStreetOpen(false)}
+      >
+        {streetEditor}
+      </Drawer>
+      <Drawer
+        anchor="right"
+        className={classes.drawer}
+        open={houseOpen}
+        onClose={() => setHouseOpen(false)}
+      >
+        {houseEditor}
+      </Drawer>
     </div>
   );
 };
