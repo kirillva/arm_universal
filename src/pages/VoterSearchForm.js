@@ -345,6 +345,7 @@ export const VoterSearchForm = ({
               className={classes.button}
               disabled={!values.f_street}
               variant="outlined"
+              title="Добавить улицу"
               color="primary"
               onClick={() => {
                 setStreetOpen(true);
@@ -356,6 +357,7 @@ export const VoterSearchForm = ({
             <Button
               className={classes.button}
               variant="outlined"
+              title="Изменить улицу"
               color="primary"
               onClick={() => {
                 setStreetOpen(true);
@@ -399,6 +401,7 @@ export const VoterSearchForm = ({
                 disabled={!values.f_house}
                 variant="outlined"
                 color="primary"
+                title="Добавить дом"
                 onClick={() => {
                   setHouseOpen(true);
                   addHouse(values.f_street);
@@ -414,6 +417,7 @@ export const VoterSearchForm = ({
                 className={classes.button}
                 variant="outlined"
                 color="primary"
+                title="Изменить дом или добавить квартиру"
                 onClick={() => {
                   setHouseOpen(true);
                   openHouse(values.f_street, values.f_house);

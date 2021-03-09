@@ -51,7 +51,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
       c_name: "",
       c_type: "",
       c_short_type: "",
-      b_disabled: false,
+      // b_disabled: false,
     },
     onSubmit: (values) => {
       runRpc({
@@ -115,7 +115,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
             disabled={isSubmitting}
             variant="outlined"
           />
-          <BoolEditor
+          {/* <BoolEditor
             size="small"
             margin="none"
             error={errors.b_disabled}
@@ -126,7 +126,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"
-          />
+          /> */}
         </div>
         <Button
           type="submit"
