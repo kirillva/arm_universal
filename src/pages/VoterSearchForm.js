@@ -219,16 +219,14 @@ export const VoterSearchForm = ({
   
   const history = useHistory();
 
-  const [state, setState] = useState(parse(useLocation().search));
-  const { house, street, appartament } = state;
+  const { house, street, appartament } = parse(useLocation().search);
 
   const initialValues =  {
     f_house: house,
     f_street: street,
     f_appartament: appartament,
   };
-
-  const { values, setSubmitting, setFieldValue, errors } = useFormik({
+  const { values, setValues, setSubmitting, setFieldValue, errors } = useFormik({
     validationSchema: Yup.object().shape({
       c_house_number: Yup.string()
         .nullable()
@@ -268,11 +266,11 @@ export const VoterSearchForm = ({
   const [houseOpen, setHouseOpen] = useState(false);
   const { openHouse, addHouse, component: houseEditor } = useHouse({
     onSave: () => {
-      // setValues({...initialValues});
+      setValues();
       setHouseOpen(false);
     },
     onCancel: () => {
-      // setValues({...initialValues});
+      setValues();
       setHouseOpen(false);
     },
   });
