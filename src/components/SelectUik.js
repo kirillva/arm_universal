@@ -1,6 +1,7 @@
 import { MenuItem, TextField } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
+import { getItem } from "utils/user";
 
 export const SelectUik = ({
   subdivision,
@@ -12,9 +13,11 @@ export const SelectUik = ({
   margin = "dense",
   size = "medium",
   name,
-  className
+  className,
 }) => {
   const [uik, setUik] = useState([]);
+
+  const login = getItem("login");
 
   useEffect(() => {
     const filter = [];
@@ -33,7 +36,7 @@ export const SelectUik = ({
       });
     }
     runRpc({
-      action: "cv_uik_ref",
+      action: login == "nov" ? "cv_uik_tmp_nov_ref" : "cv_uik_ref",
       method: "Query",
       data: [
         {
@@ -66,7 +69,9 @@ export const SelectUik = ({
     >
       <MenuItem value={null}>Не выбрано</MenuItem>
       {uik.map((item) => (
-        <MenuItem key={item.f_uik} value={item.f_uik}>{item.f_uik} ({item.c_subdivision})</MenuItem>
+        <MenuItem key={item.f_uik} value={item.f_uik}>
+          {item.f_uik} ({item.c_subdivision})
+        </MenuItem>
       ))}
     </TextField>
   );

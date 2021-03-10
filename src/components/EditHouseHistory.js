@@ -151,7 +151,11 @@ export const EditHouseHistory = ({
         {
           limit: 1000,
           sort: [{ property: "n_code", direction: "asc" }],
-          filter: [{ property: "id", value: 0, operator: "gt" }],
+          filter: [{ property: "id", value: 0, operator: "gt" },{
+            property: "b_city",
+            value: login == "nov",
+            operator: "=",
+          }],
         },
       ],
       type: "rpc",
