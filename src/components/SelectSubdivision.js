@@ -1,6 +1,7 @@
 import { MenuItem, TextField } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
+import { getItem } from "utils/user";
 
 export const SelectSubdivision = ({
   value,
@@ -12,6 +13,7 @@ export const SelectSubdivision = ({
   name,
 }) => {
   const [subdivisions, setSubdivisions] = useState([]);
+  const login = getItem("login");
 
   useEffect(() => {
     runRpc({
@@ -21,7 +23,14 @@ export const SelectSubdivision = ({
         {
           limit: 1000,
           sort: [{ property: "n_code", direction: "asc" }],
-          filter: [{ property: "id", value: 0, operator: "gt" }],
+          filter: [
+            { property: "id", value: 0, operator: "gt" },
+            {
+              property: "b_city",
+              value: login == "nov",
+              operator: "=",
+            },
+          ],
         },
       ],
       type: "rpc",

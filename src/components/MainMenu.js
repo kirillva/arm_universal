@@ -3,7 +3,6 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   Typography,
 } from "@material-ui/core";
@@ -92,16 +91,7 @@ export const SimpleMenu = ({ setAuth }) => {
             II этап: подтверждение
           </MenuItem>
         ) : null}
-         {/* <MenuItem
-          button
-          onClick={() => {
-            history.push("/part3edit");
-            handleClose();
-          }}
-        >
-          III этап: адреса
-        </MenuItem> */}
-        <MenuItem
+        {/* <MenuItem
           button
           onClick={() => {
             history.push("/part3");
@@ -109,7 +99,7 @@ export const SimpleMenu = ({ setAuth }) => {
           }}
         >
           III этап: избиратели
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           button
           key={"/"}

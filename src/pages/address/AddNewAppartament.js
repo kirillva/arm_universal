@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { runRpc } from "utils/rpc";
 import { Appartament } from "./Appartament";
+import { AllAppartamentButtons } from "./AppartamentContextMenu";
 
 const useStyles = makeStyles((theme) => ({
   newHouse: {
@@ -25,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
   },
   button: {
-    height: '40px'
-  }
+    height: "40px",
+  },
 }));
 
 export const AddNewAppartament = ({
@@ -94,11 +95,17 @@ export const AddNewAppartament = ({
   );
 };
 
-export const useAppartament = ({ houseId, street }) => {
+export const useAppartament = ({
+  houseId,
+  street,
+  anchorEl = null,
+  setAnchorEl = () => {},
+  setSelectedAppartament = () => {},
+}) => {
   const [appartament, setAppartament] = useState([]);
-  const [selectedAppartament, setSelectedAppartament] = useState(null);
+  // const [selectedAppartament, setSelectedAppartament] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
 
@@ -147,9 +154,19 @@ export const useAppartament = ({ houseId, street }) => {
 
   return {
     addNewForm: (
-      <AddNewAppartament appartament={appartament} houseId={houseId} onSave={()=>loadData()} />
+      <AddNewAppartament
+        appartament={appartament}
+        houseId={houseId}
+        onSave={() => loadData()}
+      />
     ),
-    appartaments: loading ? <CircularProgress /> : (
+    loadData,
+    appartamentsController: (
+      <AllAppartamentButtons appartaments={appartament} onSave={() => loadData()} />
+    ),
+    appartaments: loading ? (
+      <CircularProgress />
+    ) : (
       <div className={classes.grid}>
         {appartament.map((item) => {
           return (

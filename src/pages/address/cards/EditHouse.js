@@ -70,6 +70,7 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
       id: id,
       c_house_number: "",
       c_house_corp: "",
+      c_house_litera: "",
       n_uik: "",
       f_subdivision: "",
       // b_disabled: false,
@@ -221,6 +222,17 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
             disabled={isSubmitting}
             variant="outlined"
           />
+          <TextField
+            size="small"
+            label="Литера"
+            name="c_house_litera"
+            value={values.c_house_litera}
+            error={errors.c_house_litera}
+            helperText={errors.c_house_litera}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
         </div>
         <TextField
           multiline
@@ -268,7 +280,7 @@ export const useHouse = (props) => {
     setHouse(null);
     setStreet(null);
   };
-  const { addNewForm, appartaments } = useAppartament({
+  const { addNewForm, appartamentsController, appartaments } = useAppartament({
     houseId: house,
     street: street,
   });

@@ -1,5 +1,12 @@
 import React from "react";
-import { ListItemIcon, Menu, MenuItem } from "@material-ui/core";
+import {
+  Button,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
+  useTheme,
+} from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
@@ -10,6 +17,7 @@ export const AppartamentContextMenu = ({
   anchorEl,
   setAnchorEl,
   onSave = () => {},
+  setOpen,
 }) => {
   const onSendSelected = (b_check) => {
     runRpc({
@@ -64,7 +72,7 @@ export const AppartamentContextMenu = ({
       <MenuItem
         button
         onClick={() => {
-          //   setOpen(true);
+          setOpen(true);
           setAnchorEl(null);
         }}
       >
@@ -74,5 +82,59 @@ export const AppartamentContextMenu = ({
         Указать примечание
       </MenuItem>
     </Menu>
+  );
+};
+
+export const AllAppartamentButtons = ({ appartaments, onSave = () => {} }) => {
+  const onSendSelected = (b_check) => {
+    runRpc({
+      action: "cf_bss_check_appartament_update",
+      method: "Query",
+      data: [
+        {
+          params: [
+            appartaments.map((item) => `${item.id}`),
+            !Boolean(b_check),
+          ],
+        },
+      ],
+      type: "rpc",
+    }).then((responce) => {
+      onSave();
+    });
+  };
+
+  return (
+    <>
+      <Typography style={{ margin: "16px 0 0 16px" }} variant="subtitle1">
+        Квартиры
+      </Typography>
+      <div style={{ display: "flex", gap: "16px", margin: "16px 0 0 16px" }}>
+        <Button
+          color="primary"
+          style={{
+            flex: 1,
+          }}
+          variant="contained"
+          onClick={() => {
+            onSendSelected(false);
+          }}
+        >
+          Подтверждаю все
+        </Button>
+        <Button
+          color="primary"
+          style={{
+            flex: 1,
+          }}
+          variant="outlined"
+          onClick={() => {
+            onSendSelected(true);
+          }}
+        >
+          Не подтверждаю все
+        </Button>
+      </div>
+    </>
   );
 };
