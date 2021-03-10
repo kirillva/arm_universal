@@ -100,7 +100,7 @@ export const EditHouseHistory = ({
         c_house_number,
         c_house_corp,
         c_house_litera,
-        c_notice
+        c_notice,
       } = values;
       runRpc({
         action: "cf_tmp_house_update",
@@ -119,7 +119,7 @@ export const EditHouseHistory = ({
               b_tmp_lenin,
               b_tmp_moscow,
               b_tmp_nov,
-              c_notice
+              c_notice,
             ],
           },
         ],
@@ -151,11 +151,14 @@ export const EditHouseHistory = ({
         {
           limit: 1000,
           sort: [{ property: "n_code", direction: "asc" }],
-          filter: [{ property: "id", value: 0, operator: "gt" },{
-            property: "b_city",
-            value: login == "nov",
-            operator: "=",
-          }],
+          filter: [
+            { property: "id", value: 0, operator: "gt" },
+            {
+              property: "b_city",
+              value: login == "nov",
+              operator: "=",
+            },
+          ],
         },
       ],
       type: "rpc",
@@ -235,7 +238,7 @@ export const EditHouseHistory = ({
           <TextField
             margin="dense"
             select
-            label="Округ ЧГСД"
+            label={login == "nov" ? "Округ НГСД" : "Округ ЧГСД"}
             name="f_subdivision"
             value={Number(values.f_subdivision)}
             error={errors.f_subdivision}

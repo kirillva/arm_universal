@@ -82,7 +82,7 @@ export const Part1 = () => {
         Cell: StringCell,
       },
       {
-        title: "Округ ЧГСД",
+        title: login == 'nov' ? 'Округ НГСД' : "Округ ЧГСД",
         accessor: "f_subdivision",
         operator: Operators.number,
         mapAccessor: "c_subdivision",
