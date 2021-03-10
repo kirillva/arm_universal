@@ -10,7 +10,7 @@ import { runRpc } from "utils/rpc";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
-import { SelectEditor } from "components/table/Editors";
+import { SelectEditor, useSelectEditor } from "components/table/Editors";
 import { getUserId } from "utils/user";
 import { parse } from "query-string";
 import { useHistory, useLocation } from "react-router-dom";
@@ -216,49 +216,105 @@ export const VoterSearchForm = ({
   const [data, setData] = useState([]);
 
   const [loading, setLoading] = useState(false);
-  
+
   const history = useHistory();
 
   const { house, street, appartament } = parse(useLocation().search);
 
-  const initialValues =  {
+  const initialValues = {
     f_house: house,
     f_street: street,
     f_appartament: appartament,
   };
-  const { values, setValues, setSubmitting, setFieldValue, errors } = useFormik({
-    validationSchema: Yup.object().shape({
-      c_house_number: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
-      n_uik: Yup.string().nullable().required("Не заполнено обязательное поле"),
-      f_subdivision: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
-      f_street: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
-      b_check: Yup.boolean().typeError("Должно быть указано одно из значений"),
-    }),
-    initialValues: {
-      id: GetGUID(),
-      ...initialValues
+  const { values, setSubmitting, setFieldValue, errors } = useFormik(
+    {
+      validationSchema: Yup.object().shape({
+        c_house_number: Yup.string()
+          .nullable()
+          .required("Не заполнено обязательное поле"),
+        n_uik: Yup.string()
+          .nullable()
+          .required("Не заполнено обязательное поле"),
+        f_subdivision: Yup.string()
+          .nullable()
+          .required("Не заполнено обязательное поле"),
+        f_street: Yup.string()
+          .nullable()
+          .required("Не заполнено обязательное поле"),
+        b_check: Yup.boolean().typeError(
+          "Должно быть указано одно из значений"
+        ),
+      }),
+      initialValues: {
+        id: GetGUID(),
+        ...initialValues,
+      },
+      onSubmit: (values) => {
+        runRpc({
+          action: "cs_house",
+          method: "Update",
+          data: [{ ...values, f_user: getUserId() }],
+          type: "rpc",
+        }).then((responce) => {
+          setSubmitting(false);
+        });
+      },
+    }
+  );
+
+  const { reload: reloadStreet, component: streetComponent } = useSelectEditor({
+    className: classes.field,
+    name: "f_street",
+    fieldProps: {
+      margin: "none",
+      size: "small",
+      helperText: errors.f_street,
+      error: errors.f_street,
+      idProperty: "id",
+      nameProperty: "c_name",
+      table: "cv_street",
     },
-    onSubmit: (values) => {
-      runRpc({
-        action: "cs_house",
-        method: "Update",
-        data: [{ ...values, f_user: getUserId() }],
-        type: "rpc",
-      }).then((responce) => {
-        setSubmitting(false);
-      });
+    label: "Улица",
+    value: values.f_street,
+    setFieldValue: (name, value) => {
+      setFieldValue("f_house", "");
+      setFieldValue("f_appartament", "");
+      setFieldValue(name, value);
     },
   });
-  
+
+  const { reload: reloadHouse, component: houseComponent } = useSelectEditor({
+    className: classes.field,
+    name: "f_house",
+    fieldProps: {
+      filter: [
+        {
+          property: "f_street",
+          value: values.f_street,
+          operator: "=",
+        },
+      ],
+      sortBy: "n_number",
+      margin: "none",
+      size: "small",
+      helperText: errors.f_house,
+      error: errors.f_house,
+      idProperty: "id",
+      nameProperty: "c_full_number",
+      table: "cs_house",
+    },
+    label: "Дом",
+    value: values.f_house,
+    setFieldValue: (name, value) => {
+      setFieldValue("f_appartament", "");
+      setFieldValue(name, value);
+    },
+  });
+
   const [streetOpen, setStreetOpen] = useState(false);
   const { openStreet, addStreet, component: streetEditor } = useStreet({
     onSave: () => {
+      reloadStreet();
       setStreetOpen(false);
     },
   });
@@ -266,15 +322,14 @@ export const VoterSearchForm = ({
   const [houseOpen, setHouseOpen] = useState(false);
   const { openHouse, addHouse, component: houseEditor } = useHouse({
     onSave: () => {
-      setValues();
+      reloadHouse();
       setHouseOpen(false);
     },
     onCancel: () => {
-      setValues();
+      reloadHouse();
       setHouseOpen(false);
     },
   });
-
 
   const loadData = () => {
     if (values.f_appartament) {
@@ -331,26 +386,7 @@ export const VoterSearchForm = ({
         </Button>
         <Paper className={classes.searchForm}>
           <div className={classes.fieldWrapper}>
-            <SelectEditor
-              className={classes.field}
-              name={"f_street"}
-              fieldProps={{
-                margin: "none",
-                size: "small",
-                helperText: errors.f_street,
-                error: errors.f_street,
-                idProperty: "id",
-                nameProperty: "c_name",
-                table: "cv_street",
-              }}
-              label="Улица"
-              value={values.f_street}
-              setFieldValue={(name, value) => {
-                setFieldValue("f_house", "");
-                setFieldValue("f_appartament", "");
-                setFieldValue(name, value);
-              }}
-            />
+            {streetComponent}
             <Button
               className={classes.button}
               disabled={!values.f_street}
@@ -359,7 +395,7 @@ export const VoterSearchForm = ({
               color="primary"
               onClick={() => {
                 setStreetOpen(true);
-                addStreet()
+                addStreet();
               }}
             >
               <AddIcon />
@@ -371,7 +407,7 @@ export const VoterSearchForm = ({
               color="primary"
               onClick={() => {
                 setStreetOpen(true);
-                openStreet(values.f_street)
+                openStreet(values.f_street);
               }}
             >
               <CreateIcon />
@@ -379,33 +415,7 @@ export const VoterSearchForm = ({
           </div>
           {values.f_street && (
             <div className={classes.fieldWrapper}>
-              <SelectEditor
-                className={classes.field}
-                name={"f_house"}
-                fieldProps={{
-                  filter: [
-                    {
-                      property: "f_street",
-                      value: values.f_street,
-                      operator: "=",
-                    },
-                  ],
-                  sortBy: "n_number",
-                  margin: "none",
-                  size: "small",
-                  helperText: errors.f_house,
-                  error: errors.f_house,
-                  idProperty: "id",
-                  nameProperty: "c_full_number",
-                  table: "cs_house",
-                }}
-                label="Дом"
-                value={values.f_house}
-                setFieldValue={(name, value) => {
-                  setFieldValue("f_appartament", "");
-                  setFieldValue(name, value);
-                }}
-              />
+              {houseComponent}
               <Button
                 className={classes.button}
                 disabled={!values.f_house}

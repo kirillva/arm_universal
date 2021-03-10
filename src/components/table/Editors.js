@@ -70,6 +70,74 @@ export const DateEditor = ({
   );
 };
 
+export const useSelectEditor = ({
+  fieldProps,
+  value,
+  setFieldValue,
+  name,
+  ...rest
+}) => {
+  const { idProperty, nameProperty, table } = fieldProps;
+  const [inputValue, _setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  value = value ? String(value) : null;
+
+  const setInputValue = (_value) => {
+    _setInputValue(_value ? String(_value) : "");
+  };
+
+  const loadInputValue = () => {
+    
+      setLoading(true);
+      runRpc({
+        action: table,
+        method: "Query",
+        data: [
+          {
+            limit: 1,
+            select: [idProperty, nameProperty].filter((item) => item).join(","),
+            filter: [{ property: idProperty, value }],
+          },
+        ],
+        type: "rpc",
+      }).then((responce) => {
+        setLoading(false);
+        setInputValue(responce.result.records[0][nameProperty]);
+      });
+    
+  }
+
+  useEffect(() => {
+    if (value && !inputValue) {
+      loadInputValue();  
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, inputValue]);
+
+  return {
+    reload: loadInputValue,
+    component: !loading ? (
+      <SelectEditorField
+        {...rest}
+        fieldProps={fieldProps}
+        value={{ [nameProperty]: inputValue, [idProperty]: value }}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setValue={(_value) => {
+          if (_value) {
+            setFieldValue(name, _value[idProperty]);
+          } else {
+            setFieldValue(name, null);
+          }
+        }}
+      />
+    ) : (
+      <CircularProgress />
+    )
+  }
+}
+
 export function SelectEditor({
   fieldProps,
   value,
