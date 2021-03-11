@@ -74,6 +74,7 @@ export const AddHouse = ({ street, refreshPage }) => {
         data: [
           {
             ...values,
+            id: GetGUID(),
             f_street: street,
             f_user: getUserId(),
             c_house_corp: values.c_house_corp
@@ -83,7 +84,7 @@ export const AddHouse = ({ street, refreshPage }) => {
         ],
         type: "rpc",
       });
-      refreshPage();
+      refreshPage(values.id);
       setSubmitting(false);
       return responce;
     },

@@ -88,24 +88,26 @@ export const useSelectEditor = ({
   };
 
   const loadInputValue = () => {
-    
-      setLoading(true);
-      runRpc({
-        action: table,
-        method: "Query",
-        data: [
-          {
-            limit: 1,
-            select: [idProperty, nameProperty].filter((item) => item).join(","),
-            filter: [{ property: idProperty, value }],
-          },
-        ],
-        type: "rpc",
-      }).then((responce) => {
-        setLoading(false);
-        setInputValue(responce.result.records[0][nameProperty]);
-      });
-    
+      if (value) {
+        setLoading(true);
+        runRpc({
+          action: table,
+          method: "Query",
+          data: [
+            {
+              limit: 1,
+              select: [idProperty, nameProperty].filter((item) => item).join(","),
+              filter: [{ property: idProperty, value }],
+            },
+          ],
+          type: "rpc",
+        }).then((responce) => {
+          setLoading(false);
+          setInputValue(responce.result.records[0][nameProperty]);
+        });
+      } else {
+        setInputValue('');
+      }
   }
 
   useEffect(() => {

@@ -262,27 +262,6 @@ export const VoterSearchForm = ({
     }
   );
 
-  const { reload: reloadStreet, component: streetComponent } = useSelectEditor({
-    className: classes.field,
-    name: "f_street",
-    fieldProps: {
-      margin: "none",
-      size: "small",
-      helperText: errors.f_street,
-      error: errors.f_street,
-      idProperty: "id",
-      nameProperty: "c_name",
-      table: "cv_street",
-    },
-    label: "Улица",
-    value: values.f_street,
-    setFieldValue: (name, value) => {
-      setFieldValue("f_house", "");
-      setFieldValue("f_appartament", "");
-      setFieldValue(name, value);
-    },
-  });
-
   const { reload: reloadHouse, component: houseComponent } = useSelectEditor({
     className: classes.field,
     name: "f_house",
@@ -310,6 +289,29 @@ export const VoterSearchForm = ({
       setFieldValue(name, value);
     },
   });
+
+  const { reload: reloadStreet, component: streetComponent } = useSelectEditor({
+    className: classes.field,
+    name: "f_street",
+    fieldProps: {
+      margin: "none",
+      size: "small",
+      helperText: errors.f_street,
+      error: errors.f_street,
+      idProperty: "id",
+      nameProperty: "c_name",
+      table: "cv_street",
+    },
+    label: "Улица",
+    value: values.f_street,
+    setFieldValue: (name, value) => {
+      setFieldValue("f_house", "");
+      setFieldValue("f_appartament", "");
+      setFieldValue(name, value);
+      reloadHouse();
+    },
+  });
+
 
   const [streetOpen, setStreetOpen] = useState(false);
   const { openStreet, addStreet, component: streetEditor } = useStreet({
@@ -389,7 +391,6 @@ export const VoterSearchForm = ({
             {streetComponent}
             <Button
               className={classes.button}
-              disabled={!values.f_street}
               variant="outlined"
               title="Добавить улицу"
               color="primary"
@@ -402,6 +403,7 @@ export const VoterSearchForm = ({
             </Button>
             <Button
               className={classes.button}
+              disabled={!values.f_street}
               variant="outlined"
               title="Изменить улицу"
               color="primary"
@@ -418,7 +420,6 @@ export const VoterSearchForm = ({
               {houseComponent}
               <Button
                 className={classes.button}
-                disabled={!values.f_house}
                 variant="outlined"
                 color="primary"
                 title="Добавить дом"
@@ -435,6 +436,7 @@ export const VoterSearchForm = ({
               </Button>
               <Button
                 className={classes.button}
+                disabled={!values.f_house}
                 variant="outlined"
                 color="primary"
                 title="Изменить дом или добавить квартиру"

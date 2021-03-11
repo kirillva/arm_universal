@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { getUserId } from "utils/user";
+import { getUserId, getItem } from "utils/user";
 import { runRpc } from "utils/rpc";
 import * as Yup from "yup";
 // import { useHistory, useRouteMatch } from "react-router-dom";
@@ -42,8 +42,7 @@ export const AddStreet = ({ refreshPage }) => {
     c_type: "",
     c_short_type: "",
   };
-
-  // const match = useRouteMatch();
+  const login = getItem("login");
 
   const {
     handleSubmit,
@@ -65,7 +64,14 @@ export const AddStreet = ({ refreshPage }) => {
       const responce = await runRpc({
         action: "cs_street",
         method: "Add",
-        data: [{ ...values, f_user: getUserId(), b_disabled: false }],
+        data: [
+          {
+            ...values,
+            f_user: getUserId(),
+            b_disabled: false,
+            f_main_division: login === "nov" ? 10 : null,
+          },
+        ],
         type: "rpc",
       });
       refreshPage();

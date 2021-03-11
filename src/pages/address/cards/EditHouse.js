@@ -275,8 +275,8 @@ export const useHouse = (props) => {
   const [house, setHouse] = useState(null);
   const [street, setStreet] = useState(null);
 
-  const handleSave = () => {
-    onSave();
+  const handleSave = (id) => {
+    onSave(id);
     setHouse(null);
     setStreet(null);
   };
@@ -296,7 +296,7 @@ export const useHouse = (props) => {
     },
     component: (
       <>
-        {street && !house && <AddHouse street={street} refreshPage={handleSave} />}
+        {street && !house && <AddHouse street={street} refreshPage={id=>handleSave(id)} />}
         {street && house && (
           <>
             <EditHouse
