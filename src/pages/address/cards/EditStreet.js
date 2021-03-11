@@ -180,6 +180,7 @@ export const useStreet = (props) => {
 
   return {
     openStreet: (id) => {
+      setId(id);
       loadData(id);
     },
     addStreet: () => {

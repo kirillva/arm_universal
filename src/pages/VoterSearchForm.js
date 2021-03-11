@@ -22,6 +22,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import { useStreet } from "./address/cards/EditStreet";
 import { VoterPeopleList } from "./VoterPeopleList";
 import { useHouse } from "./address/cards/EditHouse";
+import _ from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -261,6 +262,29 @@ export const VoterSearchForm = ({
       },
     }
   );
+  const { reload: reloadAppartment, component: appartmentComponent } = useSelectEditor({
+    name: "f_appartament",
+    fieldProps: {
+      filter: [
+        {
+          property: "f_house",
+          value: values.f_house,
+          operator: "=",
+        },
+      ],
+      sortBy: "n_number",
+      margin: "none",
+      size: "small",
+      helperText: errors.f_appartament,
+      error: errors.f_appartament,
+      idProperty: "id",
+      nameProperty: "c_number",
+      table: "cs_appartament",
+    },
+    label: "Квартира",
+    value: values.f_appartament,
+    setFieldValue: setFieldValue
+  });
 
   const { reload: reloadHouse, component: houseComponent } = useSelectEditor({
     className: classes.field,
@@ -287,6 +311,7 @@ export const VoterSearchForm = ({
     setFieldValue: (name, value) => {
       setFieldValue("f_appartament", "");
       setFieldValue(name, value);
+      reloadAppartment('');
     },
   });
 
@@ -308,7 +333,8 @@ export const VoterSearchForm = ({
       setFieldValue("f_house", "");
       setFieldValue("f_appartament", "");
       setFieldValue(name, value);
-      reloadHouse();
+      reloadHouse('');
+      reloadAppartment('');
     },
   });
 
@@ -453,29 +479,7 @@ export const VoterSearchForm = ({
           )}
           {values.f_house && (
             <div className={classes.fieldWrapper}>
-              <SelectEditor
-                name={"f_appartament"}
-                fieldProps={{
-                  filter: [
-                    {
-                      property: "f_house",
-                      value: values.f_house,
-                      operator: "=",
-                    },
-                  ],
-                  sortBy: "n_number",
-                  margin: "none",
-                  size: "small",
-                  helperText: errors.f_appartament,
-                  error: errors.f_appartament,
-                  idProperty: "id",
-                  nameProperty: "c_number",
-                  table: "cs_appartament",
-                }}
-                label="Квартира"
-                value={values.f_appartament}
-                setFieldValue={setFieldValue}
-              />
+              {appartmentComponent}
             </div>
           )}
         </Paper>
