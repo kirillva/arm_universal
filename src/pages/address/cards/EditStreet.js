@@ -146,27 +146,31 @@ export const useStreet = (props) => {
   const [street, setStreet] = useState(null);
   const [id, setId] = useState(null);
 
+  const loadData = (_id) => {
+    runRpc({
+      action: "cs_street",
+      method: "Query",
+      data: [
+        {
+          limit: 1000,
+          filter: [
+            {
+              property: "id",
+              value: _id,
+              operator: "=",
+            },
+          ],
+        },
+      ],
+      type: "rpc",
+    }).then((responce) => {
+      responce && setStreet(responce.result.records[0]);
+    });
+  }
+
   useEffect(() => {
     if (id && id != 'new') {
-      runRpc({
-        action: "cs_street",
-        method: "Query",
-        data: [
-          {
-            limit: 1000,
-            filter: [
-              {
-                property: "id",
-                value: id,
-                operator: "=",
-              },
-            ],
-          },
-        ],
-        type: "rpc",
-      }).then((responce) => {
-        responce && setStreet(responce.result.records[0]);
-      });
+      loadData(id);
     }
   }, [id]);
 
@@ -176,7 +180,7 @@ export const useStreet = (props) => {
 
   return {
     openStreet: (id) => {
-      setId(id);
+      loadData(id);
     },
     addStreet: () => {
       setId('new');
