@@ -141,7 +141,10 @@ export const HouseDetail = ({ refreshTable, street, addNew = false }) => {
             item={selectedAppartament}
             reloadData={loadData}
             open={open}
-            handleClose={() => setOpen(false)}
+            handleClose={() => {
+              setOpen(false)
+              setSelectedAppartament(null);
+            }}
           />
         </>
       )}

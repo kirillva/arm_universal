@@ -116,7 +116,7 @@ export const useAppartament = ({
       method: "Query",
       data: [
         {
-          select: "id,c_number,n_number,b_check,f_house,f_house___f_street",
+          select: "id,c_number,c_notice,n_number,b_check,f_house,f_house___f_street",
           sort: [
             {
               property: "n_number",
