@@ -87,7 +87,7 @@ export const VotersList = ({
       filter={[
         login == "nov"
           ? {
-              id: "f_house___f_street___c_name___f_main_division",
+              id: "f_house___f_street___f_main_division",
               value: getDivisionByLogin(login),
             }
           : {
@@ -111,7 +111,7 @@ export const VotersList = ({
       ]}
       select={`id,${getSelectByColumns(
         cs_appartament
-      )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`}
+      )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`}
       handleClick={(cell, row) => {
         const { f_house___f_street, f_house, id } = row.original;
         // setHouse(f_house);

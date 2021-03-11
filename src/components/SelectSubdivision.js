@@ -45,7 +45,7 @@ export const SelectSubdivision = ({
       select
       margin={margin}
       size={size}
-      label="Округ ЧГСД"
+      label={login == "nov" ? "Округ НГСД" : "Округ ЧГСД"}
       name={name}
       value={value}
       error={error}
