@@ -109,7 +109,7 @@ export const Part3 = () => {
           </Drawer> */}
         </Route>
         <Route path={match.path}>
-          <VotersList state={state} />
+          <VotersList state={state} setState={setState} />
         </Route>
       </Switch>
     </div>
