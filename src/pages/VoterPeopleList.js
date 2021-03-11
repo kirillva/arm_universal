@@ -1,7 +1,27 @@
-import React from 'react';
-import { CircularProgress, List, ListItem, ListItemText } from '@material-ui/core';
+import React from "react";
+import {
+  Button,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+} from "@material-ui/core";
+import { Delete } from "@material-ui/icons";
+import { runRpc } from "utils/rpc";
 
-export const VoterPeopleList = ({ className, loading, data }) => {
+export const VoterPeopleList = ({ className, loading, data, loadData }) => {
+  const onDelete = (id) => {
+    runRpc({
+      action: "cd_people",
+      method: "Delete",
+      data: [{ id: id }],
+      type: "rpc",
+    }).then((responce) => {
+      loadData();
+    });
+  }
+  
+
   return (
     <List className={className}>
       {loading ? (
@@ -28,6 +48,9 @@ export const VoterPeopleList = ({ className, loading, data }) => {
           return (
             <ListItem>
               <ListItemText primary={primaryText} secondary={f_type___c_name} />
+              <Button>
+                <Delete onClick={()=>onDelete(item.id)} />
+              </Button>
             </ListItem>
           );
         })

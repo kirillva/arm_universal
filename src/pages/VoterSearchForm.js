@@ -493,7 +493,7 @@ export const VoterSearchForm = ({
         )}
       </div>
 
-      <VoterPeopleList className={className} loading={loading} data={data} />
+      <VoterPeopleList className={className} loading={loading} data={data} loadData={loadData} />
 
       <Drawer
         anchor="right"
