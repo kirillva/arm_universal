@@ -259,6 +259,7 @@ export const Table = ({
   buttons = null,
   state: innerState = {},
   setState = () => {},
+  actionButtons = [ /** {  icon, title, handler },*/ ],
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -316,6 +317,7 @@ export const Table = ({
     setPageSize,
     // selectedFlatRows,
     state,
+    toggleAllRowsSelected,
   } = useTable(
     {
       initialState: {
@@ -356,14 +358,10 @@ export const Table = ({
             id: "selection",
             groupByBoundary: true,
             Header: ({ getToggleAllRowsSelectedProps }) => (
-              <div>
-                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-              </div>
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
             ),
             Cell: ({ row }) => (
-              <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-              </div>
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
             ),
           },
           ...columns,
@@ -381,6 +379,11 @@ export const Table = ({
     filters,
     selectedRowIds,
   } = state;
+
+  const handleUnselectAll = () => {
+    state.selectedRowIds = {};
+    toggleAllRowsSelected(false);
+  };
 
   const classes = useStyles();
 
@@ -467,11 +470,10 @@ export const Table = ({
           _filters.push({
             property: item.id,
             value: item.value,
-            operator: '=',
+            operator: "=",
           });
         }
       });
-      
 
       const data = {
         page: pageIndex,
@@ -647,6 +649,18 @@ export const Table = ({
         >
           <FilterListIcon />
         </Button>
+        {numSelected > 0 && actionButtons.map((item) => {
+          const { handler, title, icon } = item;
+          return (
+            <Button onClick={() => {
+              handler(selectedRowIds);
+              handleUnselectAll();
+              loadData()
+            }} title={title}>
+              {icon}
+            </Button>
+          );
+        })}
         {/* <Button
           title={"Экспорт в эксель"}
           // className={classes.iconButton}
@@ -776,9 +790,11 @@ export const Table = ({
                                   : cell.value
                               }
                               onClick={
-                                editable
-                                  ? onEdit(cell, row)
-                                  : onClick(cell, row)
+                                cell.column.id !== "selection"
+                                  ? editable
+                                    ? onEdit(cell, row)
+                                    : onClick(cell, row)
+                                  : () => {}
                               }
                               align="left"
                               {...cell.getCellProps()}

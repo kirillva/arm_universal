@@ -10,6 +10,8 @@ import { StringCell } from "components/table/Cell";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { getItem, getUserId } from "utils/user";
 import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
+import CheckIcon from "@material-ui/icons/Check";
+import { runRpc } from "utils/rpc";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -70,6 +72,13 @@ export const VotersList = ({
         Filter: StringFilter,
         Cell: StringCell,
       },
+      {
+        title: "Пользователь",
+        accessor: "f_user___c_first_name",
+        operator: Operators.string,
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
     ],
     []
   );
@@ -121,6 +130,27 @@ export const VotersList = ({
           `${match.path}/search?house=${f_house}&street=${f_house___f_street}&appartament=${id}`
         );
       }}
+      selectable
+      actionButtons={[
+        {
+          icon: <CheckIcon />,
+          title: "Назначить пользователя",
+          handler: (ids) => {
+            console.log(ids);
+
+            runRpc({
+              action: "cs_appartament",
+              method: "Update",
+              data: [
+                Object.keys(ids)
+                  .filter((key) => ids[key])
+                  .map((item) => ({ id: item, f_user: getUserId() })),
+              ],
+              type: "rpc",
+            });
+          },
+        },
+      ]}
       // params={[getUserId(), null, null]}
       action="cs_appartament"
     />
