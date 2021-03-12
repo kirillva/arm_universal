@@ -217,7 +217,7 @@ export const AddHouse = ({ street, refreshPage }) => {
               </Box>
             );
           })}
-          <Typography>Вы действительно хотите добавить дом?</Typography>;
+          <Typography>Вы действительно хотите добавить дом?</Typography>
         </DialogContent>
         <DialogActions>
           <Button
