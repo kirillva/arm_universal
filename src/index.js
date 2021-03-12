@@ -9,32 +9,35 @@ import blue from "@material-ui/core/colors/blue";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import rootReducer from "rootReducer";
+import MessageContextProvider from "components/hooks/MessageContext";
 
 const outerTheme = createMuiTheme({
   palette: {
     primary: {
-      main: '#2196F3',
+      main: "#2196F3",
     },
     secondary: {
-      main: '#FFFFFF',
+      main: "#FFFFFF",
     },
     text: {
-      main: 'rgba(0, 0, 0, 0.6)',
-      dark: 'rgba(0, 0, 0, 0.87)',
-    }
+      main: "rgba(0, 0, 0, 0.6)",
+      dark: "rgba(0, 0, 0, 0.87)",
+    },
   },
   typography: { useNextVariants: true },
 });
 
 const store = configureStore({
-  reducer: rootReducer
+  reducer: rootReducer,
 });
 
 ReactDOM.render(
   <Provider store={store}>
     <MuiThemeProvider theme={outerTheme}>
       <Router>
-        <App />
+        <MessageContextProvider>
+          <App />
+        </MessageContextProvider>
       </Router>
     </MuiThemeProvider>
   </Provider>,
