@@ -1,5 +1,6 @@
 import { MenuItem, TextField } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { getDivisionByLogin } from "utils/helpers";
 import { runRpc } from "utils/rpc";
 import { getItem } from "utils/user";
 
@@ -30,6 +31,7 @@ export const SelectSubdivision = ({
               value: login == "nov",
               operator: "=",
             },
+            { property: "f_division", value: getDivisionByLogin(login), operator: '=' },
           ],
         },
       ],

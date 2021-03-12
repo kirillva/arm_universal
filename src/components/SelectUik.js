@@ -35,7 +35,7 @@ export const SelectUik = ({
         operator: "=",
       });
     }
-    runRpc({
+    subdivision && runRpc({
       action: login == "nov" ? "cv_uik_tmp_nov_ref" : "cv_uik_ref",
       method: "Query",
       data: [

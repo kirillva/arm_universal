@@ -321,7 +321,7 @@ export const Table = ({
       initialState: {
         filters: innerFilter,
         sortBy: innerSortBy,
-        pageIndex: innerPageIndex,
+        pageIndex: 0,
         pageSize: 10,
         ...innerState,
       },
@@ -660,6 +660,7 @@ export const Table = ({
 
   useEffect(() => {
     setState(state);
+    gotoPage(0);
   }, [state.filters, state.pageSize]);
 
   return (
