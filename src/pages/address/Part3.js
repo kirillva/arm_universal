@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { VotersList } from "pages/VotersList";
+import { VotersAssignList } from "pages/VotersAssignList";
 import { VoterSearchForm } from "pages/VoterSearchForm";
 // import { EditStreet } from "./cards/EditStreet";
 // import { Drawer } from "@material-ui/core";
@@ -109,7 +109,7 @@ export const Part3 = () => {
           </Drawer> */}
         </Route>
         <Route path={match.path}>
-          <VotersList state={state} setState={setState} />
+          <VotersAssignList state={state} setState={setState} />
         </Route>
       </Switch>
     </div>
