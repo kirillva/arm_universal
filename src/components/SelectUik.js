@@ -8,6 +8,7 @@ export const SelectUik = ({
   division,
   value,
   error,
+  loadAll = false,
   handleChange,
   isSubmitting,
   margin = "dense",
@@ -35,7 +36,7 @@ export const SelectUik = ({
         operator: "=",
       });
     }
-    subdivision && runRpc({
+    (subdivision || loadAll) && runRpc({
       action: login == "nov" ? "cv_uik_tmp_nov_ref" : "cv_uik_ref",
       method: "Query",
       data: [

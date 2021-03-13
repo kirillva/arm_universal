@@ -124,6 +124,7 @@ export const Part2 = () => {
             name="n_uik"
             division={division}
             value={uik}
+            loadAll={true}
             className={classes.selectUik}
             handleChange={(e) => setUik(e.target.value)}
           />
