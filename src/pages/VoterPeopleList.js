@@ -2,15 +2,17 @@ import React from "react";
 import {
   Button,
   CircularProgress,
+  DialogContent,
   List,
   ListItem,
   ListItemText,
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import { runRpc } from "utils/rpc";
+import { useMessageContext } from "components/hooks/MessageContext";
 
 export const VoterPeopleList = ({ className, loading, data, loadData }) => {
-  const onDelete = (id) => {
+  const _onDelete = (id) => {
     runRpc({
       action: "cd_people",
       method: "Delete",
@@ -21,7 +23,28 @@ export const VoterPeopleList = ({ className, loading, data, loadData }) => {
     });
   }
   
-
+  const onDelete = (id) => {
+    ShowAcceptWindow({
+      title: 'Удаление',
+      components: <DialogContent>Вы действительно хотите удалить этого избирателя?</DialogContent>,
+      buttons: [
+        {
+          color: 'primary',
+          text: 'Да',
+          handler: () => {
+            _onDelete(id);
+          }
+        },
+        {
+          color: 'secondary',
+          text: 'Отмена'
+        }
+      ]
+    })
+  }
+  
+  const { ShowAcceptWindow } = useMessageContext();
+  
   return (
     <List className={className}>
       {loading ? (
