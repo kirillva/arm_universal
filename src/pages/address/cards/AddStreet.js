@@ -96,7 +96,7 @@ export const AddStreet = ({ refreshPage }) => {
           ...values,
           f_user: getUserId(),
           b_disabled: false,
-          f_main_division: login === "nov" ? 10 : null,
+          f_main_division: login === "nov" ? 10 : 0,
         },
       ],
       type: "rpc",
