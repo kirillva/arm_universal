@@ -102,6 +102,15 @@ export const SimpleMenu = ({ setAuth }) => {
         </MenuItem>
         <MenuItem
           button
+          onClick={() => {
+            history.push("/formVotes");
+            handleClose();
+          }}
+        >
+          Настройка опросов
+        </MenuItem>
+        <MenuItem
+          button
           key={"/"}
           component={Link}
           to={"/"}
