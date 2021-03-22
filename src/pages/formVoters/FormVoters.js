@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import {
@@ -13,6 +13,8 @@ import { Box, Drawer, Paper, TextField } from "@material-ui/core";
 import { getItem } from "utils/user";
 import { useTableData } from "./useTableData";
 import classNames from "classnames";
+import { AnswerListItem, SelectedItemCard } from "./AnswerListItem";
+import { QuestionCard } from "./QuestionCard";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -43,10 +45,17 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.secondary.main,
   },
-  answerDescription: {
+  questionWrapper: {
     flex: 1,
     margin: theme.spacing(1),
+    padding: theme.spacing(3),
   },
+  answerList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(2)
+  }
 }));
 
 export const FormVoters = () => {
@@ -58,8 +67,16 @@ export const FormVoters = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const { records: answer, loading: answerLoading } = useTableData({
+  const {
+    records: answers,
+    loading: answerLoading,
+    load: loadAnswers,
+  } = useTableData({
     action: "cs_answer",
+    autoload: false,
+    filter: [
+      { property: "f_question", value: selectedItem ? selectedItem.id : "" },
+    ],
   });
 
   const onClickQuestion = (item) => {
@@ -68,15 +85,21 @@ export const FormVoters = () => {
     };
   };
 
+  useEffect(() => {
+    selectedItem && loadAnswers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItem]);
+
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <Box display="flex" flexDirection="row" width="100%" overflow="hidden">
-        <Box className={classes.questionListWrapper} >
+        <Box className={classes.questionListWrapper}>
           <TextField variant="outlined" label="Поиск" margin="dense" />
           <Box className={classes.questionScrollList} overflow="auto">
             {question.map((item) => (
               <Paper
+                key={item.id}
                 className={classNames(classes.questionCard, {
                   [classes.activeQuestionCard]:
                     selectedItem && item ? selectedItem.id === item.id : false,
@@ -84,13 +107,26 @@ export const FormVoters = () => {
                 elevation={3}
                 onClick={onClickQuestion(item)}
               >
-                {item.id}) {item.c_description}
+                {item.id}) {item.c_title}
               </Paper>
             ))}
           </Box>
         </Box>
-        <Paper className={classNames(classes.answerDescription)} elevation={3}>
-          {selectedItem ? JSON.stringify(selectedItem) : ""}
+        <Paper className={classNames(classes.questionWrapper)} elevation={3}>
+          {selectedItem && (
+            <QuestionCard
+              title={selectedItem.c_title}
+              descr={selectedItem.c_description}
+              text={selectedItem.c_text}
+            />
+          )}
+          {answers && (
+            <Box className={classNames(classes.answerList)}>
+              {answers.map((item) => (
+                <AnswerListItem key={item.id} text={item.c_text} action={item.c_action} onChange={(e)=>console.log(e.target.value)} />
+              ))}
+            </Box>
+          )}
         </Paper>
       </Box>
     </div>

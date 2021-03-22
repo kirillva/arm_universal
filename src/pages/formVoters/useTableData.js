@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { runRpc } from "utils/rpc";
 
-export const useTableData = ({ action }) => {
+export const useTableData = ({ action, filter = [], autoload = true }) => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState([]);
 
@@ -14,6 +14,7 @@ export const useTableData = ({ action }) => {
         {
           limit: 1000,
           sort: [{ property: "id", direction: "asc" }],
+          filter
         },
       ],
       type: "rpc",
@@ -28,7 +29,7 @@ export const useTableData = ({ action }) => {
   };
   
   useEffect(() => {
-    load();
+    autoload && load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
