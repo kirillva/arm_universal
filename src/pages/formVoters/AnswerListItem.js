@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, makeStyles, Paper, TextField } from "@material-ui/core";
+import {
+  Button,
+  IconButton,
+  makeStyles,
+  Paper,
+  TextField,
+} from "@material-ui/core";
+import { Check, Clear } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -9,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AnswerListItem = ({ text, action }) => {
+export const AnswerListItem = ({ text, action, setText = () => {} }) => {
   const [value, setValue] = useState(text);
   const [changed, setChanged] = useState(false);
   const classes = useStyles();
@@ -21,13 +28,13 @@ export const AnswerListItem = ({ text, action }) => {
       break;
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     if (text !== value) {
-        setChanged(true);
+      setChanged(true);
     } else {
-        setChanged(false);
+      setChanged(false);
     }
-  }, [text, value])
+  }, [text, value]);
 
   return (
     <Paper square variant="outlined" className={classes.content}>
@@ -36,7 +43,12 @@ export const AnswerListItem = ({ text, action }) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <Button disabled={!changed}>Save</Button>
+      <IconButton disabled={!changed} onClick={() => setText(value)}>
+        <Check />
+      </IconButton>
+      <IconButton disabled={!changed} onClick={() => setValue(text)}>
+        <Clear />
+      </IconButton>
     </Paper>
   );
 };

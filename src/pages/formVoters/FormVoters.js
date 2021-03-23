@@ -54,14 +54,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(1),
-    marginTop: theme.spacing(2)
-  }
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export const FormVoters = () => {
   const classes = useStyles();
 
-  const { records: question, loading: questionLoading } = useTableData({
+  const { records: questions, loading: questionLoading } = useTableData({
     action: "cs_question",
   });
 
@@ -97,7 +97,7 @@ export const FormVoters = () => {
         <Box className={classes.questionListWrapper}>
           <TextField variant="outlined" label="Поиск" margin="dense" />
           <Box className={classes.questionScrollList} overflow="auto">
-            {question.map((item) => (
+            {questions.map((item) => (
               <Paper
                 key={item.id}
                 className={classNames(classes.questionCard, {
@@ -123,7 +123,13 @@ export const FormVoters = () => {
           {answers && (
             <Box className={classNames(classes.answerList)}>
               {answers.map((item) => (
-                <AnswerListItem key={item.id} text={item.c_text} action={item.c_action} onChange={(e)=>console.log(e.target.value)} />
+                <AnswerListItem
+                  key={item.id}
+                  text={item.c_text}
+                  setText={() => {}}
+                  action={item.c_action}
+                  onChange={(e) => console.log(e.target.value)}
+                />
               ))}
             </Box>
           )}
