@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     width: "50%",
   },
   table: {
+    marginTop: theme.spacing(1),
     flex: 1,
   },
 }));
@@ -101,6 +102,7 @@ export const VotersAssignList = ({ state, setState }) => {
   return (
     <>
       {usersComponent}
+
       <Table
         state={state}
         setState={setState}
@@ -136,12 +138,6 @@ export const VotersAssignList = ({ state, setState }) => {
         select={`id,${getSelectByColumns(
           cs_appartament
         )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`}
-        handleClick={(cell, row) => {
-          const { f_house___f_street, f_house, id } = row.original;
-          history.push(
-            `${match.path}/search?house=${f_house}&street=${f_house___f_street}&appartament=${id}`
-          );
-        }}
         selectable
         actionButtons={[
           {

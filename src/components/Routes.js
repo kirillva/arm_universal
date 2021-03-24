@@ -5,6 +5,7 @@ import { Part3StreetTable } from "pages/address/Part3StreetTable";
 import { VotersList } from "pages/VotersList";
 import { VoterSearchForm } from "pages/VoterSearchForm";
 import { Part3 } from "pages/address/Part3";
+import { AssignUsers } from "pages/address/AssignUsers";
 
 export const routeItems = [
   {
@@ -38,6 +39,13 @@ export const routeItems = [
     path: "/part3",
     component: Part3,
   },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/assignUsers",
+    component: AssignUsers,
+  },
+  
   // {
   //   claims: ["manager"],
   //   exact: true,

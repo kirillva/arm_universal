@@ -49,5 +49,17 @@ export const menuItems = [
     icon: AssignmentIcon,
     path: "/part3",
     title: "III этап: избиратели",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/assignUsers",
+    title: "Назначение пользователей",
   }
 ];

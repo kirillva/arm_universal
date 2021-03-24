@@ -130,7 +130,6 @@ export const VotersList = ({
           `${match.path}/search?house=${f_house}&street=${f_house___f_street}&appartament=${id}`
         );
       }}
-      selectable
       actionButtons={[
         {
           icon: <CheckIcon />,

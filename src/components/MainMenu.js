@@ -102,6 +102,15 @@ export const SimpleMenu = ({ setAuth }) => {
         </MenuItem>
         <MenuItem
           button
+          onClick={() => {
+            history.push("/assignUsers");
+            handleClose();
+          }}
+        >
+          Назначение пользователей
+        </MenuItem>
+        <MenuItem
+          button
           key={"/"}
           component={Link}
           to={"/"}

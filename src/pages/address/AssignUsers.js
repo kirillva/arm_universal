@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { VotersList } from "pages/VotersList";
-import { VoterSearchForm } from "pages/VoterSearchForm";
+import { VotersAssignList } from "pages/VotersAssignList";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -27,34 +26,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Part3 = () => {
+export const AssignUsers = () => {
   const classes = useStyles();
   const [state, setState] = useState(null);
-  const match = useRouteMatch();
 
-  const [house, setHouse] = useState(null);
-  const [street, setStreet] = useState(null);
-  const [appartment, setAppartment] = useState(null);
+  const match = useRouteMatch();
 
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <Switch>
-        <Route path={`${match.path}/search`}>
-          <VoterSearchForm
-            f_house={house}
-            f_street={street}
-            f_appartment={appartment}
-          />
-        </Route>
         <Route path={match.path}>
-          <VotersList
-            state={state}
-            setState={setState}
-            setHouse={setHouse}
-            setStreet={setStreet}
-            setAppartment={setAppartment}
-          />
+          <VotersAssignList state={state} setState={setState} />
         </Route>
       </Switch>
     </div>
