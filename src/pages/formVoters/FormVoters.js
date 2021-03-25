@@ -15,6 +15,7 @@ import { useTableData } from "./useTableData";
 import classNames from "classnames";
 import { AnswerListItem, SelectedItemCard } from "./AnswerListItem";
 import { QuestionCard } from "./QuestionCard";
+import { QuestionListItem } from "./QuestionListItem";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -60,9 +61,13 @@ const useStyles = makeStyles((theme) => ({
 
 export const FormVoters = () => {
   const classes = useStyles();
+  const [searchText, setSearchText] = useState('');
 
   const { records: questions, loading: questionLoading } = useTableData({
     action: "cs_question",
+    filter: [
+      { property: "c_title", value: searchText ? searchText : "", operator: "like" },
+    ],
   });
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -95,21 +100,9 @@ export const FormVoters = () => {
       <div className={classes.toolbar} />
       <Box display="flex" flexDirection="row" width="100%" overflow="hidden">
         <Box className={classes.questionListWrapper}>
-          <TextField variant="outlined" label="Поиск" margin="dense" />
+          <TextField variant="outlined" label="Поиск" margin="dense" value={searchText} onChange={e =>setSearchText(e.target.value)} />
           <Box className={classes.questionScrollList} overflow="auto">
-            {questions.map((item) => (
-              <Paper
-                key={item.id}
-                className={classNames(classes.questionCard, {
-                  [classes.activeQuestionCard]:
-                    selectedItem && item ? selectedItem.id === item.id : false,
-                })}
-                elevation={3}
-                onClick={onClickQuestion(item)}
-              >
-                {item.id}) {item.c_title}
-              </Paper>
-            ))}
+            {questions.map((item) => <QuestionListItem item={item} isSelected={selectedItem && item ? selectedItem.id === item.id : false} onClick={onClickQuestion} />)}
           </Box>
         </Box>
         <Paper className={classNames(classes.questionWrapper)} elevation={3}>
