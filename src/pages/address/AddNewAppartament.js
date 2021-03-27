@@ -4,6 +4,7 @@ import { Button, CircularProgress, TextField } from "@material-ui/core";
 import { runRpc } from "utils/rpc";
 import { Appartament } from "./Appartament";
 import { AllAppartamentButtons } from "./AppartamentContextMenu";
+import { AllAppartamentButtonsDisable } from "./AppartamentDisableMenu";
 
 const useStyles = makeStyles((theme) => ({
   newHouse: {
@@ -98,9 +99,10 @@ export const AddNewAppartament = ({
 export const useAppartament = ({
   houseId,
   street,
-  anchorEl = null,
+  // anchorEl = null,
   setAnchorEl = () => {},
   setSelectedAppartament = () => {},
+  enableDelete = false,
 }) => {
   const [appartament, setAppartament] = useState([]);
   // const [selectedAppartament, setSelectedAppartament] = useState(null);
@@ -116,7 +118,8 @@ export const useAppartament = ({
       method: "Query",
       data: [
         {
-          select: "id,c_number,c_notice,n_number,b_check,f_house,f_house___f_street",
+          select:
+            "id,c_number,c_notice,n_number,b_check,f_house,f_house___f_street,b_disabled",
           sort: [
             {
               property: "n_number",
@@ -161,8 +164,16 @@ export const useAppartament = ({
       />
     ),
     loadData,
-    appartamentsController: (
-      <AllAppartamentButtons appartaments={appartament} onSave={() => loadData()} />
+    appartamentsController: enableDelete ? (
+      <AllAppartamentButtonsDisable
+        appartaments={appartament}
+        onSave={() => loadData()}
+      />
+    ) : (
+      <AllAppartamentButtons
+        appartaments={appartament}
+        onSave={() => loadData()}
+      />
     ),
     appartaments: loading ? (
       <CircularProgress />
@@ -171,6 +182,7 @@ export const useAppartament = ({
         {appartament.map((item) => {
           return (
             <Appartament
+              enableDelete={enableDelete}
               setAnchorEl={setAnchorEl}
               reloadData={loadData}
               classes={classes}

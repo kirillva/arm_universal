@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditStreet = ({ id, refreshPage, street }) => {
+export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) => {
   const {
     handleSubmit,
     handleChange,
@@ -51,7 +51,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
       c_name: "",
       c_type: "",
       c_short_type: "",
-      // b_disabled: false,
+      b_disabled: false,
     },
     onSubmit: (values) => {
       runRpc({
@@ -115,7 +115,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
             disabled={isSubmitting}
             variant="outlined"
           />
-          {/* <BoolEditor
+         {enableDelete ? <BoolEditor
             size="small"
             margin="none"
             error={errors.b_disabled}
@@ -126,7 +126,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"
-          /> */}
+          /> : null}
         </div>
         <Button
           type="submit"
@@ -142,7 +142,7 @@ export const EditStreet = ({ id, refreshPage, street }) => {
 };
 
 export const useStreet = (props) => {
-  const { onSave = () => {} } = props || {};
+  const { onSave = () => {}, enableDelete = false } = props || {};
   const [street, setStreet] = useState(null);
   const [id, setId] = useState(null);
 
@@ -186,6 +186,6 @@ export const useStreet = (props) => {
     addStreet: () => {
       setId('new');
     },
-    component: id == 'new' ? <AddStreet refreshPage={handleSave} /> : <EditStreet id={id} refreshPage={handleSave} street={street} />,
+    component: id == 'new' ? <AddStreet refreshPage={handleSave} /> : <EditStreet enableDelete={enableDelete} id={id} refreshPage={handleSave} street={street} />,
   };
 };

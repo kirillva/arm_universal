@@ -13,12 +13,14 @@ import {
 } from "@material-ui/core";
 import { getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
-import { SelectEditor } from "components/table/Editors";
+import { BoolEditor, SelectEditor } from "components/table/Editors";
 import { SelectUik } from "components/SelectUik";
 import { SelectSubdivision } from "components/SelectSubdivision";
 import * as Yup from "yup";
 import { AddHouse } from "./AddHouse";
 import { AddNewAppartament, useAppartament } from "../AddNewAppartament";
+import { AppartamentContextMenu } from "../AppartamentContextMenu";
+import { AppartamentDisableMenu } from "../AppartamentDisableMenu";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -42,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditHouse = ({ id, refreshPage, handleClose }) => {
+export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false }) => {
   const {
     handleSubmit,
     handleChange,
@@ -73,7 +75,7 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
       c_house_litera: "",
       n_uik: "",
       f_subdivision: "",
-      // b_disabled: false,
+      b_disabled: false,
       f_street: "",
       c_notice: "",
       b_check: false,
@@ -232,7 +234,19 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"
-          />
+          /> 
+          {enableDelete ? <BoolEditor
+            size="small"
+            margin="none"
+            error={errors.b_disabled}
+            helperText={errors.b_disabled}
+            label="Отключен"
+            name="b_disabled"
+            value={values.b_disabled}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          /> : null}
         </div>
         <TextField
           multiline
@@ -271,16 +285,22 @@ export const EditHouse = ({ id, refreshPage, handleClose }) => {
 };
 
 export const useHouse = (props) => {
-  const { onSave = () => {}, onCancel = () => {} } = props || {};
+  const { onSave = () => {}, onCancel = () => {}, enableDelete=true } = props || {};
   const [house, setHouse] = useState(null);
   const [street, setStreet] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedAppartament, setSelectedAppartament] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const handleSave = (id) => {
     onSave(id);
     setHouse(null);
     setStreet(null);
   };
-  const { addNewForm, appartamentsController, appartaments } = useAppartament({
+  const { addNewForm, appartamentsController, appartaments, loadData } = useAppartament({
+    enableDelete: true,
+    setAnchorEl: setAnchorEl,
+    setSelectedAppartament: setSelectedAppartament,
     houseId: house,
     street: street,
   });
@@ -299,7 +319,15 @@ export const useHouse = (props) => {
         {street && !house && <AddHouse street={street} refreshPage={id=>handleSave(id)} />}
         {street && house && (
           <>
+            {selectedAppartament && <AppartamentDisableMenu
+              onSave={() => loadData()}
+              selectedAppartament={selectedAppartament}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              setOpen={setOpen}
+            />}
             <EditHouse
+              enableDelete={enableDelete}
               id={house}
               refreshPage={handleSave}
               handleClose={() => {
@@ -309,6 +337,7 @@ export const useHouse = (props) => {
               }}
             />
             {addNewForm}
+            {appartamentsController}
             {appartaments}
           </>
         )}

@@ -9,7 +9,7 @@ import {
 import { Delete } from "@material-ui/icons";
 import { runRpc } from "utils/rpc";
 
-export const VoterPeopleList = ({ className, loading, data, loadData }) => {
+export const VoterPeopleList = ({ className, loading, data, loadData, enableDelete = false }) => {
   const onDelete = (id) => {
     runRpc({
       action: "cd_people",
@@ -48,9 +48,9 @@ export const VoterPeopleList = ({ className, loading, data, loadData }) => {
           return (
             <ListItem>
               <ListItemText primary={primaryText} secondary={f_type___c_name} />
-              <Button>
+              {enableDelete && <Button>
                 <Delete onClick={()=>onDelete(item.id)} />
-              </Button>
+              </Button>}
             </ListItem>
           );
         })

@@ -341,6 +341,7 @@ export const VoterSearchForm = ({
 
   const [streetOpen, setStreetOpen] = useState(false);
   const { openStreet, addStreet, component: streetEditor } = useStreet({
+    enableDelete: true,
     onSave: () => {
       reloadStreet();
       setStreetOpen(false);
@@ -349,6 +350,7 @@ export const VoterSearchForm = ({
 
   const [houseOpen, setHouseOpen] = useState(false);
   const { openHouse, addHouse, component: houseEditor } = useHouse({
+    enableDelete: true,
     onSave: () => {
       reloadHouse();
       setHouseOpen(false);
@@ -493,7 +495,7 @@ export const VoterSearchForm = ({
         )} */}
       </div>
 
-      {/* <VoterPeopleList className={className} loading={loading} data={data} loadData={loadData} /> */}
+      <VoterPeopleList className={className} loading={loading} data={data} loadData={loadData} />
 
       <Drawer
         anchor="right"

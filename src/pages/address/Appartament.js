@@ -1,27 +1,30 @@
-import { Paper } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Paper } from "@material-ui/core";
+import React, { useState } from "react";
 
 export const Appartament = ({
   classes,
   item,
   onClick: _onClick,
   setAnchorEl,
+  enableDelete = false,
 }) => {
-
   const handleClick = (event) => {
     if (_onClick) {
       _onClick();
       setAnchorEl(event.currentTarget);
-    } 
+    }
   };
 
   let color = "#FFFFFF";
-  if (item.b_check) {
-    color = "#a3d9a3";
+  if (!enableDelete) {
+    if (item.b_check) {
+      color = "#a3d9a3";
+    }
+    if (item.b_check === false) {
+      color = "#d9a3a3";
+    }
   }
-  if (item.b_check === false) {
-    color = "#d9a3a3";
-  }
+
   return (
     <Paper
       style={{
@@ -31,7 +34,9 @@ export const Appartament = ({
       elevation={3}
       onClick={handleClick}
     >
-      <div className={classes.textPaper}>{item.c_number}</div>
+      <div className={classes.textPaper}>
+        {item.c_number} {enableDelete && item.b_disabled ? "(Удалена)" : ""}
+      </div>
     </Paper>
   );
 };
