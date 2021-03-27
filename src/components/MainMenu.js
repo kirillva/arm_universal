@@ -71,16 +71,18 @@ export const SimpleMenu = ({ setAuth }) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem
-          button
-          onClick={() => {
-            history.push("/part1");
-            handleClose();
-          }}
-        >
-          I этап: привязка домов
-        </MenuItem>
-        {getItem("login") !== "nov" ? (
+        {getItem("login") === "nov" ? (
+          <MenuItem
+            button
+            onClick={() => {
+              history.push("/part1");
+              handleClose();
+            }}
+          >
+            I этап: привязка домов
+          </MenuItem>
+        ) : null}
+        {/* {getItem("login") !== "nov" ? (
           <MenuItem
             button
             onClick={() => {
@@ -90,7 +92,7 @@ export const SimpleMenu = ({ setAuth }) => {
           >
             II этап: подтверждение
           </MenuItem>
-        ) : null}
+        ) : null} */}
         <MenuItem
           button
           onClick={() => {
@@ -100,7 +102,7 @@ export const SimpleMenu = ({ setAuth }) => {
         >
           III этап: избиратели
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           button
           onClick={() => {
             history.push("/assignUsers");
@@ -108,7 +110,7 @@ export const SimpleMenu = ({ setAuth }) => {
           }}
         >
           Назначение пользователей
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           button
           key={"/"}

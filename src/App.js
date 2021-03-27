@@ -85,7 +85,7 @@ function ResponsiveDrawer() {
         })}
         {auth ? (
           <Route path="/">
-            <Redirect to={login == "nov" ? "/part1" : "/part2"} />
+            <Redirect to={login === "nov" ? "/part1" : "/part3"} />
           </Route>
         ) : (
           <Route path="/">

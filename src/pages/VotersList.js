@@ -72,13 +72,13 @@ export const VotersList = ({
         Filter: StringFilter,
         Cell: StringCell,
       },
-      {
-        title: "Пользователь",
-        accessor: "f_user___c_first_name",
-        operator: Operators.string,
-        Filter: StringFilter,
-        Cell: StringCell,
-      },
+      // {
+      //   title: "Пользователь",
+      //   accessor: "f_user___c_first_name",
+      //   operator: Operators.string,
+      //   Filter: StringFilter,
+      //   Cell: StringCell,
+      // },
     ],
     []
   );
