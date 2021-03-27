@@ -45,6 +45,7 @@ export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) =>
     setSubmitting,
     setValues,
     errors,
+    setFieldValue
   } = useFormik({
     initialValues: {
       id: id,
@@ -120,10 +121,10 @@ export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) =>
             margin="none"
             error={errors.b_disabled}
             helperText={errors.b_disabled}
-            label="Отключена"
+            label="Активна"
             name="b_disabled"
-            value={values.b_disabled}
-            onChange={handleChange}
+            value={!values.b_disabled}
+            onChange={(e)=>setFieldValue(e.target.name, !e.target.value)}
             disabled={isSubmitting}
             variant="outlined"
           /> : null}

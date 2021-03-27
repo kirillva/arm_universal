@@ -85,7 +85,7 @@ export const Part3HouseTable = () => {
   const history = useHistory();
   const match = useRouteMatch();
   const [tableFilter, setTableFilter] = useState([{
-    id: 'f_street',
+    property: 'f_street',
     value: streetId
   }]);
 
@@ -306,7 +306,7 @@ export const Part3HouseTable = () => {
               desc: false,
             },
           ]}
-          filter={tableFilter}
+          globalFilters={tableFilter}
           title={"Дома"}
           method="Query"
           columns={cs_house}

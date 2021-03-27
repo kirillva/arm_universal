@@ -51,7 +51,7 @@ export const AppartamentDisableMenu = ({
             <CheckBoxOutlineBlankIcon />
           )}
         </ListItemIcon>
-        Удалить
+        Активировать все
       </MenuItem>
       <MenuItem
         button
@@ -67,7 +67,7 @@ export const AppartamentDisableMenu = ({
             <CheckBoxOutlineBlankIcon />
           )}
         </ListItemIcon>
-        Восстановить
+        Деактивировать все
       </MenuItem>
       {/* <MenuItem
         button
@@ -90,7 +90,7 @@ export const AllAppartamentButtonsDisable = ({ appartaments, onSave = () => {} }
     runRpc({
       action: "cs_appartament",
       method: "Update",
-      data: [appartaments.map((item) => ({ b_disabled: !Boolean(b_disabled), id: item.id }))],
+      data: [appartaments.map((item) => ({ b_disabled: Boolean(b_disabled), id: item.id }))],
       type: "rpc",
     }).then((responce) => {
       onSave();
@@ -102,7 +102,7 @@ export const AllAppartamentButtonsDisable = ({ appartaments, onSave = () => {} }
       <Typography style={{ margin: "16px 0 0 16px" }} variant="subtitle1">
         Квартиры
       </Typography>
-      <div style={{ display: "flex", gap: "16px", margin: "16px 0 0 16px" }}>
+      <div style={{ display: "flex", gap: "16px", margin: "16px 16px 0 16px" }}>
         <Button
           color="primary"
           style={{
@@ -113,7 +113,7 @@ export const AllAppartamentButtonsDisable = ({ appartaments, onSave = () => {} }
             onSendSelected(false);
           }}
         >
-          Удалить все
+          Активировать
         </Button>
         <Button
           color="primary"
@@ -125,7 +125,7 @@ export const AllAppartamentButtonsDisable = ({ appartaments, onSave = () => {} }
             onSendSelected(true);
           }}
         >
-          Восстановить все
+          Деактивировать
         </Button>
       </div>
     </>

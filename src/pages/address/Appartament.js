@@ -35,7 +35,7 @@ export const Appartament = ({
       onClick={handleClick}
     >
       <div className={classes.textPaper}>
-        {item.c_number} {enableDelete && item.b_disabled ? "(Удалена)" : ""}
+        {item.c_number} {enableDelete && item.b_disabled ? "(Неактивна)" : ""}
       </div>
     </Paper>
   );

@@ -109,7 +109,7 @@ export const AllAppartamentButtons = ({ appartaments, onSave = () => {} }) => {
       <Typography style={{ margin: "16px 0 0 16px" }} variant="subtitle1">
         Квартиры
       </Typography>
-      <div style={{ display: "flex", gap: "16px", margin: "16px 0 0 16px" }}>
+      <div style={{ display: "flex", gap: "16px", margin: "16px 16px 0 16px" }}>
         <Button
           color="primary"
           style={{

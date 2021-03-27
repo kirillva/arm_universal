@@ -110,14 +110,14 @@ export const VotersAssignList = ({ state, setState }) => {
         title={"Избиратели"}
         method="Query"
         columns={cs_appartament}
-        filter={[
+        globalFilters={[
           login == "nov"
             ? {
-                id: "f_house___f_street___f_main_division",
+                property: "f_house___f_street___f_main_division",
                 value: getDivisionByLogin(login),
               }
             : {
-                id: "sd_subdivisions.f_division",
+                property: "sd_subdivisions.f_division",
                 value: getDivisionByLogin(login),
               },
         ]}

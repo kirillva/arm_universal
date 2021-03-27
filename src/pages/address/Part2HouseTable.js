@@ -250,8 +250,8 @@ export const Part2HouseTable = ({ uik }) => {
         </Paper>
         <Table
           className={classes.table}
-          filter={[{
-            id: "n_uik",
+          globalFilters={[{
+            property: "n_uik",
             value: uik,
           }]}
           sortBy={[

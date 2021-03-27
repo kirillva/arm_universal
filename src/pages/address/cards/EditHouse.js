@@ -123,7 +123,7 @@ export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false 
         <Typography variant="h6" className={classes.title}>
           Редактирование дома
         </Typography>
-        <div className={classes.fieldWrapper}>
+        {enableDelete ? null : <div className={classes.fieldWrapper}>
           <FormControl
             required
             error={errors.b_check}
@@ -162,7 +162,7 @@ export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false 
             />
             <FormHelperText>{errors.b_check || ""}</FormHelperText>
           </FormControl>
-        </div>
+        </div>}
         <div className={classes.fieldWrapper}>
           <SelectSubdivision
             margin="none"
@@ -240,10 +240,11 @@ export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false 
             margin="none"
             error={errors.b_disabled}
             helperText={errors.b_disabled}
-            label="Отключен"
+            label="Активен"
             name="b_disabled"
-            value={values.b_disabled}
-            onChange={handleChange}
+            value={!values.b_disabled}
+            // onChange={handleChange}
+            onChange={(e)=>setFieldValue(e.target.name, !e.target.value)}
             disabled={isSubmitting}
             variant="outlined"
           /> : null}

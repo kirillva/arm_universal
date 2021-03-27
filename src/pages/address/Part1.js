@@ -178,10 +178,10 @@ export const Part1 = () => {
         title="Список домов"
         params={params}
         columns={pd_users}
-        filter={[
+        globalFilters={[
           login == "nov"
             ? {
-                id: "f_main_division",
+                property: "f_main_division",
                 value: 10,
               }
             : null,
