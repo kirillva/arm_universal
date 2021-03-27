@@ -673,7 +673,13 @@ export const Table = ({
   }
 
   useEffect(() => {
+    gotoPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.filters]);
+
+  useEffect(() => {
     setState(state);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.filters, state.pageSize]);
 
   return (
