@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // import { Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export const VotersList = ({
   state,
   setState,
+  uik,
   // setHouse,
   // setStreet,
   // setAppartament,
@@ -42,6 +43,38 @@ export const VotersList = ({
   const classes = useStyles();
   const history = useHistory();
   const match = useRouteMatch();
+  const login = getItem("login");
+
+  const [filter, setFilter] = useState([
+    login === "nov"
+      ? {
+          id: "f_house___f_street___f_main_division",
+          value: getDivisionByLogin(login),
+        }
+      : {
+          id: "sd_subdivisions.f_division",
+          value: getDivisionByLogin(login),
+        },
+  ]);
+
+  useEffect(() => {
+    const newFilter = [
+      login === "nov"
+        ? {
+            property: "f_house___f_street___f_main_division",
+            value: getDivisionByLogin(login),
+          }
+        : {
+            property: "sd_subdivisions.f_division",
+            value: getDivisionByLogin(login),
+          },
+    ]
+    if (uik) {
+      newFilter.push({ property: "f_house___n_uik", value: `${uik}`, operator: '=' });
+    }
+    setFilter(newFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uik]);
 
   const cs_appartament = useMemo(
     () => [
@@ -83,8 +116,6 @@ export const VotersList = ({
     []
   );
 
-  const login = getItem("login");
-
   return (
     <Table
       state={state}
@@ -93,17 +124,7 @@ export const VotersList = ({
       title={"Избиратели"}
       method="Query"
       columns={cs_appartament}
-      filter={[
-        login == "nov"
-          ? {
-              id: "f_house___f_street___f_main_division",
-              value: getDivisionByLogin(login),
-            }
-          : {
-              id: "sd_subdivisions.f_division",
-              value: getDivisionByLogin(login),
-            },
-      ]}
+      globalFilters={filter}
       sortBy={[
         {
           id: "f_house___f_street___c_name",
@@ -120,7 +141,7 @@ export const VotersList = ({
       ]}
       select={`id,${getSelectByColumns(
         cs_appartament
-      )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`}
+      )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name,f_house___n_uik`}
       handleClick={(cell, row) => {
         const { f_house___f_street, f_house, id } = row.original;
         // setHouse(f_house);

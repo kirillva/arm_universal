@@ -8,6 +8,7 @@ import {
   useExpanded,
   useRowSelect,
   useAsyncDebounce,
+  useGlobalFilter,
 } from "react-table";
 import { runRpc } from "utils/rpc";
 
@@ -46,7 +47,6 @@ import {
 } from "@material-ui/icons";
 import classNames from "classnames";
 import { EditRowForm } from "./EditRowForm";
-import moment from "moment";
 import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
@@ -259,6 +259,7 @@ export const Table = ({
   buttons = null,
   state: innerState = {},
   setState = () => {},
+  globalFilters = [],
   actionButtons = [ /** {  icon, title, handler },*/ ],
 }) => {
   const [data, setData] = useState([]);
@@ -317,6 +318,7 @@ export const Table = ({
     setPageSize,
     // selectedFlatRows,
     state,
+    stateReducer,
     toggleAllRowsSelected,
   } = useTable(
     {
@@ -336,7 +338,6 @@ export const Table = ({
       autoResetGroupBy: false,
       autoResetSelectedRows: false,
       autoResetSortBy: false,
-      // autoResetFilters: false,
       autoResetRowState: false,
       getRowId: (row, relativeIndex) => {
         return row[idProperty];
@@ -394,7 +395,7 @@ export const Table = ({
 
   const onFetchData = ({ pageIndex, pageSize, sortBy, filters }) => {
     return new Promise((resolve) => {
-      const _filters = [];
+      let _filters = [];
       filters.forEach((item) => {
         const column = columns.find((column) => column.accessor === item.id);
 
@@ -475,6 +476,10 @@ export const Table = ({
         }
       });
 
+      if (globalFilters) {
+        _filters = [..._filters, ...globalFilters] 
+      }
+
       const data = {
         page: pageIndex,
         start: pageIndex * pageSize,
@@ -490,9 +495,7 @@ export const Table = ({
         data.params = params;
       }
 
-      // if (filter) {
-      //   data.filter = filter;
-      // }
+      
 
       if (select) {
         data.select = select;
@@ -538,6 +541,7 @@ export const Table = ({
   };
 
   useEffect(() => {
+    debugger;
     loadData();
   }, [
     onFetchDataDebounced,
@@ -547,6 +551,7 @@ export const Table = ({
     filters,
     action,
     params,
+    globalFilters
   ]);
 
   useEffect(() => {
@@ -676,7 +681,7 @@ export const Table = ({
     gotoPage(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.filters]);
-
+  
   useEffect(() => {
     setState(state);
   // eslint-disable-next-line react-hooks/exhaustive-deps

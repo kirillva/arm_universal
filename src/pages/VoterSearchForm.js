@@ -483,17 +483,17 @@ export const VoterSearchForm = ({
             </div>
           )}
         </Paper>
-        {values.f_appartament && (
+        {/* {values.f_appartament && (
           <Paper className={classes.addNewItem}>
             <AddNewItem
               loadData={loadData}
               appartament={values.f_appartament}
             />
           </Paper>
-        )}
+        )} */}
       </div>
 
-      <VoterPeopleList className={className} loading={loading} data={data} loadData={loadData} />
+      {/* <VoterPeopleList className={className} loading={loading} data={data} loadData={loadData} /> */}
 
       <Drawer
         anchor="right"
