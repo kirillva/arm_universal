@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
+  Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   makeStyles,
   Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
-import { getUserId } from "utils/user";
+import { getItem, getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import { BoolEditor } from "components/table/Editors";
 import { GetGUID } from "utils/helpers";
@@ -36,7 +41,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) => {
+export const EditStreet = ({
+  id,
+  validate = () => {},
+  refreshPage,
+  street,
+  enableDelete = false,
+}) => {
   const {
     handleSubmit,
     handleChange,
@@ -45,7 +56,7 @@ export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) =>
     setSubmitting,
     setValues,
     errors,
-    setFieldValue
+    setFieldValue,
   } = useFormik({
     initialValues: {
       id: id,
@@ -55,14 +66,22 @@ export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) =>
       b_disabled: false,
     },
     onSubmit: (values) => {
-      runRpc({
-        action: "cs_street",
-        method: "Update",
-        data: [{ ...values, f_user: getUserId() }],
-        type: "rpc",
-      }).then((responce) => {
-        refreshPage();
-        setSubmitting(false);
+      validate(values.c_name, () => {
+        return (success) => {
+          if (success) {
+            runRpc({
+              action: "cs_street",
+              method: "Update",
+              data: [{ ...values, f_user: getUserId() }],
+              type: "rpc",
+            }).then((responce) => {
+              refreshPage();
+              setSubmitting(false);
+            });
+          } else {
+            setSubmitting(false);
+          }
+        };
       });
     },
   });
@@ -116,18 +135,20 @@ export const EditStreet = ({ id, refreshPage, street, enableDelete = false }) =>
             disabled={isSubmitting}
             variant="outlined"
           />
-         {enableDelete ? <BoolEditor
-            size="small"
-            margin="none"
-            error={errors.b_disabled}
-            helperText={errors.b_disabled}
-            label="Активна"
-            name="b_disabled"
-            value={!values.b_disabled}
-            onChange={(e)=>setFieldValue(e.target.name, !e.target.value)}
-            disabled={isSubmitting}
-            variant="outlined"
-          /> : null}
+          {enableDelete ? (
+            <BoolEditor
+              size="small"
+              margin="none"
+              error={errors.b_disabled}
+              helperText={errors.b_disabled}
+              label="Активна"
+              name="b_disabled"
+              value={!values.b_disabled}
+              onChange={(e) => setFieldValue(e.target.name, !e.target.value)}
+              disabled={isSubmitting}
+              variant="outlined"
+            />
+          ) : null}
         </div>
         <Button
           type="submit"
@@ -146,6 +167,73 @@ export const useStreet = (props) => {
   const { onSave = () => {}, enableDelete = false } = props || {};
   const [street, setStreet] = useState(null);
   const [id, setId] = useState(null);
+  const [windowOpen, setWindowOpen] = useState(false);
+  const [foundStreets, setFoundStreets] = useState([]);
+  const [func, setFunc] = useState(null);
+  const [name, setName] = useState("");
+
+  const login = getItem("login");
+
+  const loadFoundData = (name, callback) => {
+    const filter = [
+      {
+        property: "c_name",
+        value: name,
+        operator: "like",
+      },
+    ];
+    if (id && id !== "new") {
+      filter.push({
+        property: "id",
+        value: id,
+        operator: "<>",
+      });
+    }
+    if (login == "nov") {
+      filter.push({
+        property: "f_main_division",
+        value: 10,
+        operator: "=",
+      });
+    } else {
+      filter.push({
+        property: "f_main_division",
+        value: 10,
+        operator: "<>",
+      });
+    }
+    runRpc({
+      action: "cs_street",
+      method: "Query",
+      data: [
+        {
+          limit: 1000,
+          filter,
+        },
+      ],
+      type: "rpc",
+    }).then((response) => {
+      const records = response.result.records;
+      callback(records);
+    });
+  };
+
+  const validateStreet = async (_name = "", _func) => {
+    if (_name) {
+      setName(_name);
+      loadFoundData(_name, (records) => {
+        setFoundStreets(records);
+        if (records && records.length) {
+          setWindowOpen(true);
+          setFunc(_func);
+        } else {
+          _func()(true);
+        }
+      })
+    } else {
+      _func()(false);
+    }
+  };
 
   const loadData = (_id) => {
     runRpc({
@@ -167,17 +255,36 @@ export const useStreet = (props) => {
     }).then((responce) => {
       responce && setStreet(responce.result.records[0]);
     });
-  }
+  };
+
+  const toggleState = (id, value) => {
+    runRpc({
+      action: "cs_street",
+      method: "Update",
+      data: [{ b_disabled: !Boolean(value), id: id }],
+      type: "rpc",
+    }).then(() => {
+      loadFoundData(name, (records) => {
+        setFoundStreets(records);
+      });
+    });
+  };
 
   useEffect(() => {
-    if (id && id != 'new') {
+    if (id && id != "new") {
       loadData(id);
     }
   }, [id]);
 
   const handleSave = () => {
     onSave();
-  }
+  };
+
+  const onClose = () => {
+    setWindowOpen(false);
+    func(false);
+    setFunc(null);
+  };
 
   return {
     openStreet: (id) => {
@@ -185,8 +292,62 @@ export const useStreet = (props) => {
       loadData(id);
     },
     addStreet: () => {
-      setId('new');
+      setId("new");
     },
-    component: id == 'new' ? <AddStreet refreshPage={handleSave} /> : <EditStreet enableDelete={enableDelete} id={id} refreshPage={handleSave} street={street} />,
+    component: (
+      <>
+        <Dialog open={windowOpen} onClose={onClose}>
+          <DialogTitle>Возможные дубликаты:</DialogTitle>
+          <DialogContent>
+            {foundStreets.map((item) => {
+              return (
+                <Box marginBottom="16px" display={"flex"} alignItems={"center"}>
+                  <Box marginRight="16px">
+                    <Typography>
+                      {item.c_short_type} {item.c_name}
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => toggleState(item.id, item.b_disabled)}
+                  >
+                    {item.b_disabled ? "Активировать" : "Деактивировать"}{" "}
+                  </Button>
+                </Box>
+              );
+            })}
+            <Typography>Активация/деактивация других улиц происходит сразу, сохранить и отмена относятся к изменениям текущей выбранной улицы</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant={"contained"}
+              color="primary"
+              onClick={() => {
+                if (func) {
+                  setWindowOpen(false);
+                  func(true);
+                  setFunc(null);
+                }
+              }}
+            >
+              Сохранить
+            </Button>
+            <Button onClick={onClose}>Отмена</Button>
+          </DialogActions>
+        </Dialog>
+        {id === "new" ? (
+          <AddStreet validate={validateStreet} refreshPage={handleSave} />
+        ) : (
+          <EditStreet
+            validate={validateStreet}
+            enableDelete={enableDelete}
+            id={id}
+            refreshPage={handleSave}
+            street={street}
+          />
+        )}
+      </>
+    ),
   };
 };

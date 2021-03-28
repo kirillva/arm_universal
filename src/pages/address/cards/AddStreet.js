@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AddStreet = ({ refreshPage }) => {
+export const AddStreet = ({ refreshPage, validate = () => {} }) => {
   // const history = useHistory();
   const initialValues = {
     id: GetGUID(),
@@ -60,24 +60,32 @@ export const AddStreet = ({ refreshPage }) => {
       c_name: Yup.string().required("Не заполнено обязательное поле"),
     }),
     initialValues,
-    onSubmit: async (values) => {
-      const responce = await runRpc({
-        action: "cs_street",
-        method: "Add",
-        data: [
-          {
-            ...values,
-            f_user: getUserId(),
-            b_disabled: false,
-            f_main_division: login === "nov" ? 10 : 0,
-          },
-        ],
-        type: "rpc",
+    onSubmit: (values) => {
+      validate(values.c_name, () => {
+        return (success)=>{
+          if (success) {
+            runRpc({
+              action: "cs_street",
+              method: "Add",
+              data: [
+                {
+                  ...values,
+                  f_user: getUserId(),
+                  b_disabled: false,
+                  f_main_division: login === "nov" ? 10 : 0,
+                },
+              ],
+              type: "rpc",
+            }).then(responce => {
+              refreshPage();
+              setSubmitting(false);
+            });
+          } else {
+            setSubmitting(false);
+          }
+        }
       });
-      refreshPage();
-      setSubmitting(false);
-      return responce;
-    },
+    }
   });
 
   // const onSubmitAndEdit = () => {

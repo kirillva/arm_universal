@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
   textPaper: {
     margin: "auto",
+    textAlign: 'center'
   },
   grid: {
     display: "grid",
@@ -48,12 +49,17 @@ export const AddNewAppartament = ({
         error={error}
         helperText={error}
         variant="outlined"
+        fullWidth
         value={appartamentNumber}
         onChange={(e) => {
           const value = e.target.value;
           const item = appartament.find((item) => item.c_number === value);
           if (item) {
-            setError(`Квартира ${value} уже существует`);
+            if (item.b_disabled) {
+              setError(`Квартира ${value} уже существует, но деактивирована. Вы можете активировать ее, нажав на номер в списке ниже.`);
+            } else {
+              setError(`Квартира ${value} уже существует`);
+            }
           } else {
             setError(null);
           }

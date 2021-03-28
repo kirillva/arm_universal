@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AddHouse = ({ street, refreshPage }) => {
+export const AddHouse = ({ street, refreshPage, validate = () => {} }) => {
   // const history = useHistory();
   // const match = useRouteMatch();
 
@@ -68,25 +68,33 @@ export const AddHouse = ({ street, refreshPage }) => {
     }),
     initialValues,
     onSubmit: async (values) => {
-      const responce = await runRpc({
-        action: "cs_house",
-        method: "Add",
-        data: [
-          {
-            ...values,
-            id: GetGUID(),
-            f_street: street,
-            f_user: getUserId(),
-            c_house_corp: values.c_house_corp
-              ? values.c_house_corp.trim()
-              : null,
-          },
-        ],
-        type: "rpc",
+      validate(values.c_house_number, ()=>{
+        return (success)=>{
+          if (success) {
+            runRpc({
+              action: "cs_house",
+              method: "Add",
+              data: [
+                {
+                  ...values,
+                  id: GetGUID(),
+                  f_street: street,
+                  f_user: getUserId(),
+                  c_house_corp: values.c_house_corp
+                    ? values.c_house_corp.trim()
+                    : null,
+                },
+              ],
+              type: "rpc",
+            }).then(()=>{
+              refreshPage(values.id);
+              setSubmitting(false);
+            })
+          } else {
+            setSubmitting(false);
+          }
+        }
       });
-      refreshPage(values.id);
-      setSubmitting(false);
-      return responce;
     },
   });
 

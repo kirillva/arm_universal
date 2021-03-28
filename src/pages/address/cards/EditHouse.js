@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
+  Box,
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -49,6 +54,7 @@ export const EditHouse = ({
   refreshPage,
   handleClose,
   enableDelete = false,
+  validate = () => {},
 }) => {
   const schema = {
     c_house_number: Yup.string()
@@ -61,9 +67,11 @@ export const EditHouse = ({
     f_street: Yup.string()
       .nullable()
       .required("Не заполнено обязательное поле"),
-  }
+  };
   if (!enableDelete) {
-    schema.b_check = Yup.boolean().typeError("Должно быть указано одно из значений");
+    schema.b_check = Yup.boolean().typeError(
+      "Должно быть указано одно из значений"
+    );
   }
   const {
     handleSubmit,
@@ -89,14 +97,22 @@ export const EditHouse = ({
       b_check: false,
     },
     onSubmit: (values) => {
-      runRpc({
-        action: "cs_house",
-        method: "Update",
-        data: [{ ...values, f_user: getUserId() }],
-        type: "rpc",
-      }).then((responce) => {
-        refreshPage();
-        setSubmitting(false);
+      validate(values.c_house_number, () => {
+        return (success) => {
+          if (success) {
+            runRpc({
+              action: "cs_house",
+              method: "Update",
+              data: [{ ...values, f_user: getUserId() }],
+              type: "rpc",
+            }).then((responce) => {
+              refreshPage();
+              setSubmitting(false);
+            });
+          } else {
+            setSubmitting(false);
+          }
+        };
       });
     },
   });
@@ -305,6 +321,63 @@ export const useHouse = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAppartament, setSelectedAppartament] = useState(null);
   const [open, setOpen] = useState(false);
+  const [windowOpen, setWindowOpen] = useState(false);
+  const [foundHouse, setFoundHouse] = useState([]);
+  const [name, setName] = useState("");
+  const [func, setFunc] = useState(null);
+
+  const loadFoundData = (name, callback) => {
+    const filter = [
+      {
+        property: "f_street",
+        value: street,
+        operator: "=",
+      },
+      {
+        property: "c_house_number",
+        value: name,
+        operator: "=",
+      },
+    ];
+    if (house) {
+      filter.push({
+        property: "id",
+        value: house,
+        operator: "<>",
+      });
+    }
+    runRpc({
+      action: "cs_house",
+      method: "Query",
+      data: [
+        {
+          limit: 1000,
+          filter,
+        },
+      ],
+      type: "rpc",
+    }).then((response) => {
+      const records = response.result.records;
+      callback(records);
+    });
+  };
+
+  const validateHouse = async (_name = "", _func) => {
+    if (_name) {
+      setName(_name);
+      loadFoundData(_name, (records) => {
+        setFoundHouse(records);
+        if (records && records.length) {
+          setWindowOpen(true);
+          setFunc(_func);
+        } else {
+          _func(true);
+        }
+      });
+    } else {
+      _func(false);
+    }
+  };
 
   const handleSave = (id) => {
     onSave(id);
@@ -324,6 +397,25 @@ export const useHouse = (props) => {
     street: street,
   });
 
+  const onClose = () => {
+    setWindowOpen(false);
+    func(false);
+    setFunc(null);
+  };
+
+  const toggleState = (id, value) => {
+    runRpc({
+      action: "cs_house",
+      method: "Update",
+      data: [{ b_disabled: !Boolean(value), id: id }],
+      type: "rpc",
+    }).then(() => {
+      loadFoundData(name, (records) => {
+        setFoundHouse(records);
+      });
+    });
+  };
+
   return {
     openHouse: (f_street, f_house) => {
       setHouse(f_house);
@@ -335,8 +427,55 @@ export const useHouse = (props) => {
     },
     component: (
       <>
+        <Dialog open={windowOpen} onClose={onClose}>
+          <DialogTitle>Возможные дубликаты:</DialogTitle>
+          <DialogContent>
+            {foundHouse.map((item) => {
+              return (
+                <Box marginBottom="16px" display={"flex"} alignItems={"center"}>
+                  <Box marginRight="16px">
+                    <Typography>
+                      Дом: {item.c_house_number}
+                      {item.c_house_litera}{" "}
+                      {item.c_house_corp ? `корп. ${item.c_house_corp}` : ""}
+                      УИК: {item.n_uik || "нет"}
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => toggleState(item.id, item.b_disabled)}
+                  >
+                    {item.b_disabled ? "Активировать" : "Деактивировать"}{" "}
+                  </Button>
+                </Box>
+              );
+            })}
+            <Typography>Активация/деактивация других домов происходит сразу, сохранить и отмена относятся к изменениям текущего выбранного дома</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant={"contained"}
+              color="primary"
+              onClick={() => {
+                if (func) {
+                  setWindowOpen(false);
+                  func(true);
+                  setFunc(null);
+                }
+              }}
+            >
+              Сохранить
+            </Button>
+            <Button onClick={onClose}>Отмена</Button>
+          </DialogActions>
+        </Dialog>
         {street && !house && (
-          <AddHouse street={street} refreshPage={(id) => handleSave(id)} />
+          <AddHouse
+            validate={validateHouse}
+            street={street}
+            refreshPage={(id) => handleSave(id)}
+          />
         )}
         {street && house && (
           <>
@@ -350,6 +489,7 @@ export const useHouse = (props) => {
               />
             )}
             <EditHouse
+              validate={validateHouse}
               enableDelete={enableDelete}
               id={house}
               refreshPage={handleSave}
