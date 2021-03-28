@@ -50,6 +50,21 @@ export const EditHouse = ({
   handleClose,
   enableDelete = false,
 }) => {
+  const schema = {
+    c_house_number: Yup.string()
+      .nullable()
+      .required("Не заполнено обязательное поле"),
+    n_uik: Yup.string().nullable().required("Не заполнено обязательное поле"),
+    f_subdivision: Yup.string()
+      .nullable()
+      .required("Не заполнено обязательное поле"),
+    f_street: Yup.string()
+      .nullable()
+      .required("Не заполнено обязательное поле"),
+  }
+  if (!enableDelete) {
+    schema.b_check = Yup.boolean().typeError("Должно быть указано одно из значений");
+  }
   const {
     handleSubmit,
     handleChange,
@@ -60,19 +75,7 @@ export const EditHouse = ({
     setFieldValue,
     errors,
   } = useFormik({
-    validationSchema: Yup.object().shape({
-      c_house_number: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
-      n_uik: Yup.string().nullable().required("Не заполнено обязательное поле"),
-      f_subdivision: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
-      f_street: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
-      b_check: Yup.boolean().typeError("Должно быть указано одно из значений"),
-    }),
+    validationSchema: Yup.object().shape(schema),
     initialValues: {
       id: id,
       c_house_number: "",
