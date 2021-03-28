@@ -371,11 +371,11 @@ export const useHouse = (props) => {
           setWindowOpen(true);
           setFunc(_func);
         } else {
-          _func(true);
+          _func()(true);
         }
       });
     } else {
-      _func(false);
+      _func()(false);
     }
   };
 
