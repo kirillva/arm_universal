@@ -679,6 +679,11 @@ export const Table = ({
   useEffect(() => {
     gotoPage(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [globalFilters]);
+
+  useEffect(() => {
+    gotoPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.filters]);
   
   useEffect(() => {
