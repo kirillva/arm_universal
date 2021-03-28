@@ -19,8 +19,8 @@ import { SelectSubdivision } from "components/SelectSubdivision";
 import * as Yup from "yup";
 import { AddHouse } from "./AddHouse";
 import { AddNewAppartament, useAppartament } from "../AddNewAppartament";
-import { AppartamentContextMenu } from "../AppartamentContextMenu";
 import { AppartamentDisableMenu } from "../AppartamentDisableMenu";
+import { Window } from "../HouseDetail";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -44,7 +44,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false }) => {
+export const EditHouse = ({
+  id,
+  refreshPage,
+  handleClose,
+  enableDelete = false,
+}) => {
   const {
     handleSubmit,
     handleChange,
@@ -123,46 +128,48 @@ export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false 
         <Typography variant="h6" className={classes.title}>
           Редактирование дома
         </Typography>
-        {enableDelete ? null : <div className={classes.fieldWrapper}>
-          <FormControl
-            required
-            error={errors.b_check}
-            component="fieldset"
-            className={classes.formControl}
-          >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
-                  checked={values.b_check === true}
-                  onClick={() => setFieldValue("b_check", true)}
-                  name="b_check"
-                />
-              }
-              label="Подтверждаю"
-            />
-            <FormHelperText>{errors.b_check || ""}</FormHelperText>
-          </FormControl>
-          <FormControl
-            required
-            error={errors.b_check}
-            component="fieldset"
-            className={classes.formControl}
-          >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
-                  checked={values.b_check === false}
-                  onClick={() => setFieldValue("b_check", false)}
-                  name="b_check"
-                />
-              }
-              label="Не подтверждаю"
-            />
-            <FormHelperText>{errors.b_check || ""}</FormHelperText>
-          </FormControl>
-        </div>}
+        {enableDelete ? null : (
+          <div className={classes.fieldWrapper}>
+            <FormControl
+              required
+              error={errors.b_check}
+              component="fieldset"
+              className={classes.formControl}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={values.b_check === true}
+                    onClick={() => setFieldValue("b_check", true)}
+                    name="b_check"
+                  />
+                }
+                label="Подтверждаю"
+              />
+              <FormHelperText>{errors.b_check || ""}</FormHelperText>
+            </FormControl>
+            <FormControl
+              required
+              error={errors.b_check}
+              component="fieldset"
+              className={classes.formControl}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={values.b_check === false}
+                    onClick={() => setFieldValue("b_check", false)}
+                    name="b_check"
+                  />
+                }
+                label="Не подтверждаю"
+              />
+              <FormHelperText>{errors.b_check || ""}</FormHelperText>
+            </FormControl>
+          </div>
+        )}
         <div className={classes.fieldWrapper}>
           <SelectSubdivision
             margin="none"
@@ -234,20 +241,22 @@ export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false 
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"
-          /> 
-          {enableDelete ? <BoolEditor
-            size="small"
-            margin="none"
-            error={errors.b_disabled}
-            helperText={errors.b_disabled}
-            label="Активен"
-            name="b_disabled"
-            value={!values.b_disabled}
-            // onChange={handleChange}
-            onChange={(e)=>setFieldValue(e.target.name, !e.target.value)}
-            disabled={isSubmitting}
-            variant="outlined"
-          /> : null}
+          />
+          {enableDelete ? (
+            <BoolEditor
+              size="small"
+              margin="none"
+              error={errors.b_disabled}
+              helperText={errors.b_disabled}
+              label="Активен"
+              name="b_disabled"
+              value={!values.b_disabled}
+              // onChange={handleChange}
+              onChange={(e) => setFieldValue(e.target.name, !e.target.value)}
+              disabled={isSubmitting}
+              variant="outlined"
+            />
+          ) : null}
         </div>
         <TextField
           multiline
@@ -286,7 +295,8 @@ export const EditHouse = ({ id, refreshPage, handleClose,  enableDelete = false 
 };
 
 export const useHouse = (props) => {
-  const { onSave = () => {}, onCancel = () => {}, enableDelete=true } = props || {};
+  const { onSave = () => {}, onCancel = () => {}, enableDelete = true } =
+    props || {};
   const [house, setHouse] = useState(null);
   const [street, setStreet] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -298,7 +308,12 @@ export const useHouse = (props) => {
     setHouse(null);
     setStreet(null);
   };
-  const { addNewForm, appartamentsController, appartaments, loadData } = useAppartament({
+  const {
+    addNewForm,
+    appartamentsController,
+    appartaments,
+    loadData,
+  } = useAppartament({
     enableDelete: true,
     setAnchorEl: setAnchorEl,
     setSelectedAppartament: setSelectedAppartament,
@@ -317,16 +332,20 @@ export const useHouse = (props) => {
     },
     component: (
       <>
-        {street && !house && <AddHouse street={street} refreshPage={id=>handleSave(id)} />}
+        {street && !house && (
+          <AddHouse street={street} refreshPage={(id) => handleSave(id)} />
+        )}
         {street && house && (
           <>
-            {selectedAppartament && <AppartamentDisableMenu
-              onSave={() => loadData()}
-              selectedAppartament={selectedAppartament}
-              anchorEl={anchorEl}
-              setAnchorEl={setAnchorEl}
-              setOpen={setOpen}
-            />}
+            {selectedAppartament && (
+              <AppartamentDisableMenu
+                onSave={() => loadData()}
+                selectedAppartament={selectedAppartament}
+                anchorEl={anchorEl}
+                setAnchorEl={setAnchorEl}
+                setOpen={setOpen}
+              />
+            )}
             <EditHouse
               enableDelete={enableDelete}
               id={house}
@@ -335,6 +354,15 @@ export const useHouse = (props) => {
                 onCancel();
                 setHouse(null);
                 setStreet(null);
+              }}
+            />
+            <Window
+              item={selectedAppartament}
+              reloadData={loadData}
+              open={open}
+              handleClose={() => {
+                setOpen(false);
+                setSelectedAppartament(null);
               }}
             />
             {addNewForm}

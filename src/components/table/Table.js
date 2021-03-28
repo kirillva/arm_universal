@@ -541,7 +541,6 @@ export const Table = ({
   };
 
   useEffect(() => {
-    debugger;
     loadData();
   }, [
     onFetchDataDebounced,

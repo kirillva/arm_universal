@@ -51,7 +51,7 @@ export const AppartamentDisableMenu = ({
             <CheckBoxOutlineBlankIcon />
           )}
         </ListItemIcon>
-        Активировать все
+        Деактивировать
       </MenuItem>
       <MenuItem
         button
@@ -67,9 +67,9 @@ export const AppartamentDisableMenu = ({
             <CheckBoxOutlineBlankIcon />
           )}
         </ListItemIcon>
-        Деактивировать все
+        Активировать
       </MenuItem>
-      {/* <MenuItem
+      <MenuItem
         button
         onClick={() => {
           setOpen(true);
@@ -80,7 +80,7 @@ export const AppartamentDisableMenu = ({
           <EditIcon />
         </ListItemIcon>
         Указать примечание
-      </MenuItem> */}
+      </MenuItem>
     </Menu>
   );
 };
@@ -113,7 +113,7 @@ export const AllAppartamentButtonsDisable = ({ appartaments, onSave = () => {} }
             onSendSelected(false);
           }}
         >
-          Активировать
+          Активировать все
         </Button>
         <Button
           color="primary"
@@ -125,7 +125,7 @@ export const AllAppartamentButtonsDisable = ({ appartaments, onSave = () => {} }
             onSendSelected(true);
           }}
         >
-          Деактивировать
+          Деактивировать все
         </Button>
       </div>
     </>

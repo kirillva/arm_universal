@@ -15,7 +15,7 @@ import {  useAppartament } from "./AddNewAppartament";
 import { AppartamentContextMenu } from "./AppartamentContextMenu";
 import { AppartamentDisableMenu } from "./AppartamentDisableMenu";
 
-const Window = ({ item = {}, reloadData, open, handleClose }) => {
+export const Window = ({ item = {}, reloadData, open, handleClose }) => {
   const {
     handleSubmit,
     handleChange,
