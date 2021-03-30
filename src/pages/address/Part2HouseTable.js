@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table } from "components/table/Table";
 import {
   BoolFilter,
   NumberFilter,
@@ -28,6 +27,7 @@ import {
 } from "react-router-dom";
 import { ArrowBack } from "@material-ui/icons";
 import { getUserId } from "utils/user";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -50,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     gap: theme.spacing(2),
     display: "flex",
-    height: '100%'
+    height: "100%",
   },
   streetWrapper: {
     display: "flex",
     padding: theme.spacing(2),
-    height: '64px'
+    height: "64px",
   },
   button: {
     margin: "auto 0 auto auto",
@@ -192,6 +192,32 @@ export const Part2HouseTable = ({ uik }) => {
     streetId && loadData(streetId).then((record) => setStreet(record));
   }, [streetId]);
 
+  const tableComponent = useTableComponent({
+    className: classes.table,
+    globalFilters: [
+      {
+        property: "n_uik",
+        value: uik,
+      },
+    ],
+    sortBy: [
+      {
+        id: "n_number",
+        desc: false,
+      },
+    ],
+    title: "Дома",
+    method: "Select",
+    columns: cs_house,
+    getRowClassName: (row) =>
+      row.original.b_finish ? classes.selectedRow : "",
+    handleClick: (cell, row) => {
+      history.push(`/part2/${streetId}/${row.original.id}`);
+    },
+    params: params,
+    action: "cf_bss_cs_house",
+  });
+
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
@@ -242,36 +268,21 @@ export const Part2HouseTable = ({ uik }) => {
             </Drawer>
           </Route>
         </Switch>
-        <Button className={classes.backButton} color="primary" variant="contained" onClick={()=>history.push(`/part2`)}><ArrowBack />Назад</Button>
+        <Button
+          className={classes.backButton}
+          color="primary"
+          variant="contained"
+          onClick={() => history.push(`/part2`)}
+        >
+          <ArrowBack />
+          Назад
+        </Button>
         <Paper className={classes.streetWrapper}>
           <Typography variant="h6">
             {street ? `${street.c_short_type} ${street.c_name}` : " "}
           </Typography>
         </Paper>
-        <Table
-          className={classes.table}
-          globalFilters={[{
-            property: "n_uik",
-            value: uik,
-          }]}
-          sortBy={[
-            {
-              id: "n_number",
-              desc: false,
-            },
-          ]}
-          title={"Дома"}
-          method="Select"
-          columns={cs_house}
-          getRowClassName={(row) =>
-            row.original.b_finish ? classes.selectedRow : ""
-          }
-          handleClick={(cell, row) => {
-            history.push(`/part2/${streetId}/${row.original.id}`);
-          }}
-          params={params}
-          action="cf_bss_cs_house"
-        />
+        {tableComponent.table}
       </div>
     </div>
   );

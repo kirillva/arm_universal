@@ -4,7 +4,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
-import { Table } from "components/table/Table";
 import { Operators, StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
 import { getItem, getUserId } from "utils/user";

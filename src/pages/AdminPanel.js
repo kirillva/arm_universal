@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table } from "components/table/Table";
 import { BoolFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { BoolEditor } from "components/table/Editors";

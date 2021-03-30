@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table } from "components/table/Table";
 import {
   BoolFilter,
   NumberFilter,
@@ -17,6 +16,7 @@ import { SelectFilter } from "components/table/SelectFilter";
 import { EditHouseHistory } from "../../components/EditHouseHistory";
 import { Box, Button, Drawer } from "@material-ui/core";
 import { getItem } from "utils/user";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -145,6 +145,24 @@ export const Part1 = () => {
     ],
     []
   );
+  
+  const tableComponent = useTableComponent({
+    className: classes.table,
+    handleClick: (cell, row) => setSelectedHouse(row.original),
+    title: "Список домов",
+    params: params,
+    columns: pd_users,
+    globalFilters: [
+      login === "nov"
+        ? {
+            property: "f_main_division",
+            value: 10,
+          }
+        : null,
+    ].filter(item=>item),
+    action: "cf_tmp_cs_house_unknow",
+    method: "Select"
+  });
 
   return (
     <div className={classes.content}>
@@ -172,28 +190,7 @@ export const Part1 = () => {
           )}
         </Drawer>
       </div>
-      <Table
-        className={classes.table}
-        handleClick={(cell, row) => setSelectedHouse(row.original)}
-        title="Список домов"
-        params={params}
-        columns={pd_users}
-        globalFilters={[
-          login == "nov"
-            ? {
-                property: "f_main_division",
-                value: 10,
-              }
-            : null,
-        ].filter(item=>item)}
-        // onLoadData={(_data, total) => {
-        //   setData(_data);
-        //   setTotalPages(total);
-        // }}
-        // pageIndex={pageIndex}
-        action={"cf_tmp_cs_house_unknow"}
-        method="Select"
-      />
+      {tableComponent.table}
     </div>
   );
 };

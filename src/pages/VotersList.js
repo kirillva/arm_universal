@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
-import { Table } from "components/table/Table";
 import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -12,6 +11,7 @@ import { getItem, getUserId } from "utils/user";
 import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
 import CheckIcon from "@material-ui/icons/Check";
 import { runRpc } from "utils/rpc";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -137,65 +137,65 @@ export const VotersList = ({
     []
   );
 
-  return (
-    <Table
-      state={state}
-      setState={setState}
-      className={classes.table}
-      title={"Избиратели"}
-      method="Query"
-      columns={cs_appartament}
-      globalFilters={filter}
-      getRowClassName={(row) => {
-        const { f_house___f_street___b_disabled, f_house___b_disabled, b_disabled } =  row.original;
-        return (f_house___f_street___b_disabled || f_house___b_disabled || b_disabled) ? classes.selectedRow : ""
-      }}
-      sortBy={[
-        {
-          id: "f_house___f_street___c_name",
-          desc: false,
+  const tableComponent = useTableComponent({
+    state: state,
+    setState: setState,
+    className: classes.table,
+    title: "Избиратели",
+    method: "Query",
+    columns: cs_appartament,
+    globalFilters: filter,
+    getRowClassName: (row) => {
+      const { f_house___f_street___b_disabled, f_house___b_disabled, b_disabled } =  row.original;
+      return (f_house___f_street___b_disabled || f_house___b_disabled || b_disabled) ? classes.selectedRow : ""
+    },
+    sortBy: [
+      {
+        id: "f_house___f_street___c_name",
+        desc: false,
+      },
+      {
+        id: "f_house___n_number",
+        desc: false,
+      },
+      {
+        id: "n_number",
+        desc: false,
+      },
+    ],
+    select: `id,${getSelectByColumns(
+      cs_appartament
+    )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name,f_house___n_uik`,
+
+    handleClick: (cell, row) => {
+      const { f_house___f_street, f_house, id } = row.original;
+      // setHouse(f_house);
+      // setStreet(f_street);
+      // setAppartament(id);
+      history.push(
+        `${match.path}/search?house=${f_house}&street=${f_house___f_street}&appartament=${id}`
+      );
+    },
+    actionButtons: [
+      {
+        icon: <CheckIcon />,
+        title: "Назначить пользователя",
+        handler: (ids) => {
+          runRpc({
+            action: "cs_appartament",
+            method: "Update",
+            data: [
+              Object.keys(ids)
+                .filter((key) => ids[key])
+                .map((item) => ({ id: item, f_user: getUserId() })),
+            ],
+            type: "rpc",
+          });
         },
-        {
-          id: "f_house___n_number",
-          desc: false,
-        },
-        {
-          id: "n_number",
-          desc: false,
-        },
-      ]}
-      select={`id,${getSelectByColumns(
-        cs_appartament
-      )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name,f_house___n_uik`}
-      handleClick={(cell, row) => {
-        const { f_house___f_street, f_house, id } = row.original;
-        // setHouse(f_house);
-        // setStreet(f_street);
-        // setAppartament(id);
-        history.push(
-          `${match.path}/search?house=${f_house}&street=${f_house___f_street}&appartament=${id}`
-        );
-      }}
-      actionButtons={[
-        {
-          icon: <CheckIcon />,
-          title: "Назначить пользователя",
-          handler: (ids) => {
-            runRpc({
-              action: "cs_appartament",
-              method: "Update",
-              data: [
-                Object.keys(ids)
-                  .filter((key) => ids[key])
-                  .map((item) => ({ id: item, f_user: getUserId() })),
-              ],
-              type: "rpc",
-            });
-          },
-        },
-      ]}
-      // params={[getUserId(), null, null]}
-      action="cs_appartament"
-    />
-  );
+      },
+    ],
+    action: "cs_appartament"
+  });
+
+  return tableComponent.table;
 };

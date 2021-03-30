@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table } from "components/table/Table";
 import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { getItem, getUserId } from "utils/user";
@@ -8,6 +7,7 @@ import { Part2HouseTable } from "./Part2HouseTable";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { SelectUik } from "components/SelectUik";
 import { getDivisionByLogin } from "utils/helpers";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -83,32 +83,24 @@ export const Part2 = () => {
     []
   );
 
-  const StreetsTable = useMemo(
-    () => (
-      <Table
-        state={state}
-        setState={setState}
-        className={classes.table}
-        sortBy={[
-          {
-            id: "c_name",
-            desc: false,
-          },
-        ]}
-        title={"Улицы"}
-        handleClick={(cell, row) => history.push(`/part2/${row.id}`)}
-        method="Select"
-        params={params}
-        columns={cs_street}
-        getRowClassName={(row) =>
-          row.original.b_finish ? classes.selectedRow : ""
-        }
-        action="cf_bss_cs_street"
-      />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [params]
-  );
+  const tableComponent = useTableComponent({
+    state: state,
+    setState: setState,
+    className: classes.table,
+    title: "Улицы",
+    handleClick: (cell, row) => history.push(`/part2/${row.id}`),
+    method: "Select",
+    params: params,
+    columns: cs_street,
+    action: "cf_bss_cs_street",
+    getRowClassName: (row) => row.original.b_finish ? classes.selectedRow : "",
+    sortBy: [
+      {
+        id: "c_name",
+        desc: false,
+      },
+    ]
+  });
 
   return (
     <Switch>
@@ -127,7 +119,7 @@ export const Part2 = () => {
             className={classes.selectUik}
             handleChange={(e) => setUik(e.target.value)}
           />
-          {StreetsTable}
+          {tableComponent.table}
         </div>
       </Route>
     </Switch>

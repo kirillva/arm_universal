@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table } from "components/table/Table";
 import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { getUserId } from "utils/user";
@@ -9,6 +8,7 @@ import { AddStreet } from "./cards/AddStreet";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { Button, Drawer } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -73,11 +73,43 @@ export const Part3StreetTable = () => {
           width: "80px",
         },
         accessor: "b_finish",
-        operator: Operators.bool
+        operator: Operators.bool,
       },
     ],
     []
   );
+
+  const tableComponent = useTableComponent({
+    className: classes.table,
+    buttons: (
+      <>
+        <Button
+          title={"Фильтры"}
+          className={classes.iconButton}
+          color={"black"}
+          onClick={() => setOpen(true)}
+        >
+          <Add />
+        </Button>
+      </>
+    ),
+    sortBy: [
+      {
+        id: "c_name",
+        desc: false,
+      },
+    ],
+    title: "Улицы",
+    handleClick: (cell, row) => {
+      history.push(`${match.path}/${row.id}`);
+    },
+    method: "Select",
+    params: params,
+    columns: cs_street,
+    getRowClassName: (row) =>
+      row.original.b_finish ? classes.selectedRow : "",
+    action: "cf_bss_cs_street",
+  });
 
   return (
     <Switch>
@@ -104,38 +136,7 @@ export const Part3StreetTable = () => {
               }}
             />
           </Drawer>
-          <Table
-            className={classes.table}
-            buttons={
-              <>
-                <Button
-                  title={"Фильтры"}
-                  className={classes.iconButton}
-                  color={"black"}
-                  onClick={() => setOpen(true)}
-                >
-                  <Add />
-                </Button>
-              </>
-            }
-            sortBy={[
-              {
-                id: "c_name",
-                desc: false,
-              },
-            ]}
-            title={"Улицы"}
-            handleClick={(cell, row) => {
-              history.push(`${match.path}/${row.id}`)
-            }}
-            method="Select"
-            params={params}
-            columns={cs_street}
-            getRowClassName={(row) =>
-              row.original.b_finish ? classes.selectedRow : ""
-            }
-            action="cf_bss_cs_street"
-          />
+          {tableComponent.table}
         </div>
       </Route>
     </Switch>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table } from "components/table/Table";
 import {
   BoolFilter,
   NumberFilter,
@@ -28,6 +27,7 @@ import {
 } from "react-router-dom";
 import { ArrowBack } from "@material-ui/icons";
 import { getSelectByColumns } from "utils/helpers";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -50,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     gap: theme.spacing(2),
     display: "flex",
-    height: '100%'
+    height: "100%",
   },
   streetWrapper: {
     display: "flex",
     padding: theme.spacing(2),
-    height: '64px'
+    height: "64px",
   },
   button: {
     margin: "auto 0 auto auto",
@@ -84,10 +84,12 @@ export const Part3HouseTable = () => {
   const [street, setStreet] = useState(null);
   const history = useHistory();
   const match = useRouteMatch();
-  const [tableFilter, setTableFilter] = useState([{
-    property: 'f_street',
-    value: streetId
-  }]);
+  const [tableFilter, setTableFilter] = useState([
+    {
+      property: "f_street",
+      value: streetId,
+    },
+  ]);
 
   const cs_house = React.useMemo(
     () => [
@@ -107,7 +109,10 @@ export const Part3HouseTable = () => {
         accessor: "f_street___c_name",
         operator: Operators.string,
         Cell: ({ cell }) => {
-          const { f_street___c_short_type, f_street___c_name } = cell.row.original;
+          const {
+            f_street___c_short_type,
+            f_street___c_name,
+          } = cell.row.original;
           return `${f_street___c_short_type} ${f_street___c_name}`;
         },
       },
@@ -195,6 +200,27 @@ export const Part3HouseTable = () => {
     streetId && loadData(streetId).then((record) => setStreet(record));
   }, [streetId]);
 
+  const tableComponent = useTableComponent({
+    className: classes.table,
+    sortBy: [
+      {
+        id: "n_number",
+        desc: false,
+      },
+    ],
+    globalFilters: tableFilter,
+    title: "Дома",
+    method: "Query",
+    columns: cs_house,
+    getRowClassName: (row) =>
+      row.original.b_finish ? classes.selectedRow : "",
+    select: `${getSelectByColumns(cs_house)},f_street___c_short_type,id`,
+    handleClick: (cell, row) => {
+      history.push(`${match.url}/${row.original.id}`);
+    },
+    action: "cs_house",
+  });
+
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
@@ -217,7 +243,7 @@ export const Part3HouseTable = () => {
                 refreshPage={() => {
                   setTableFilter([...tableFilter]);
                   loadData(streetId).then((record) => setStreet(record));
-                  history.push(`${match.path.replace(':streetId', streetId)}`)
+                  history.push(`${match.path.replace(":streetId", streetId)}`);
                 }}
               />
             </Drawer>
@@ -298,27 +324,7 @@ export const Part3HouseTable = () => {
             <EditIcon />
           </Button>
         </Paper>
-        <Table
-          className={classes.table}
-          sortBy={[
-            {
-              id: "n_number",
-              desc: false,
-            },
-          ]}
-          globalFilters={tableFilter}
-          title={"Дома"}
-          method="Query"
-          columns={cs_house}
-          getRowClassName={(row) =>
-            row.original.b_finish ? classes.selectedRow : ""
-          }
-          select={`${getSelectByColumns(cs_house)},f_street___c_short_type,id`}
-          handleClick={(cell, row) => {
-            history.push(`${match.url}/${row.original.id}`);
-          }}
-          action="cs_house"
-        />
+        {tableComponent.table}
       </div>
     </div>
   );
