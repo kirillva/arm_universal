@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
 import { Table } from "components/table/Table";
-import { Operators, StringFilter } from "components/table/Filters";
+import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { getItem, getUserId } from "utils/user";
@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   table: {
     flex: 1,
   },
+  selectedRow: {
+    backgroundColor: '#e0e0e0'
+  }
 }));
 
 export const VotersList = ({
@@ -48,13 +51,13 @@ export const VotersList = ({
   const [filter, setFilter] = useState([
     login === "nov"
       ? {
-          id: "f_house___f_street___f_main_division",
+          property: "f_house___f_street___f_main_division",
           value: getDivisionByLogin(login),
         }
       : {
-          id: "sd_subdivisions.f_division",
+          property: "sd_subdivisions.f_division",
           value: getDivisionByLogin(login),
-        },
+        }
   ]);
 
   useEffect(() => {
@@ -76,6 +79,10 @@ export const VotersList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uik]);
 
+  const filterProps = {
+    BOOL_TRUE: "Нет",
+    BOOL_FALSE: "Да",
+  }
   const cs_appartament = useMemo(
     () => [
       {
@@ -92,11 +99,25 @@ export const VotersList = ({
         },
       },
       {
+        title: "Активна",
+        accessor: "f_house___f_street___b_disabled",
+        operator: Operators.bool,
+        Filter: ({...props}) => <BoolFilter {...props} props={filterProps} />,
+        Cell: ({ cell }) => cell.value ? 'Нет' : 'Да',
+      },
+      {
         title: "Номер дома",
         accessor: "f_house___c_full_number",
         operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
+      },
+      {
+        title: "Активен",
+        accessor: "f_house___b_disabled",
+        operator: Operators.bool,
+        Filter: ({...props}) => <BoolFilter {...props} props={filterProps} />,
+        Cell: ({ cell }) => cell.value ? 'Нет' : 'Да',
       },
       {
         title: "Номер квартиры",
@@ -105,13 +126,13 @@ export const VotersList = ({
         Filter: StringFilter,
         Cell: StringCell,
       },
-      // {
-      //   title: "Пользователь",
-      //   accessor: "f_user___c_first_name",
-      //   operator: Operators.string,
-      //   Filter: StringFilter,
-      //   Cell: StringCell,
-      // },
+      {
+        title: "Активна",
+        accessor: "b_disabled",
+        operator: Operators.bool,
+        Filter: ({...props}) => <BoolFilter {...props} props={filterProps} />,
+        Cell: ({ cell }) => cell.value ? 'Нет' : 'Да',
+      },
     ],
     []
   );
@@ -125,6 +146,10 @@ export const VotersList = ({
       method="Query"
       columns={cs_appartament}
       globalFilters={filter}
+      getRowClassName={(row) => {
+        const { f_house___f_street___b_disabled, f_house___b_disabled, b_disabled } =  row.original;
+        return (f_house___f_street___b_disabled || f_house___b_disabled || b_disabled) ? classes.selectedRow : ""
+      }}
       sortBy={[
         {
           id: "f_house___f_street___c_name",

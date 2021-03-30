@@ -199,6 +199,7 @@ export const BoolFilter = ({
   column,
   className,
   hidden,
+  props = {}
 }) => {
   const defaultProps = {
     BOOL_TRUE: "Да",
@@ -220,8 +221,8 @@ export const BoolFilter = ({
       }}
     >
       <MenuItem value={""}>Все</MenuItem>
-      <MenuItem value={"true"}>{defaultProps.BOOL_TRUE}</MenuItem>
-      <MenuItem value={"false"}>{defaultProps.BOOL_FALSE}</MenuItem>
+      <MenuItem value={"true"}>{props.BOOL_TRUE || defaultProps.BOOL_TRUE}</MenuItem>
+      <MenuItem value={"false"}>{props.BOOL_FALSE || defaultProps.BOOL_FALSE}</MenuItem>
     </TextField>
   );
 };
