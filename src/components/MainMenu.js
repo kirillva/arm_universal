@@ -102,7 +102,7 @@ export const SimpleMenu = ({ setAuth }) => {
         >
           III этап: избиратели
         </MenuItem>
-        {/* <MenuItem
+        <MenuItem
           button
           onClick={() => {
             history.push("/assignUsers");
@@ -110,7 +110,7 @@ export const SimpleMenu = ({ setAuth }) => {
           }}
         >
           Назначение пользователей
-        </MenuItem> */}
+        </MenuItem>
         <MenuItem
           button
           key={"/"}

@@ -181,8 +181,6 @@ export const VotersList = ({
           icon: <CheckIcon />,
           title: "Назначить пользователя",
           handler: (ids) => {
-            console.log(ids);
-
             runRpc({
               action: "cs_appartament",
               method: "Update",

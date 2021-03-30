@@ -15,8 +15,14 @@ import {
   StringCell,
 } from "components/table/Cell";
 import { SelectFilter } from "components/table/SelectFilter";
-import { BoolEditor, SelectEditor, StringEditor, DateEditor } from "components/table/Editors";
+import {
+  BoolEditor,
+  SelectEditor,
+  StringEditor,
+  DateEditor,
+} from "components/table/Editors";
 import { getSelectByColumns } from "utils/helpers";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -40,11 +46,11 @@ export const RoutesPanel = () => {
       {
         title: "Тип",
         mapAccessor: "f_type___c_name",
-        accessor: 'f_type',
+        accessor: "f_type",
         fieldProps: {
-            idProperty: "id",
-            nameProperty: "c_name",
-            table: "cs_route_types",
+          idProperty: "id",
+          nameProperty: "c_name",
+          table: "cs_route_types",
         },
         Filter: SelectFilter,
         Cell: SelectCell,
@@ -67,12 +73,20 @@ export const RoutesPanel = () => {
     ],
     []
   );
+  
+  const tableComponent = useTableComponent({
+    title: "Список маршрутов",
+    idProperty: "id",
+    columns: cs_street,
+    select: `${getSelectByColumns(cs_street)},id`,
+    action: "cd_routes"
+  });
 
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <div className={classes.table}>
-        <Table title={'Список маршрутов'} idProperty='id' columns={cs_street} select={`${getSelectByColumns(cs_street)},id`} action="cd_routes" />
+        {tableComponent.table}
       </div>
     </div>
   );

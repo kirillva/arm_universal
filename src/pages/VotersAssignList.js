@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 // import { Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,13 +7,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Table } from "components/table/Table";
 import { Operators, StringFilter } from "components/table/Filters";
 import { StringCell } from "components/table/Cell";
-import { useHistory, useRouteMatch } from "react-router-dom";
 import { getItem, getUserId } from "utils/user";
 import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
 import CheckIcon from "@material-ui/icons/Check";
 import { runRpc } from "utils/rpc";
-import { MenuItem, TextField } from "@material-ui/core";
 import { useSelectEditor } from "components/table/Editors";
+import { Box, Paper, TextField, Typography } from "@material-ui/core";
+import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -30,19 +30,29 @@ const useStyles = makeStyles((theme) => ({
     width: "50%",
   },
   table: {
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(2),
     flex: 1,
+  },
+  filterWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    gap: theme.spacing(2),
+  },
+  filterPaper: {
+    flex: 1,
+    padding: theme.spacing(2),
+  },
+  filterTitle: {
+    marginBottom: theme.spacing(1),
   },
 }));
 
 export const VotersAssignList = ({ state, setState }) => {
   const classes = useStyles();
-  const history = useHistory();
-  const match = useRouteMatch();
   const [selectedUser, setSelectedUser] = useState(null);
   const userId = getUserId();
 
-  const { reload: reloadUsers, component: usersComponent } = useSelectEditor({
+  const { component: usersComponent } = useSelectEditor({
     name: "f_user",
     fieldProps: {
       params: [userId],
@@ -99,69 +109,82 @@ export const VotersAssignList = ({ state, setState }) => {
 
   const login = getItem("login");
 
+  const globalFilters = useMemo(
+    () => [
+      login === "nov"
+        ? {
+            property: "f_house___f_street___f_main_division",
+            value: getDivisionByLogin(login),
+          }
+        : {
+            property: "sd_subdivisions.f_division",
+            value: getDivisionByLogin(login),
+          },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const tableComponent = useTableComponent({
+    state: state,
+    setState: setState,
+    className: classes.table,
+    title: "Избиратели",
+    method: "Query",
+    columns: cs_appartament,
+    globalFilters: globalFilters,
+    sortBy: [
+      {
+        id: "f_house___f_street___c_name",
+        desc: false,
+      },
+      {
+        id: "f_house___n_number",
+        desc: false,
+      },
+      {
+        id: "n_number",
+        desc: false,
+      },
+    ],
+    select: `id,${getSelectByColumns(
+      cs_appartament
+    )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`,
+    selectable: true,
+    actionButtons: [
+      {
+        icon: <CheckIcon />,
+        title: "Назначить пользователя",
+        handler: (ids) => {
+          runRpc({
+            action: "cs_appartament",
+            method: "Update",
+            data: [
+              Object.keys(ids)
+                .filter((key) => ids[key])
+                .map((item) => ({ id: item, f_user: selectedUser })),
+            ],
+            type: "rpc",
+          });
+        },
+      },
+    ],
+    action: "cs_appartament",
+  });
+
   return (
     <>
-      {usersComponent}
-
-      <Table
-        state={state}
-        setState={setState}
-        className={classes.table}
-        title={"Избиратели"}
-        method="Query"
-        columns={cs_appartament}
-        globalFilters={[
-          login == "nov"
-            ? {
-                property: "f_house___f_street___f_main_division",
-                value: getDivisionByLogin(login),
-              }
-            : {
-                property: "sd_subdivisions.f_division",
-                value: getDivisionByLogin(login),
-              },
-        ]}
-        sortBy={[
-          {
-            id: "f_house___f_street___c_name",
-            desc: false,
-          },
-          {
-            id: "f_house___n_number",
-            desc: false,
-          },
-          {
-            id: "n_number",
-            desc: false,
-          },
-        ]}
-        select={`id,${getSelectByColumns(
-          cs_appartament
-        )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`}
-        selectable
-        actionButtons={[
-          {
-            icon: <CheckIcon />,
-            title: "Назначить пользователя",
-            handler: (ids) => {
-              console.log(ids);
-
-              runRpc({
-                action: "cs_appartament",
-                method: "Update",
-                data: [
-                  Object.keys(ids)
-                    .filter((key) => ids[key])
-                    .map((item) => ({ id: item, f_user: selectedUser })),
-                ],
-                type: "rpc",
-              });
-            },
-          },
-        ]}
-        // params={[getUserId(), null, null]}
-        action="cs_appartament"
-      />
+      <Box className={classes.filterWrapper}>
+        <Paper className={classes.filterPaper}>
+          <Typography className={classes.filterTitle}>Фильтрация</Typography>
+          <TextField />
+        </Paper>
+        <Paper className={classes.filterPaper}>
+          <Typography className={classes.filterTitle}>Назначение</Typography>
+          {usersComponent}
+        </Paper>
+      </Box>
+      {tableComponent.table}
     </>
   );
 };

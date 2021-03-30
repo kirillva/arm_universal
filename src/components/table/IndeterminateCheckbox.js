@@ -1,0 +1,19 @@
+import { Checkbox } from "@material-ui/core";
+import React, { useEffect, useRef, forwardRef } from "react";
+
+export const IndeterminateCheckbox = forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = useRef();
+    const resolvedRef = ref || defaultRef;
+
+    useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return (
+      <>
+        <Checkbox ref={resolvedRef} {...rest} color={"primary"} />
+      </>
+    );
+  }
+);
