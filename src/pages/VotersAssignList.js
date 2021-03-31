@@ -173,16 +173,18 @@ export const VotersAssignList = ({ state, setState }) => {
 
   return (
     <>
-      <Box className={classes.filterWrapper}>
+      {/* <Box className={classes.filterWrapper}>
         <Paper className={classes.filterPaper}>
           <Typography className={classes.filterTitle}>Фильтрация</Typography>
-          <TextField />
+          <TextField variant={'outlined'} margin={'none'} size={'small'} fullWidth />
+          <TextField variant={'outlined'} margin={'none'} size={'small'} fullWidth />
         </Paper>
         <Paper className={classes.filterPaper}>
           <Typography className={classes.filterTitle}>Назначение</Typography>
-          {usersComponent}
+
         </Paper>
-      </Box>
+      </Box> */}
+      {usersComponent}
       {tableComponent.table}
     </>
   );

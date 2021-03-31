@@ -157,10 +157,16 @@ export const useTableComponent = ({
             id: "selection",
             groupByBoundary: true,
             Header: ({ getToggleAllRowsSelectedProps }) => (
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              <IndeterminateCheckbox
+                {...getToggleAllRowsSelectedProps()}
+                className={classes.checkBoxComponent}
+              />
             ),
             Cell: ({ row }) => (
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox
+                {...row.getToggleRowSelectedProps()}
+                className={classes.checkBoxComponent}
+              />
             ),
           },
           ...columns,
@@ -338,7 +344,7 @@ export const useTableComponent = ({
 
   useEffect(() => {
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     onFetchDataDebounced,
     pageIndex,
