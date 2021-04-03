@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   inputsWrapper: {
-    display: 'flex',
+    display: "flex",
     width: "100%",
     gap: theme.spacing(2),
   },
@@ -122,6 +122,17 @@ export const VotersAssignList = () => {
         mapAccessor: "n_total_appartament",
         operator: Operators.string,
         Filter: () => null,
+        getTitle: (original) => {
+          if (original.jb_info) {
+            return original.jb_info.map((item) => {
+              const { f_user, n_min_number, n_max_number, n_count } = item;
+              return `${
+                f_user || ""
+              } ${n_min_number}-${n_max_number} (${n_count})`;
+            }).join(', ');
+          }
+          return "";
+        },
         Cell: ({ cell, ...props }) => {
           const value = cell.value;
           if (value) {
@@ -130,7 +141,7 @@ export const VotersAssignList = () => {
               return `${
                 f_user || ""
               } ${n_min_number}-${n_max_number} (${n_count})`;
-            });
+            }).join(', ');
           }
           return "";
         },
@@ -220,18 +231,32 @@ export const VotersAssignList = () => {
       </div>
       <Button
         onClick={() => {
-          // runRpc({
-          //   action: "cs_appartament",
-          //   method: "Update",
-          //   data: [
-          //     Object.keys(ids)
-          //       .filter((key) => ids[key])
-          //       .map((item) => ({ id: item, f_user: selectedUser })),
-          //   ],
-          //   type: "rpc",
-          // });
+          runRpc({
+            action: "cs_appartament",
+            method: "Query",
+            data: [
+              {
+                limit: 10000,
+                filter: [
+                  { property: "f_house", value: selectedRow.id, operator: "=" },
+                  { property: "n_number", value: from, operator: ">=" },
+                  { property: "n_number", value: to, operator: "<=" },
+                ],
+              },
+            ],
+            type: "rpc",
+          }).then((response) => {
+            const records = response.result.records;
 
-          console.log(selectedRow);
+            runRpc({
+              action: "cs_appartament",
+              method: "Update",
+              data: [
+                records.map((item) => ({ id: item.id, f_user: selectedUser })),
+              ],
+              type: "rpc",
+            }).then(() => tableComponent.loadData());
+          });
         }}
         disabled={!selectedRow || !selectedUser || tableComponent.loading}
         className={classes.button}

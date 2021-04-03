@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: "50%",
   },
+  button: {
+    marginBottom: theme.spacing(2),
+  }
 }));
 
 export const AssignDivisions = () => {
@@ -142,6 +145,7 @@ export const AssignDivisions = () => {
     <div className={classes.content}>
       <div className={classes.toolbar} />
       <Button
+        className={classes.button}
         disabled={!(users && users.length)}
         onClick={() => {
           assignDivisionToHouse(

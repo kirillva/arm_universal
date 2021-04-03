@@ -629,9 +629,10 @@ export const useTableComponent = ({
                             return (
                               <TableCell
                                 title={
-                                  cell.column.mapAccessor
+                                  cell.column.getTitle ? cell.column.getTitle(cell.row.original) : 
+                                  (cell.column.mapAccessor
                                     ? cell.row.original[cell.column.mapAccessor]
-                                    : cell.value
+                                    : cell.value)
                                 }
                                 onClick={
                                   cell.column.id !== "selection"
