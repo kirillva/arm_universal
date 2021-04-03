@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginBottom: theme.spacing(2),
-  }
+  },
 }));
 
 export const AssignDivisions = () => {
@@ -150,11 +150,9 @@ export const AssignDivisions = () => {
         onClick={() => {
           assignDivisionToHouse(
             tableComponent.selectedRowIds,
-            users[0].n_gos_subdivision
+            users[0].division.n_gos_subdivision
           ).then((response) => {
             const { houseWithGos } = response;
-            // debugger;
-            // console.log("users", users);
             if (houseWithGos && houseWithGos.length) {
               ShowAcceptWindow({
                 title: "Предупреждение",
@@ -166,11 +164,12 @@ export const AssignDivisions = () => {
                     text: "Да",
                     color: "secondary",
                     handler: () => {
-                      assignApproveDivisionToHouse(houseWithGos).then(
-                        (response) => {
-                          tableComponent.loadData();
-                        }
-                      );
+                      assignApproveDivisionToHouse(
+                        houseWithGos,
+                        users[0].division.n_gos_subdivision
+                      ).then((response) => {
+                        tableComponent.loadData();
+                      });
                     },
                   },
                   { text: "Нет", color: "primary" },
@@ -181,10 +180,13 @@ export const AssignDivisions = () => {
             }
           });
         }}
-        variant='contained'
+        variant="contained"
         color="primary"
       >
-        Сохранить с округом Госсовета {users && users.length ? users.n_gos_subdivision || '(Не указан)' : ''}
+        Сохранить с округом Госсовета{" "}
+        {users && users.length && users[0].division
+          ? `(${users[0].division.n_gos_subdivision})` || "(Не указан)"
+          : ""}
       </Button>
       <Switch>
         <Route path={match.path}>{tableComponent.table}</Route>

@@ -59,6 +59,7 @@ export const useTableComponent = ({
   actionButtons = [
     /** {  icon, title, handler },*/
   ],
+  handleSave = () => {},
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -520,6 +521,8 @@ export const useTableComponent = ({
     loading,
     loadData,
     selectedRowIds,
+    setSelectedRow,
+    selectedRow,
     table: (
       <Box className={className} ref={parentRef}>
         <EditRowForm
@@ -530,6 +533,7 @@ export const useTableComponent = ({
           selectedRow={selectedRow}
           columns={columns}
           editForm={editForm}
+          handleSave={handleSave}
         />
         <Paper
           className={classes.paper}

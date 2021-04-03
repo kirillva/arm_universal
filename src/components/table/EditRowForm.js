@@ -27,6 +27,7 @@ export const EditRowForm = ({
   selectedRow,
   columns,
   editForm,
+  handleSave
 }) => {
   const classes = useStyles();
 
@@ -36,22 +37,8 @@ export const EditRowForm = ({
       record[item.accessor] = values[item.accessor];
     });
     record[idProperty] = values[idProperty];
-    console.log("record", record);
-    // runRpc({
-    //   action: action,
-    //   method: "Update",
-    //   data: [
-    //     {
-    //       data: [{}],
-    //     },
-    //   ],
-    //   type: "rpc",
-    // }).then((responce) => {
-    //   if (responce.meta && responce.meta.success) {
-    //     const _records = responce.result.records;
-    //   } else {
-    //   }
-    // });
+    
+    handleSave(values);
   }
 
   return (
