@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     flex: 1,
-  },
+  }
 }));
 
 export const AdminPanel = () => {
@@ -89,6 +89,7 @@ export const AdminPanel = () => {
   );
 
   const tableComponent = useTableComponent({
+    className: classes.table,
     title: "Список пользователей",
     columns: pd_users,
     action: "pd_users",
@@ -97,9 +98,7 @@ export const AdminPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <div className={classes.table}>
-        {tableComponent.table}
-      </div>
+      {tableComponent.table}
     </div>
   );
 };

@@ -17,6 +17,7 @@ import {
   useLocation,
   useRouteMatch,
 } from "react-router-dom";
+import MessageContextProvider from "context/MessageContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,18 +52,19 @@ function ResponsiveDrawer() {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <Switch>
-        {routeItems.map((item) => {
-          return item.public ? (
-            <Route path={item.path}>
-              {React.createElement(item.component, { auth, setAuth })}
-            </Route>
-          ) : (
-            <PrivateRoute path={item.path}>
-              <AppBar position="fixed" className={classes.appBar}>
-                <Toolbar>
-                  {/* <IconButton
+      <MessageContextProvider>
+        <CssBaseline />
+        <Switch>
+          {routeItems.map((item) => {
+            return item.public ? (
+              <Route path={item.path}>
+                {React.createElement(item.component, { auth, setAuth })}
+              </Route>
+            ) : (
+              <PrivateRoute path={item.path}>
+                <AppBar position="fixed" className={classes.appBar}>
+                  <Toolbar>
+                    {/* <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     edge="start"
@@ -71,28 +73,29 @@ function ResponsiveDrawer() {
                   >
                     <MenuIcon />
                   </IconButton> */}
-                  <MainMenu
-                    mobileOpen={mobileOpen}
-                    data={menuItems}
-                    handleDrawerToggle={handleDrawerToggle}
-                    setAuth={setAuth}
-                  />
-                </Toolbar>
-              </AppBar>
-              {React.createElement(item.component, { auth, setAuth })}
-            </PrivateRoute>
-          );
-        })}
-        {auth ? (
-          <Route path="/">
-            <Redirect to={login === "nov" ? "/part1" : "/part3"} />
-          </Route>
-        ) : (
-          <Route path="/">
-            <Redirect to="/auth" />
-          </Route>
-        )}
-      </Switch>
+                    <MainMenu
+                      mobileOpen={mobileOpen}
+                      data={menuItems}
+                      handleDrawerToggle={handleDrawerToggle}
+                      setAuth={setAuth}
+                    />
+                  </Toolbar>
+                </AppBar>
+                {React.createElement(item.component, { auth, setAuth })}
+              </PrivateRoute>
+            );
+          })}
+          {auth ? (
+            <Route path="/">
+              <Redirect to={login === "nov" ? "/part1" : "/part3"} />
+            </Route>
+          ) : (
+            <Route path="/">
+              <Redirect to="/auth" />
+            </Route>
+          )}
+        </Switch>
+      </MessageContextProvider>
     </div>
   );
 }

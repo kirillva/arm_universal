@@ -74,6 +74,7 @@ export const RoutesPanel = () => {
   );
   
   const tableComponent = useTableComponent({
+    className: classes.table,
     title: "Список маршрутов",
     idProperty: "id",
     columns: cs_street,
@@ -83,10 +84,7 @@ export const RoutesPanel = () => {
 
   return (
     <div className={classes.content}>
-      <div className={classes.toolbar} />
-      <div className={classes.table}>
-        {tableComponent.table}
-      </div>
+      {tableComponent.table}
     </div>
   );
 };

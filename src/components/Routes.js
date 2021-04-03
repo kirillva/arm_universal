@@ -2,10 +2,10 @@ import { SigninForm } from "pages/SigninForm";
 import { Part1 } from "pages/address/Part1";
 import { Part2 } from "pages/address/Part2";
 import { Part3StreetTable } from "pages/address/Part3StreetTable";
-import { VotersList } from "pages/VotersList";
-import { VoterSearchForm } from "pages/VoterSearchForm";
 import { Part3 } from "pages/address/Part3";
 import { AssignUsers } from "pages/address/AssignUsers";
+import { AssignDivisions } from "pages/address/AssignDivisions";
+import { AdminPanel } from "pages/AdminPanel";
 
 export const routeItems = [
   {
@@ -45,11 +45,17 @@ export const routeItems = [
     path: "/assignUsers",
     component: AssignUsers,
   },
-  
-  // {
-  //   claims: ["manager"],
-  //   exact: true,
-  //   path: "/part3/search",
-  //   component: VoterSearchForm,
-  // },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/assignDivisions",
+    component: AssignDivisions,
+  },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/adminPanel",
+    component: AdminPanel,
+  }
 ];
+

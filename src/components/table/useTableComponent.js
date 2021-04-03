@@ -370,8 +370,8 @@ export const useTableComponent = ({
     sortBy,
     filters,
     action,
-    params,
-    globalFilters,
+    // params,
+    // globalFilters,
   ]);
 
   useEffect(() => {
@@ -517,6 +517,8 @@ export const useTableComponent = ({
   }, [state.filters, state.pageSize]);
 
   return {
+    loadData,
+    selectedRowIds,
     table: (
       <Box className={className} ref={parentRef}>
         <EditRowForm

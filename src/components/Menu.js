@@ -59,7 +59,31 @@ export const menuItems = [
       "division",
     ],
     icon: AssignmentIcon,
+    path: "/assignDivisions",
+    title: "Назначение подразделений",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
     path: "/assignUsers",
     title: "Назначение пользователей",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/adminPanel",
+    title: "Администрирование",
   }
 ];

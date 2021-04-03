@@ -105,11 +105,29 @@ export const SimpleMenu = ({ setAuth }) => {
         <MenuItem
           button
           onClick={() => {
+            history.push("/assignDivisions");
+            handleClose();
+          }}
+        >
+          Назначение подразделений
+        </MenuItem>
+        <MenuItem
+          button
+          onClick={() => {
             history.push("/assignUsers");
             handleClose();
           }}
         >
           Назначение пользователей
+        </MenuItem>
+        <MenuItem
+          button
+          onClick={() => {
+            history.push("/adminPanel");
+            handleClose();
+          }}
+        >
+          Администрирование
         </MenuItem>
         <MenuItem
           button
