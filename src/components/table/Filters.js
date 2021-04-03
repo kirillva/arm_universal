@@ -27,6 +27,7 @@ export const Operators = {
   bool: "bool",
   user: "user",
   status: "status",
+  fromTo: 'fromTo'
 };
 
 function applyFilter(filterValue, value, setFilter) {
@@ -95,6 +96,63 @@ export const NumberFilter = ({
         }
       }}
     />
+  );
+};
+
+export const FromToFilter = ({
+  column: { filterValue, setFilter },
+  className,
+  hidden,
+}) => {
+  // const classes = useStyles();
+  const [from, setFrom] = useState(filterValue ? filterValue.from : '');
+  const [to, setTo] = useState(filterValue ? filterValue.to : '');
+  
+  return (
+    <>
+      <TextField
+        type="text"
+        style={{ display: hidden ? "none" : "unset" }}
+        variant="outlined"
+        margin="dense"
+        value={from}
+        className={className}
+        onChange={(e) => {
+          setFrom(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            applyFilter(
+              filterValue,
+              e.target.value,
+              setFilter
+            );
+            applyFilterDebounced.cancel();
+          }
+        }}
+      />
+      <TextField
+        type="text"
+        style={{ display: hidden ? "none" : "unset" }}
+        variant="outlined"
+        margin="dense"
+        value={to}
+        className={className}
+        onChange={(e) => {
+          setTo(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            applyFilter(
+              filterValue,
+              e.target.value,
+              setFilter
+            );
+            applyFilterDebounced.cancel();
+          }
+        }}
+      />
+    </>
   );
 };
 

@@ -4,8 +4,8 @@ import React, { useCallback, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
-import { Operators, StringFilter } from "components/table/Filters";
-import { StringCell } from "components/table/Cell";
+import { FromToFilter, NumberFilter, Operators, StringFilter } from "components/table/Filters";
+import { NumberCell, StringCell } from "components/table/Cell";
 import { getItem, getUserId } from "utils/user";
 import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
 import CheckIcon from "@material-ui/icons/Check";
@@ -33,20 +33,18 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   filterWrapper: {
+    width: "200px",
     display: "flex",
-    flexDirection: "row",
-    gap: theme.spacing(2),
-  },
-  filterPaper: {
-    flex: 1,
-    padding: theme.spacing(2),
-  },
-  filterTitle: {
-    marginBottom: theme.spacing(1),
+    gap: "12px",
   },
 }));
 
-export const VotersAssignList = ({ state, setState }) => {
+export const VotersAssignList2 = () => {
+  console.log('VotersAssignList', VotersAssignList)
+  return null;
+}
+
+export const VotersAssignList = () => {
   const classes = useStyles();
   const [selectedUser, setSelectedUser] = useState(null);
   const userId = getUserId();
@@ -71,38 +69,55 @@ export const VotersAssignList = ({ state, setState }) => {
       {
         title: "Улица",
         Filter: StringFilter,
-        accessor: "f_house___f_street___c_name",
+        accessor: "c_street",
         operator: Operators.string,
         Cell: ({ cell }) => {
           const {
-            f_house___f_street___c_short_type,
-            f_house___f_street___c_name,
+            c_street_type,
+            c_street,
           } = cell.row.original;
-          return `${f_house___f_street___c_short_type} ${f_house___f_street___c_name}`;
+          return `${c_street_type} ${c_street}`;
         },
       },
       {
         title: "Номер дома",
-        accessor: "f_house___c_full_number",
+        accessor: "c_house_number",
         operator: Operators.string,
+        style: {
+          width: "120px",
+        },
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
-        title: "Номер квартиры",
-        accessor: "c_number",
+        title: "Количество квартир",
+        accessor: "n_total_appartament",
         operator: Operators.string,
-        Filter: StringFilter,
-        Cell: StringCell,
+        style: {
+          width: "120px",
+        },
+        Filter: NumberFilter,
+        Cell: NumberCell,
       },
       {
-        title: "Пользователь",
-        accessor: "f_user___c_login",
+        title: "Назначение",
+        accessor: "jb_info",
+        mapAccessor: "n_total_appartament",
         operator: Operators.string,
-        Filter: StringFilter,
-        Cell: StringCell,
+        Filter: () => null,
+        Cell: ({ cell, ...props }) => {
+          const value = cell.value;
+          if (value) {
+            return value.map(item => {
+              const {f_user, n_min_number, n_max_number, n_count} = item;
+              return `${f_user || ''} ${n_min_number}-${n_max_number} (${n_count})`
+            });
+          }
+          return '';
+        }
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -112,43 +127,39 @@ export const VotersAssignList = ({ state, setState }) => {
     () => [
       login === "nov"
         ? {
-            property: "f_house___f_street___f_main_division",
+            property: "f_main_division",
             value: getDivisionByLogin(login),
           }
         : {
-            property: "sd_subdivisions.f_division",
+            property: "f_division",
             value: getDivisionByLogin(login),
           },
+      // f_main_division
+      // f_division
+      // f_subdivision
+      // c_subdivision
+      // n_uik
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+  
+  const params = useMemo(
+    () => [null],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  ); 
 
   const tableComponent = useTableComponent({
-    state: state,
-    setState: setState,
+    // state: state,
+    // setState: setState,
     className: classes.table,
     title: "Избиратели",
-    method: "Query",
+    method: "Select",
     columns: cs_appartament,
     globalFilters: globalFilters,
-    sortBy: [
-      {
-        id: "f_house___f_street___c_name",
-        desc: false,
-      },
-      {
-        id: "f_house___n_number",
-        desc: false,
-      },
-      {
-        id: "n_number",
-        desc: false,
-      },
-    ],
-    select: `id,${getSelectByColumns(
-      cs_appartament
-    )},n_number,f_house___n_number,f_house___f_subdivision,f_house___f_street___f_main_division,f_house___f_subdivision___f_division,f_house___f_street,f_house,f_house___f_street___c_short_type,f_house___f_street___c_name`,
+    idProperty: "f_house",
+    params,
     selectable: true,
     actionButtons: [
       {
@@ -168,24 +179,15 @@ export const VotersAssignList = ({ state, setState }) => {
         },
       },
     ],
-    action: "cs_appartament",
+    action: "cf_bss_cs_house",
   });
 
   return (
     <>
-      {/* <Box className={classes.filterWrapper}>
-        <Paper className={classes.filterPaper}>
-          <Typography className={classes.filterTitle}>Фильтрация</Typography>
-          <TextField variant={'outlined'} margin={'none'} size={'small'} fullWidth />
-          <TextField variant={'outlined'} margin={'none'} size={'small'} fullWidth />
-        </Paper>
-        <Paper className={classes.filterPaper}>
-          <Typography className={classes.filterTitle}>Назначение</Typography>
-
-        </Paper>
-      </Box> */}
       {usersComponent}
       {tableComponent.table}
     </>
   );
 };
+
+

@@ -205,6 +205,24 @@ export const useTableComponent = ({
 
         if (column) {
           switch (column.operator) {
+            case "fromTo":
+              if (item.value.from) {
+                _filters.push({
+                  property: item.id,
+                  value: item.value.from,
+                  operator: ">=",
+                });
+              }
+
+              if (item.value.to) {
+                _filters.push({
+                  property: item.id,
+                  value: item.value.to,
+                  operator: "<=",
+                });
+              }
+              break;
+
             case "date":
               // if (item.value.start) {
               //   _filters.push({
@@ -652,7 +670,7 @@ export const useTableComponent = ({
               />
             )}
             labelRowsPerPage={size.width < 700 ? "" : "Записей на странице:"}
-            rowsPerPageOptions={[10, 20, 30, 40, 50]}
+            rowsPerPageOptions={[10, 50, 100, 150, 200]}
             component="div"
             count={total}
             rowsPerPage={pageSize}
