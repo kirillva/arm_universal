@@ -177,8 +177,10 @@ export const AssignDivisions = () => {
             }
           });
         }}
+        variant='contained'
+        color="primary"
       >
-        Сохранить
+        Сохранить с округом Госсовета {users && users.length ? users.n_gos_subdivision || '(Не указан)' : ''}
       </Button>
       <Switch>
         <Route path={match.path}>{tableComponent.table}</Route>

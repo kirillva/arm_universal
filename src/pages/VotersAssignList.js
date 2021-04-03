@@ -4,14 +4,19 @@ import React, { useCallback, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // import { runRpc } from "utils/rpc";
 // import { getConfig } from "utils/helpers";
-import { FromToFilter, NumberFilter, Operators, StringFilter } from "components/table/Filters";
+import {
+  FromToFilter,
+  NumberFilter,
+  Operators,
+  StringFilter,
+} from "components/table/Filters";
 import { NumberCell, StringCell } from "components/table/Cell";
 import { getItem, getUserId } from "utils/user";
 import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
 import CheckIcon from "@material-ui/icons/Check";
 import { runRpc } from "utils/rpc";
 import { useSelectEditor } from "components/table/Editors";
-import { Box, Paper, TextField, Typography } from "@material-ui/core";
+import { Box, Button, Paper, TextField, Typography } from "@material-ui/core";
 import { useTableComponent } from "components/table/useTableComponent";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,19 +40,34 @@ const useStyles = makeStyles((theme) => ({
   filterWrapper: {
     width: "200px",
     display: "flex",
-    gap: "12px",
+    gap: theme.spacing(2),
+  },
+  selectedRow: {
+    backgroundColor: "#e0e0e0",
+  },
+  button: {
+    marginTop: theme.spacing(2),
+  },
+  inputsWrapper: {
+    display: 'flex',
+    width: "100%",
+    gap: theme.spacing(2),
   },
 }));
 
 export const VotersAssignList2 = () => {
-  console.log('VotersAssignList', VotersAssignList)
+  console.log("VotersAssignList", VotersAssignList);
   return null;
-}
+};
 
 export const VotersAssignList = () => {
   const classes = useStyles();
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const userId = getUserId();
+
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
   const { component: usersComponent } = useSelectEditor({
     name: "f_user",
@@ -72,10 +92,7 @@ export const VotersAssignList = () => {
         accessor: "c_street",
         operator: Operators.string,
         Cell: ({ cell }) => {
-          const {
-            c_street_type,
-            c_street,
-          } = cell.row.original;
+          const { c_street_type, c_street } = cell.row.original;
           return `${c_street_type} ${c_street}`;
         },
       },
@@ -108,13 +125,15 @@ export const VotersAssignList = () => {
         Cell: ({ cell, ...props }) => {
           const value = cell.value;
           if (value) {
-            return value.map(item => {
-              const {f_user, n_min_number, n_max_number, n_count} = item;
-              return `${f_user || ''} ${n_min_number}-${n_max_number} (${n_count})`
+            return value.map((item) => {
+              const { f_user, n_min_number, n_max_number, n_count } = item;
+              return `${
+                f_user || ""
+              } ${n_min_number}-${n_max_number} (${n_count})`;
             });
           }
-          return '';
-        }
+          return "";
+        },
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,12 +162,12 @@ export const VotersAssignList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  
+
   const params = useMemo(
     () => [null],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
-  ); 
+  );
 
   const tableComponent = useTableComponent({
     // state: state,
@@ -160,34 +179,68 @@ export const VotersAssignList = () => {
     globalFilters: globalFilters,
     idProperty: "f_house",
     params,
-    selectable: true,
-    actionButtons: [
-      {
-        icon: <CheckIcon />,
-        title: "Назначить пользователя",
-        handler: (ids) => {
-          runRpc({
-            action: "cs_appartament",
-            method: "Update",
-            data: [
-              Object.keys(ids)
-                .filter((key) => ids[key])
-                .map((item) => ({ id: item, f_user: selectedUser })),
-            ],
-            type: "rpc",
-          });
-        },
-      },
-    ],
+    selectable: false,
+    handleClick: (cell, row) => {
+      setSelectedRow(row);
+    },
+    getRowClassName: (row) => {
+      if (selectedRow && selectedRow.id === row.id) {
+        return classes.selectedRow;
+      } else {
+        return "";
+      }
+    },
     action: "cf_bss_cs_house",
   });
 
   return (
     <>
       {usersComponent}
+      <div className={classes.inputsWrapper}>
+        <TextField
+          inputProps={{
+            min: 0,
+          }}
+          margin="dense"
+          label="С"
+          value={from}
+          onChange={(e) => setFrom(e.target.value)}
+          variant="outlined"
+        />
+        <TextField
+          inputProps={{
+            max: 10,
+          }}
+          margin="dense"
+          label="По"
+          value={to}
+          onChange={(e) => setTo(e.target.value)}
+          variant="outlined"
+        />
+      </div>
+      <Button
+        onClick={() => {
+          // runRpc({
+          //   action: "cs_appartament",
+          //   method: "Update",
+          //   data: [
+          //     Object.keys(ids)
+          //       .filter((key) => ids[key])
+          //       .map((item) => ({ id: item, f_user: selectedUser })),
+          //   ],
+          //   type: "rpc",
+          // });
+
+          console.log(selectedRow);
+        }}
+        disabled={!selectedRow || !selectedUser || tableComponent.loading}
+        className={classes.button}
+        variant={"contained"}
+        color={"primary"}
+      >
+        Назначить пользователя
+      </Button>
       {tableComponent.table}
     </>
   );
 };
-
-

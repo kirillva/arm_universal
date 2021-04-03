@@ -517,6 +517,7 @@ export const useTableComponent = ({
   }, [state.filters, state.pageSize]);
 
   return {
+    loading,
     loadData,
     selectedRowIds,
     table: (
