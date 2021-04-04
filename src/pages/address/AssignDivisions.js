@@ -40,9 +40,12 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: "50%",
   },
-  button: {
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    gap: theme.spacing(1),
     marginBottom: theme.spacing(2),
-  },
+  }
 }));
 
 export const AssignDivisions = () => {
@@ -114,12 +117,15 @@ export const AssignDivisions = () => {
   const usersLoaded = users && users.length;
 
   const globalFilters = useMemo(
-    () => [
-      usersLoaded ? {
-        property: "f_division",
-        value: users[0].division.f_division
-      } : null
-    ].filter(item=>item),
+    () =>
+      [
+        usersLoaded
+          ? {
+              property: "f_division",
+              value: users[0].division.f_division,
+            }
+          : null,
+      ].filter((item) => item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [users, usersLoaded]
   );
@@ -147,62 +153,90 @@ export const AssignDivisions = () => {
     getUsers(getUserId()).then((_users) => setUsers(_users));
   }, []);
 
+  const isRowsSelected = Object.keys(tableComponent.selectedRowIds).length > 0;
+  
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <Button
-        className={classes.button}
-        disabled={!(users && users.length)}
-        onClick={() => {
-          assignDivisionToHouse(
-            tableComponent.selectedRowIds,
-            users[0].division.n_gos_subdivision
-          ).then((response) => {
-            const { houseWithGos } = response;
-            if (houseWithGos && houseWithGos.length) {
-              ShowAcceptWindow({
-                title: "Предупреждение",
-                components: `Вы действительно хотите задать округа? Дома ${houseWithGos
-                  .map((item) => item.c_house_number)
-                  .join(", ")} уже имеют округ`,
-                buttons: [
-                  {
-                    text: "Да",
-                    color: "secondary",
-                    handler: () => {
-                      assignApproveDivisionToHouse(
-                        houseWithGos,
-                        users[0].division.n_gos_subdivision
-                      ).then((response) => {
+      <div className={classes.buttons}>
+        <Button
+          className={classes.button}
+          disabled={!(users && users.length) || !isRowsSelected}
+          onClick={() => {
+            assignDivisionToHouse(
+              tableComponent.selectedRowIds,
+              users[0].division.n_gos_subdivision
+            ).then((response) => {
+              const { houseWithGos } = response;
+              if (houseWithGos && houseWithGos.length) {
+                ShowAcceptWindow({
+                  title: "Предупреждение",
+                  components: `Вы действительно хотите задать округа? Дома ${houseWithGos
+                    .map((item) => item.c_house_number)
+                    .join(", ")} уже имеют округ`,
+                  buttons: [
+                    {
+                      text: "Да",
+                      color: "secondary",
+                      handler: () => {
+                        assignApproveDivisionToHouse(
+                          houseWithGos,
+                          users[0].division.n_gos_subdivision
+                        ).then((response) => {
+                          tableComponent.loadData();
+                          tableComponent.handleUnselectAll(false);
+                        });
+                      },
+                    },
+                    {
+                      text: "Нет",
+                      color: "primary",
+                      handler: () => {
                         tableComponent.loadData();
-                        tableComponent.handleUnselectAll(false);
-                      });
+                        // tableComponent.toggleAllRowsSelected(false);
+                      },
                     },
-                  },
-                  {
-                    text: "Нет",
-                    color: "primary",
-                    handler: () => {
-                      tableComponent.loadData();
-                      // tableComponent.toggleAllRowsSelected(false);
-                    },
-                  },
-                ],
-              });
-            } else {
-              tableComponent.loadData();
-              tableComponent.handleUnselectAll(false);
-            }
-          });
-        }}
-        variant="contained"
-        color="primary"
-      >
-        Сохранить с округом Госсовета{" "}
-        {users && users.length && users[0].division
-          ? `(${users[0].division.n_gos_subdivision || 'Не указан'})`
-          : ""}
-      </Button>
+                  ],
+                });
+              } else {
+                tableComponent.loadData();
+                tableComponent.handleUnselectAll(false);
+              }
+            });
+          }}
+          variant="contained"
+          color="primary"
+        >
+          Сохранить с округом Госсовета{" "}
+          {users && users.length && users[0].division
+            ? `(${users[0].division.n_gos_subdivision || "Не указан"})`
+            : ""}
+        </Button>
+        <Button
+          className={classes.button}
+          disabled={!(users && users.length) || !isRowsSelected}
+          onClick={() => {
+            assignDivisionToHouse(tableComponent.selectedRowIds, null).then(
+              (response) => {
+                const { houseWithGos } = response;
+                if (houseWithGos && houseWithGos.length) {
+                  assignApproveDivisionToHouse(
+                    houseWithGos,
+                    null
+                  ).then((response) => {
+                    tableComponent.loadData();
+                    tableComponent.handleUnselectAll(false);
+                  });
+                }
+              }
+            );
+          }}
+          variant="contained"
+          color="primary"
+        >
+          Отвязать от округа
+        </Button>
+      </div>
       <Switch>
         <Route path={match.path}>{tableComponent.table}</Route>
       </Switch>

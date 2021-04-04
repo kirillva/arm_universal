@@ -469,14 +469,16 @@ export const useTableComponent = ({
         )}
         <div className={classes.iconButtonFlex} />
         {buttons}
-        <Button
-          title={"Сбросить выделение"}
-          className={classes.iconButton}
-          color={filters && filters.length ? "primary" : "black"}
-          onClick={() => handleUnselectAll()}
-        >
-          <ReplayOutlined />
-        </Button>
+        {numSelected > 0 ? (
+          <Button
+            title={"Сбросить выделение"}
+            className={classes.iconButton}
+            color={filters && filters.length ? "primary" : "black"}
+            onClick={() => handleUnselectAll()}
+          >
+            <ReplayOutlined />
+          </Button>
+        ) : null}
         <Button
           title={"Фильтры"}
           className={classes.iconButton}
@@ -589,7 +591,7 @@ export const useTableComponent = ({
                   } else {
                     return (
                       <TableCell
-                        style={column.style || {}}
+                        style={column.style || (column.id === "selection" ? { width: '80px' } : {})}
                         {...column.getHeaderProps()}
                       >
                         <span
@@ -645,10 +647,11 @@ export const useTableComponent = ({
                             return (
                               <TableCell
                                 title={
-                                  cell.column.getTitle ? cell.column.getTitle(cell.row.original) : 
-                                  (cell.column.mapAccessor
+                                  cell.column.getTitle
+                                    ? cell.column.getTitle(cell.row.original)
+                                    : cell.column.mapAccessor
                                     ? cell.row.original[cell.column.mapAccessor]
-                                    : cell.value)
+                                    : cell.value
                                 }
                                 onClick={
                                   cell.column.id !== "selection"
@@ -660,7 +663,7 @@ export const useTableComponent = ({
                                 align="left"
                                 {...cell.getCellProps()}
                                 className={classes.cell}
-                                style={cell.column.style || {}}
+                                style={cell.column.style || (cell.column.id === "selection" ? { width: '80px' } : {})}
                               >
                                 {cell.render("Cell", {
                                   ...(filterProps || {}),

@@ -46,7 +46,11 @@ const useStyles = makeStyles((theme) => ({
   selectedRow: {
     backgroundColor: "#e0e0e0",
   },
-  button: {
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
   inputsWrapper: {
@@ -136,24 +140,28 @@ export const VotersAssignList = () => {
         Filter: () => null,
         getTitle: (original) => {
           if (original.jb_info) {
-            return original.jb_info.map((item) => {
-              const { f_user, n_min_number, n_max_number, n_count } = item;
-              return `${
-                f_user || ""
-              } ${n_min_number}-${n_max_number} (${n_count})`;
-            }).join(', ');
+            return original.jb_info
+              .map((item) => {
+                const { f_user, n_min_number, n_max_number, n_count } = item;
+                return `${
+                  f_user || ""
+                } ${n_min_number}-${n_max_number} (${n_count})`;
+              })
+              .join(", ");
           }
           return "";
         },
         Cell: ({ cell, ...props }) => {
           const value = cell.value;
           if (value) {
-            return value.map((item) => {
-              const { f_user, n_min_number, n_max_number, n_count } = item;
-              return `${
-                f_user || ""
-              } ${n_min_number}-${n_max_number} (${n_count})`;
-            }).join(', ');
+            return value
+              .map((item) => {
+                const { f_user, n_min_number, n_max_number, n_count } = item;
+                return `${
+                  f_user || ""
+                } ${n_min_number}-${n_max_number} (${n_count})`;
+              })
+              .join(", ");
           }
           return "";
         },
@@ -164,36 +172,23 @@ export const VotersAssignList = () => {
   );
 
   const login = getItem("login");
-  
+
   useEffect(() => {
     getUsers(getUserId()).then((_users) => setUsers(_users));
   }, []);
 
   const usersLoaded = users && users.length;
+
   const globalFilters = useMemo(
-    () => [
-      // login === "nov"
-      //   ? {
-      //       property: "f_main_division",
-      //       value: getDivisionByLogin(login),
-      //     }
-      //   : {
-      //       property: "f_division",
-      //       value: getDivisionByLogin(login),
-      //     },
-      usersLoaded ? {
-        property: "n_gos_subdivision",
-        value: users[0].division.n_gos_subdivision
-      } : null
-    ].filter(item=>item),
+    () => [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [users, usersLoaded]
   );
 
   const params = useMemo(
-    () => [null],
+    () => [usersLoaded ? users[0].division.n_gos_subdivision : null],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [users, usersLoaded]
   );
 
   const tableComponent = useTableComponent({
@@ -246,42 +241,99 @@ export const VotersAssignList = () => {
           variant="outlined"
         />
       </div>
-      <Button
-        onClick={() => {
-          runRpc({
-            action: "cs_appartament",
-            method: "Query",
-            data: [
-              {
-                limit: 10000,
-                filter: [
-                  { property: "f_house", value: selectedRow.id, operator: "=" },
-                  { property: "n_number", value: from, operator: ">=" },
-                  { property: "n_number", value: to, operator: "<=" },
-                ],
-              },
-            ],
-            type: "rpc",
-          }).then((response) => {
-            const records = response.result.records;
-
+      <div className={classes.buttons}>
+        <Button
+          onClick={() => {
             runRpc({
               action: "cs_appartament",
-              method: "Update",
+              method: "Query",
               data: [
-                records.map((item) => ({ id: item.id, f_user: selectedUser })),
+                {
+                  limit: 10000,
+                  filter: [
+                    {
+                      property: "f_house",
+                      value: selectedRow.id,
+                      operator: "=",
+                    },
+                    { property: "n_number", value: from, operator: ">=" },
+                    { property: "n_number", value: to, operator: "<=" },
+                  ],
+                },
               ],
               type: "rpc",
-            }).then(() => tableComponent.loadData());
-          });
-        }}
-        disabled={!selectedRow || !selectedUser || tableComponent.loading || !usersLoaded}
-        className={classes.button}
-        variant={"contained"}
-        color={"primary"}
-      >
-        Назначить пользователя
-      </Button>
+            }).then((response) => {
+              const records = response.result.records;
+
+              runRpc({
+                action: "cs_appartament",
+                method: "Update",
+                data: [
+                  records.map((item) => ({
+                    id: item.id,
+                    f_user: selectedUser,
+                  })),
+                ],
+                type: "rpc",
+              }).then(() => tableComponent.loadData());
+            });
+          }}
+          disabled={
+            !selectedRow ||
+            !from ||
+            !to ||
+            !selectedUser ||
+            tableComponent.loading ||
+            !usersLoaded
+          }
+          className={classes.button}
+          variant={"contained"}
+          color={"primary"}
+        >
+          Назначить пользователя
+        </Button>
+        <Button
+          onClick={() => {
+            runRpc({
+              action: "cs_appartament",
+              method: "Query",
+              data: [
+                {
+                  limit: 10000,
+                  filter: [
+                    {
+                      property: "f_house",
+                      value: selectedRow.id,
+                      operator: "=",
+                    },
+                    { property: "n_number", value: from, operator: ">=" },
+                    { property: "n_number", value: to, operator: "<=" },
+                  ],
+                },
+              ],
+              type: "rpc",
+            }).then((response) => {
+              const records = response.result.records;
+
+              runRpc({
+                action: "cs_appartament",
+                method: "Update",
+                data: [records.map((item) => ({ id: item.id, f_user: null }))],
+                type: "rpc",
+              }).then(() => tableComponent.loadData());
+            });
+          }}
+          disabled={
+            !selectedRow || !from || !to || tableComponent.loading || !usersLoaded
+          }
+          className={classes.button}
+          variant={"contained"}
+          color={"primary"}
+        >
+          Удалить привязку пользователей
+        </Button>
+      </div>
+
       {tableComponent.table}
     </>
   );

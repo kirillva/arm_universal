@@ -2,9 +2,8 @@ import { runRpc } from "utils/rpc";
 
 export const assignDivisionToHouse = async (
   selectedRowIds,
-  gos_subdivision = 1801
+  gos_subdivision
 ) => {
-  debugger;
   const cs_house = await runRpc({
     action: "cs_house",
     method: "Query",
@@ -52,7 +51,7 @@ export const assignDivisionToHouse = async (
 
 export const assignApproveDivisionToHouse = async (
   houseWithGos,
-  gos_subdivision = 1801
+  gos_subdivision
 ) => {
 
   if (houseWithGos && houseWithGos.length) {
