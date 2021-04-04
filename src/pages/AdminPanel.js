@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { BoolFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
@@ -84,11 +84,37 @@ export const AdminPanel = () => {
     []
   );
 
-  const login = getItem("login");
-
   useEffect(() => {
     getUsers(getUserId()).then((_users) => setUsers(_users));
   }, []);
+
+  const login = getItem("login");
+
+  const usersLoaded = users && users.length;
+  const globalFilters = useMemo(
+    () =>
+      [
+        login === "nov"
+          ? {
+              property: "f_user___c_login",
+              value: 'kalinin',
+              operator: '<>'
+            }
+          : {
+              property: "f_user___c_login",
+              value: 'nov',
+              operator: '<>'
+            },
+        usersLoaded
+          ? {
+              property: "f_division",
+              value: users[0].division.f_division,
+            }
+          : null,
+      ].filter((item) => item),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [users, usersLoaded]
+  );
 
   const tableComponent = useTableComponent({
     className: classes.table,
@@ -97,12 +123,8 @@ export const AdminPanel = () => {
     select: `id,f_user,n_gos_subdivision,${getSelectByColumns(
       pd_userindivisions
     )}`,
-    globalFilters: [
-      {
-        property: "f_division",
-        value: getDivisionByLogin(login),
-      },
-    ],
+    allowLoad: usersLoaded,
+    globalFilters,
     handleAdd: (record) => {
       runRpc({
         action: "pd_users",
@@ -144,10 +166,10 @@ export const AdminPanel = () => {
                   },
                 ],
                 type: "rpc",
-              }).then(()=>{
+              }).then(() => {
                 tableComponent.setSelectedRow(null);
                 tableComponent.loadData();
-              })
+              });
             });
           } else {
             tableComponent.setSelectedRow(null);

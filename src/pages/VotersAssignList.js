@@ -177,7 +177,7 @@ export const VotersAssignList = () => {
       } : null
     ].filter(item=>item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [users]
+    [users, usersLoaded]
   );
 
   const params = useMemo(
@@ -190,6 +190,7 @@ export const VotersAssignList = () => {
     // state: state,
     // setState: setState,
     className: classes.table,
+    allowLoad: usersLoaded,
     title: "Избиратели",
     method: "Select",
     columns: cs_appartament,

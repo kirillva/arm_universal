@@ -31,7 +31,7 @@ import { runRpc } from "utils/rpc";
 import classNames from "classnames";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { EditRowForm } from "./EditRowForm";
-import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
+import { ArrowDropDown, ArrowDropUp, ReplayOutlined } from "@material-ui/icons";
 import { TablePaginationActions } from "./TablePaginationActions";
 
 export const useTableComponent = ({
@@ -47,6 +47,7 @@ export const useTableComponent = ({
   handleClick = null,
   editForm,
   className,
+  allowLoad = true,
   onLoadData = () => {},
   pageIndex: innerPageIndex = 0,
   sortBy: innerSortBy = [],
@@ -363,7 +364,7 @@ export const useTableComponent = ({
   };
 
   useEffect(() => {
-    loadData();
+    if (!loading && allowLoad) loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     onFetchDataDebounced,
@@ -372,8 +373,8 @@ export const useTableComponent = ({
     sortBy,
     filters,
     action,
-    // params,
-    // globalFilters,
+    params,
+    globalFilters,
   ]);
 
   useEffect(() => {
@@ -469,6 +470,14 @@ export const useTableComponent = ({
         <div className={classes.iconButtonFlex} />
         {buttons}
         <Button
+          title={"Сбросить выделение"}
+          className={classes.iconButton}
+          color={filters && filters.length ? "primary" : "black"}
+          onClick={() => handleUnselectAll()}
+        >
+          <ReplayOutlined />
+        </Button>
+        <Button
           title={"Фильтры"}
           className={classes.iconButton}
           color={filters && filters.length ? "primary" : "black"}
@@ -524,6 +533,7 @@ export const useTableComponent = ({
     selectedRowIds,
     setSelectedRow,
     selectedRow,
+    handleUnselectAll,
     table: (
       <Box className={className} ref={parentRef}>
         <EditRowForm

@@ -102,33 +102,37 @@ export const SimpleMenu = ({ setAuth }) => {
         >
           III этап: избиратели
         </MenuItem>
-        <MenuItem
-          button
-          onClick={() => {
-            history.push("/assignDivisions");
-            handleClose();
-          }}
-        >
-          Назначение подразделений
-        </MenuItem>
-        <MenuItem
-          button
-          onClick={() => {
-            history.push("/assignUsers");
-            handleClose();
-          }}
-        >
-          Назначение пользователей
-        </MenuItem>
-        <MenuItem
-          button
-          onClick={() => {
-            history.push("/adminPanel");
-            handleClose();
-          }}
-        >
-          Администрирование
-        </MenuItem>
+        {getItem("login") !== "nov" ? (
+          <>
+            <MenuItem
+              button
+              onClick={() => {
+                history.push("/assignDivisions");
+                handleClose();
+              }}
+            >
+              Назначение подразделений
+            </MenuItem>
+            <MenuItem
+              button
+              onClick={() => {
+                history.push("/assignUsers");
+                handleClose();
+              }}
+            >
+              Назначение пользователей
+            </MenuItem>
+            <MenuItem
+              button
+              onClick={() => {
+                history.push("/adminPanel");
+                handleClose();
+              }}
+            >
+              Администрирование
+            </MenuItem>
+          </>
+        ) : null}
         <MenuItem
           button
           key={"/"}

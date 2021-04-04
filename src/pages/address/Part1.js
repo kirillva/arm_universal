@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   BoolFilter,
@@ -146,13 +146,9 @@ export const Part1 = () => {
     []
   );
   
-  const tableComponent = useTableComponent({
-    className: classes.table,
-    handleClick: (cell, row) => setSelectedHouse(row.original),
-    title: "Список домов",
-    params: params,
-    columns: pd_users,
-    globalFilters: [
+  const globalFilters = useMemo(
+    () =>
+    [
       login === "nov"
         ? {
             property: "f_main_division",
@@ -160,6 +156,17 @@ export const Part1 = () => {
           }
         : null,
     ].filter(item=>item),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const tableComponent = useTableComponent({
+    className: classes.table,
+    handleClick: (cell, row) => setSelectedHouse(row.original),
+    title: "Список домов",
+    params: params,
+    columns: pd_users,
+    globalFilters,
     action: "cf_tmp_cs_house_unknow",
     method: "Select"
   });

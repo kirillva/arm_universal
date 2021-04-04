@@ -109,22 +109,19 @@ export const AssignDivisions = () => {
     []
   );
 
-  const login = getItem("login");
+  // const login = getItem("login");
+
+  const usersLoaded = users && users.length;
 
   const globalFilters = useMemo(
     () => [
-      login === "nov"
-        ? {
-            property: "f_main_division",
-            value: getDivisionByLogin(login),
-          }
-        : {
-            property: "f_division",
-            value: getDivisionByLogin(login),
-          },
-    ],
+      usersLoaded ? {
+        property: "f_division",
+        value: users[0].division.f_division
+      } : null
+    ].filter(item=>item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [users, usersLoaded]
   );
 
   const params = useMemo(
@@ -135,6 +132,7 @@ export const AssignDivisions = () => {
 
   const tableComponent = useTableComponent({
     className: classes.table,
+    allowLoad: usersLoaded,
     title: "Дома",
     method: "Select",
     columns: cs_appartament,
@@ -177,6 +175,7 @@ export const AssignDivisions = () => {
                         users[0].division.n_gos_subdivision
                       ).then((response) => {
                         tableComponent.loadData();
+                        tableComponent.handleUnselectAll(false);
                       });
                     },
                   },
@@ -185,12 +184,14 @@ export const AssignDivisions = () => {
                     color: "primary",
                     handler: () => {
                       tableComponent.loadData();
+                      // tableComponent.toggleAllRowsSelected(false);
                     },
                   },
                 ],
               });
             } else {
               tableComponent.loadData();
+              tableComponent.handleUnselectAll(false);
             }
           });
         }}
@@ -199,7 +200,7 @@ export const AssignDivisions = () => {
       >
         Сохранить с округом Госсовета{" "}
         {users && users.length && users[0].division
-          ? `(${users[0].division.n_gos_subdivision})` || "(Не указан)"
+          ? `(${users[0].division.n_gos_subdivision || 'Не указан'})`
           : ""}
       </Button>
       <Switch>
