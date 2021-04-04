@@ -60,7 +60,7 @@ export const menuItems = [
     ],
     icon: AssignmentIcon,
     path: "/assignDivisions",
-    title: "Назначение подразделений",
+    title: "Распределение по округам",
   },
   {
     claims: [

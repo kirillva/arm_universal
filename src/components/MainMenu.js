@@ -111,7 +111,7 @@ export const SimpleMenu = ({ setAuth }) => {
                 handleClose();
               }}
             >
-              Назначение подразделений
+              Распределение по округам
             </MenuItem>
             <MenuItem
               button
