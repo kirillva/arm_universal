@@ -119,6 +119,16 @@ export const VotersAssignList = () => {
         Cell: NumberCell,
       },
       {
+        title: "УИК",
+        accessor: "n_uik",
+        operator: Operators.number,
+        style: {
+          width: "120px",
+        },
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
+      {
         title: "Назначение",
         accessor: "jb_info",
         mapAccessor: "n_total_appartament",
@@ -162,15 +172,15 @@ export const VotersAssignList = () => {
   const usersLoaded = users && users.length;
   const globalFilters = useMemo(
     () => [
-      login === "nov"
-        ? {
-            property: "f_main_division",
-            value: getDivisionByLogin(login),
-          }
-        : {
-            property: "f_division",
-            value: getDivisionByLogin(login),
-          },
+      // login === "nov"
+      //   ? {
+      //       property: "f_main_division",
+      //       value: getDivisionByLogin(login),
+      //     }
+      //   : {
+      //       property: "f_division",
+      //       value: getDivisionByLogin(login),
+      //     },
       usersLoaded ? {
         property: "n_gos_subdivision",
         value: users[0].division.n_gos_subdivision
