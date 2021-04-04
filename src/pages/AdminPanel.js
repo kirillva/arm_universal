@@ -8,13 +8,7 @@ import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
 import { getItem, getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import { Button } from "@material-ui/core";
-// import { SelectFilter } from "components/table/SelectFilter";
-// import {
-//   SelectEditor,
-// } from "components/table/Editors";
 import { getUsers } from "utils/getUsers";
-
-
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -37,34 +31,24 @@ export const AdminPanel = () => {
 
   const pd_userindivisions = React.useMemo(
     () => [
-      //   {
-      //     title: "f_parent",
-      //     accessor: "f_parent",
-      //     fieldProps: {
-      //       idProperty: "id",
-      //       nameProperty: "c_name",
-      //       table: "pd_users",
-      //     },
-      //     Filter: SelectFilter,
-      //     Editor: SelectEditor,
-      //     Cell: StringCell,
-      //   },
       {
         title: "Логин",
         accessor: "f_user___c_login",
         Filter: StringFilter,
         Cell: StringCell,
       },
-      //   { accessor: "c_password", title: "c_password", Filter: StringFilter, Cell: StringCell },
+      {
+        title: "Пароль",
+        accessor: "f_user___c_password",
+        Filter: StringFilter,
+        Cell: StringCell,
+      },
       {
         title: "ФИО",
         accessor: "f_user___c_first_name",
         Filter: StringFilter,
         Cell: StringCell,
       },
-      //   { accessor: "c_last_name", title: "c_last_name", Filter: StringFilter, Cell: StringCell },
-      //   { accessor: "c_middle_name", title: "c_middle_name", Filter: StringFilter, Cell: StringCell },
-      //   { accessor: "c_imei", title: "c_imei", Filter: StringFilter, Cell: StringCell },
       {
         title: "Описание",
         accessor: "f_user___c_description",
@@ -78,9 +62,6 @@ export const AdminPanel = () => {
         Cell: BoolCell,
         Editor: BoolEditor,
       },
-      //   { title: "sn_delete", accessor: "sn_delete", Filter: BoolFilter, Cell: BoolCell },
-      //   { title: "Версия", accessor: "c_version", Filter: StringFilter, Cell: StringCell },
-      //   { title: "n_version", accessor: "n_version", Filter: StringFilter, Cell: StringCell },
       {
         title: "Телефон",
         accessor: "f_user___c_phone",
@@ -102,9 +83,9 @@ export const AdminPanel = () => {
     ],
     []
   );
-  
+
   const login = getItem("login");
-  
+
   useEffect(() => {
     getUsers(getUserId()).then((_users) => setUsers(_users));
   }, []);
@@ -134,33 +115,48 @@ export const AdminPanel = () => {
             c_first_name: record.f_user___c_first_name,
             c_login: record.f_user___c_login,
             c_phone: record.f_user___c_phone,
+            c_password: record.f_user___c_password,
           },
         ],
         type: "rpc",
-      }).then((response)=>{
-        if (users && users.length && users[0]) {
-          runRpc({
-            action: "pd_userindivisions",
-            method: "Add",
-            data: [
-              {
-                f_user: response.sql.rows[0].id,
-                f_division: users[0].division.f_division,
-                n_gos_subdivision: record.n_gos_subdivision
-              },
-            ],
-            type: "rpc",
-          }).then(()=>{
+      }).then((response) => {
+        if (response.meta.success) {
+          if (users && users.length && users[0]) {
+            runRpc({
+              action: "pd_userindivisions",
+              method: "Add",
+              data: [
+                {
+                  f_user: response.sql.rows[0].id,
+                  f_division: users[0].division.f_division,
+                  n_gos_subdivision: record.n_gos_subdivision,
+                },
+              ],
+              type: "rpc",
+            }).then(() => {
+              runRpc({
+                action: "pd_userinroles",
+                method: "Add",
+                data: [
+                  {
+                    f_user: response.sql.rows[0].id,
+                    f_role: 6,
+                  },
+                ],
+                type: "rpc",
+              }).then(()=>{
+                tableComponent.setSelectedRow(null);
+                tableComponent.loadData();
+              })
+            });
+          } else {
             tableComponent.setSelectedRow(null);
             tableComponent.loadData();
-          });
-        } else {
-          tableComponent.setSelectedRow(null);
-          tableComponent.loadData();
+          }
         }
-      })
+      });
     },
-    handleSave: (record) => {
+    handleSave: async (record) => {
       const {
         id,
         f_user,
@@ -171,8 +167,10 @@ export const AdminPanel = () => {
         f_user___c_login: c_login,
         f_user___c_phone: c_phone,
         n_gos_subdivision,
+        f_user___c_password: c_password,
       } = record;
-      runRpc({
+
+      const pd_usersResponse = await runRpc({
         action: "pd_users",
         method: "Update",
         data: [
@@ -184,25 +182,26 @@ export const AdminPanel = () => {
             c_first_name,
             c_login,
             c_phone,
+            c_password,
           },
         ],
         type: "rpc",
-      }).then((response) => {
-        runRpc({
-          action: "pd_userindivisions",
-          method: "Update",
-          data: [
-            {
-              id,
-              n_gos_subdivision
-            },
-          ],
-          type: "rpc",
-        }).then((response) => {
-          tableComponent.setSelectedRow(null);
-          tableComponent.loadData();
-        });
       });
+
+      const pd_userindivisionsResponse = await runRpc({
+        action: "pd_userindivisions",
+        method: "Update",
+        data: [
+          {
+            id,
+            n_gos_subdivision,
+          },
+        ],
+        type: "rpc",
+      });
+
+      tableComponent.setSelectedRow(null);
+      tableComponent.loadData();
     },
     action: "pd_userindivisions",
     editable: true,
@@ -214,7 +213,7 @@ export const AdminPanel = () => {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => tableComponent.setSelectedRow({original: {}})}
+        onClick={() => tableComponent.setSelectedRow({ original: {} })}
       >
         Добавить
       </Button>
