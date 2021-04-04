@@ -42,7 +42,6 @@ export const getUsers = async (id) => {
   });
   
   if (pd_userindivisions) {
-    debugger;
     return pd_users.result.records.map(usr => {
       const userindivision = pd_userindivisions.result.records.find(uid=>uid.f_user === usr.id)
       return {...usr, division: userindivision};

@@ -27,9 +27,12 @@ export const EditRowForm = ({
   selectedRow,
   columns,
   editForm,
-  handleSave
+  handleSave,
+  handleAdd
 }) => {
   const classes = useStyles();
+
+  const isEdit = selectedRow && selectedRow.original && selectedRow.original.id;
 
   function updateSelectedRow(values, props) {
     const record = {};
@@ -37,13 +40,17 @@ export const EditRowForm = ({
       record[item.accessor] = values[item.accessor];
     });
     record[idProperty] = values[idProperty];
-    
-    handleSave(values);
+
+    isEdit ? handleSave(values) : handleAdd(values);  
   }
 
   return (
     <Dialog onClose={() => setSelectedRow(null)} open={Boolean(selectedRow)}>
-      <DialogTitle>Редактирование</DialogTitle>
+      <DialogTitle>
+        {isEdit
+          ? "Редактирование"
+          : "Добавление"}
+      </DialogTitle>
       <Formik
         initialValues={selectedRow ? selectedRow.original : {}}
         onSubmit={updateSelectedRow}

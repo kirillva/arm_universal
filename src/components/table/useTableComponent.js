@@ -60,6 +60,7 @@ export const useTableComponent = ({
     /** {  icon, title, handler },*/
   ],
   handleSave = () => {},
+  handleAdd = () => {},
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -534,6 +535,7 @@ export const useTableComponent = ({
           columns={columns}
           editForm={editForm}
           handleSave={handleSave}
+          handleAdd={handleAdd}
         />
         <Paper
           className={classes.paper}

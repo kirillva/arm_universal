@@ -77,12 +77,22 @@ export const AssignDivisions = () => {
       {
         title: "Количество квартир",
         accessor: "n_total_appartament",
-        operator: Operators.string,
+        operator: Operators.number,
         style: {
           width: "120px",
         },
         Filter: NumberFilter,
         Cell: NumberCell,
+      },
+      {
+        title: "УИК",
+        accessor: "n_uik",
+        operator: Operators.number,
+        style: {
+          width: "120px",
+        },
+        Filter: StringFilter,
+        Cell: StringCell,
       },
       {
         title: "Округ Госсовета",
@@ -124,8 +134,6 @@ export const AssignDivisions = () => {
   );
 
   const tableComponent = useTableComponent({
-    // state: state,
-    // setState: setState,
     className: classes.table,
     title: "Дома",
     method: "Select",
@@ -172,7 +180,13 @@ export const AssignDivisions = () => {
                       });
                     },
                   },
-                  { text: "Нет", color: "primary" },
+                  {
+                    text: "Нет",
+                    color: "primary",
+                    handler: () => {
+                      tableComponent.loadData();
+                    },
+                  },
                 ],
               });
             } else {

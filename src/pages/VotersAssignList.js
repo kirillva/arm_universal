@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 // import { Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,6 +18,7 @@ import { runRpc } from "utils/rpc";
 import { useSelectEditor } from "components/table/Editors";
 import { Box, Button, Paper, TextField, Typography } from "@material-ui/core";
 import { useTableComponent } from "components/table/useTableComponent";
+import { getUsers } from "utils/getUsers";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -65,6 +66,7 @@ export const VotersAssignList = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const userId = getUserId();
+  const [users, setUsers] = useState(null);
 
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -152,7 +154,12 @@ export const VotersAssignList = () => {
   );
 
   const login = getItem("login");
+  
+  useEffect(() => {
+    getUsers(getUserId()).then((_users) => setUsers(_users));
+  }, []);
 
+  const usersLoaded = users && users.length;
   const globalFilters = useMemo(
     () => [
       login === "nov"
@@ -164,14 +171,13 @@ export const VotersAssignList = () => {
             property: "f_division",
             value: getDivisionByLogin(login),
           },
-      // f_main_division
-      // f_division
-      // f_subdivision
-      // c_subdivision
-      // n_uik
-    ],
+      usersLoaded ? {
+        property: "n_gos_subdivision",
+        value: users[0].division.n_gos_subdivision
+      } : null
+    ].filter(item=>item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [users]
   );
 
   const params = useMemo(
@@ -258,7 +264,7 @@ export const VotersAssignList = () => {
             }).then(() => tableComponent.loadData());
           });
         }}
-        disabled={!selectedRow || !selectedUser || tableComponent.loading}
+        disabled={!selectedRow || !selectedUser || tableComponent.loading || !usersLoaded}
         className={classes.button}
         variant={"contained"}
         color={"primary"}

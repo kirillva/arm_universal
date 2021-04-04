@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { BoolFilter, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { BoolEditor } from "components/table/Editors";
 import { useTableComponent } from "components/table/useTableComponent";
 import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
-import { getItem } from "utils/user";
+import { getItem, getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
+import { Button } from "@material-ui/core";
 // import { SelectFilter } from "components/table/SelectFilter";
 // import {
 //   SelectEditor,
 // } from "components/table/Editors";
+import { getUsers } from "utils/getUsers";
+
+
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -28,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
 
 export const AdminPanel = () => {
   const classes = useStyles();
+
+  const [users, setUsers] = useState(null);
 
   const pd_userindivisions = React.useMemo(
     () => [
@@ -96,20 +102,64 @@ export const AdminPanel = () => {
     ],
     []
   );
-
+  
   const login = getItem("login");
+  
+  useEffect(() => {
+    getUsers(getUserId()).then((_users) => setUsers(_users));
+  }, []);
 
   const tableComponent = useTableComponent({
     className: classes.table,
     title: "Список пользователей",
     columns: pd_userindivisions,
-    select: `id,f_user,n_gos_subdivision,${getSelectByColumns(pd_userindivisions)}`,
+    select: `id,f_user,n_gos_subdivision,${getSelectByColumns(
+      pd_userindivisions
+    )}`,
     globalFilters: [
       {
         property: "f_division",
         value: getDivisionByLogin(login),
       },
     ],
+    handleAdd: (record) => {
+      runRpc({
+        action: "pd_users",
+        method: "Add",
+        data: [
+          {
+            b_disabled: record.f_user___b_disabled,
+            c_description: record.f_user___c_description,
+            c_email: record.f_user___c_email,
+            c_first_name: record.f_user___c_first_name,
+            c_login: record.f_user___c_login,
+            c_phone: record.f_user___c_phone,
+          },
+        ],
+        type: "rpc",
+      }).then((response)=>{
+        if (users && users.length && users[0]) {
+          runRpc({
+            action: "pd_userindivisions",
+            method: "Add",
+            data: [
+              {
+                f_user: response.sql.rows[0].id,
+                f_division: users[0].division.f_division,
+                n_gos_subdivision: record.n_gos_subdivision
+              },
+            ],
+            type: "rpc",
+          }).then(()=>{
+            tableComponent.setSelectedRow(null);
+            tableComponent.loadData();
+          });
+        } else {
+          tableComponent.setSelectedRow(null);
+          tableComponent.loadData();
+        }
+      })
+    },
     handleSave: (record) => {
       const {
         id,
@@ -161,6 +211,13 @@ export const AdminPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => tableComponent.setSelectedRow({original: {}})}
+      >
+        Добавить
+      </Button>
       {tableComponent.table}
     </div>
   );
