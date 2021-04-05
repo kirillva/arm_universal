@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { getItem, getUsername, logout } from "utils/user";
+import { getClaims, getItem, getUsername, logout } from "utils/user";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -57,6 +57,9 @@ export const SimpleMenu = ({ setAuth }) => {
     setAnchorEl(null);
   };
 
+  const claims = getClaims();
+  
+  console.log('claims', claims);
   return (
     <>
       <div className={classes.avatar} onClick={handleClick}>
@@ -93,6 +96,7 @@ export const SimpleMenu = ({ setAuth }) => {
             II этап: подтверждение
           </MenuItem>
         ) : null} */}
+       {claims.indexOf('.monkey.') < 0 ? (
         <MenuItem
           button
           onClick={() => {
@@ -101,7 +105,7 @@ export const SimpleMenu = ({ setAuth }) => {
           }}
         >
           III этап: избиратели
-        </MenuItem>
+        </MenuItem>) : null}
         {getItem("login") !== "nov" ? (
           <>
             <MenuItem
@@ -122,7 +126,7 @@ export const SimpleMenu = ({ setAuth }) => {
             >
               Назначение пользователей
             </MenuItem>
-            <MenuItem
+            {claims.indexOf('.monkey.') < 0 ? (<MenuItem
               button
               onClick={() => {
                 history.push("/adminPanel");
@@ -130,7 +134,7 @@ export const SimpleMenu = ({ setAuth }) => {
               }}
             >
               Администрирование
-            </MenuItem>
+            </MenuItem>) : null}
           </>
         ) : null}
         <MenuItem

@@ -171,12 +171,24 @@ export const AdminPanel = () => {
                   {
                     f_user: response.sql.rows[0].id,
                     f_role: 6,
-                  },
+                  }
                 ],
                 type: "rpc",
               }).then(() => {
-                tableComponent.setSelectedRow(null);
-                tableComponent.loadData();
+                runRpc({
+                  action: "pd_userinroles",
+                  method: "Add",
+                  data: [
+                    {
+                      f_user: response.sql.rows[0].id,
+                      f_role: 3,
+                    },
+                  ],
+                  type: "rpc",
+                }).then(()=>{
+                  tableComponent.setSelectedRow(null);
+                  tableComponent.loadData();
+                });
               });
             });
           } else {
