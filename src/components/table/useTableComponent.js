@@ -162,12 +162,14 @@ export const useTableComponent = ({
             Header: ({ getToggleAllRowsSelectedProps }) => (
               <IndeterminateCheckbox
                 {...getToggleAllRowsSelectedProps()}
+                title="Выбрать все"
                 className={classes.checkBoxComponent}
               />
             ),
             Cell: ({ row }) => (
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
+                title="Выбрать"
                 className={classes.checkBoxComponent}
               />
             ),
