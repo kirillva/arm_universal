@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { VotersList } from "pages/VotersList";
 import { VoterSearchForm } from "pages/VoterSearchForm";
 import { SelectUik } from "components/SelectUik";
 import { getDivisionByLogin } from "utils/helpers";
-import { getItem } from "utils/user";
+import { getItem, getUserId } from "utils/user";
+import { getUsers } from "utils/getUsers";
 
-  
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -41,9 +41,17 @@ export const Part3 = () => {
   const [street, setStreet] = useState(null);
   const [appartment, setAppartment] = useState(null);
   const [uik, setUik] = useState(null);
+  const [users, setUsers] = useState([]);
   
   const login = getItem("login");
-  let division = getDivisionByLogin(login);
+  
+  useEffect(() => {
+    getUsers(getUserId()).then((_users) => setUsers(_users));
+  }, []);
+
+  const usersLoaded = users && users.length;
+
+  const division = usersLoaded ? users[0].division.f_division : 0;
   
   return (
     <div className={classes.content}>
@@ -68,6 +76,7 @@ export const Part3 = () => {
           />
           <VotersList
             uik={uik}
+            division={division}
             state={state}
             setState={setState}
             setHouse={setHouse}

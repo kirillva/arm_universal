@@ -39,6 +39,7 @@ export const VotersList = ({
   state,
   setState,
   uik,
+  division
   // setHouse,
   // setStreet,
   // setAppartament,
@@ -56,7 +57,7 @@ export const VotersList = ({
         }
       : {
           property: "sd_subdivisions.f_division",
-          value: getDivisionByLogin(login),
+          value: division,
         }
   ]);
 
@@ -69,7 +70,7 @@ export const VotersList = ({
           }
         : {
             property: "sd_subdivisions.f_division",
-            value: getDivisionByLogin(login),
+            value: division,
           },
     ]
     if (uik) {
@@ -77,7 +78,7 @@ export const VotersList = ({
     }
     setFilter(newFilter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uik]);
+  }, [uik, division]);
 
   const filterProps = {
     BOOL_TRUE: "Нет",

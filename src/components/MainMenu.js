@@ -96,17 +96,15 @@ export const SimpleMenu = ({ setAuth }) => {
             II этап: подтверждение
           </MenuItem>
         ) : null} */}
-        {claims.indexOf(".monkey.") < 0 ? (
-          <MenuItem
-            button
-            onClick={() => {
-              history.push("/part3");
-              handleClose();
-            }}
-          >
-            III этап: избиратели
-          </MenuItem>
-        ) : null}
+        <MenuItem
+          button
+          onClick={() => {
+            history.push("/part3");
+            handleClose();
+          }}
+        >
+          III этап: избиратели
+        </MenuItem>
         {getItem("login") !== "nov" ? (
           <>
             {claims.indexOf(".monkey.") >= 0 ? (
