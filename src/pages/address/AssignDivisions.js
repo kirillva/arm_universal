@@ -100,7 +100,7 @@ export const AssignDivisions = () => {
       {
         title: "Округ Госсовета",
         accessor: "n_gos_subdivision",
-        operator: Operators.string,
+        operator: Operators.number,
         style: {
           width: "120px",
         },

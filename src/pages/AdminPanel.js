@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { BoolFilter, StringFilter } from "components/table/Filters";
+import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { BoolEditor } from "components/table/Editors";
 import { useTableComponent } from "components/table/useTableComponent";
@@ -34,30 +34,35 @@ export const AdminPanel = () => {
       {
         title: "Логин",
         accessor: "f_user___c_login",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "Пароль",
         accessor: "f_user___c_password",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "ФИО",
         accessor: "f_user___c_first_name",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "Описание",
         accessor: "f_user___c_description",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "Удален",
         accessor: "f_user___b_disabled",
+        operator: Operators.bool,
         Filter: BoolFilter,
         Cell: BoolCell,
         Editor: BoolEditor,
@@ -65,18 +70,21 @@ export const AdminPanel = () => {
       {
         title: "Телефон",
         accessor: "f_user___c_phone",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "e-mail",
         accessor: "f_user___c_email",
+        operator: Operators.string,
         Filter: StringFilter,
         Cell: StringCell,
       },
       {
         title: "Округ Госсовета",
         accessor: "n_gos_subdivision",
+        operator: Operators.number,
         Filter: StringFilter,
         Cell: StringCell,
       },

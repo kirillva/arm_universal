@@ -115,7 +115,7 @@ export const VotersAssignList = () => {
       {
         title: "Количество квартир",
         accessor: "n_total_appartament",
-        operator: Operators.string,
+        operator: Operators.number,
         style: {
           width: "120px",
         },
