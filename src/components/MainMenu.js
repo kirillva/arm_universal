@@ -58,8 +58,8 @@ export const SimpleMenu = ({ setAuth }) => {
   };
 
   const claims = getClaims();
-  
-  console.log('claims', claims);
+
+  console.log("claims", claims);
   return (
     <>
       <div className={classes.avatar} onClick={handleClick}>
@@ -96,45 +96,52 @@ export const SimpleMenu = ({ setAuth }) => {
             II этап: подтверждение
           </MenuItem>
         ) : null} */}
-       {claims.indexOf('.monkey.') < 0 ? (
-        <MenuItem
-          button
-          onClick={() => {
-            history.push("/part3");
-            handleClose();
-          }}
-        >
-          III этап: избиратели
-        </MenuItem>) : null}
+        {claims.indexOf(".monkey.") < 0 ? (
+          <MenuItem
+            button
+            onClick={() => {
+              history.push("/part3");
+              handleClose();
+            }}
+          >
+            III этап: избиратели
+          </MenuItem>
+        ) : null}
         {getItem("login") !== "nov" ? (
           <>
-            <MenuItem
-              button
-              onClick={() => {
-                history.push("/assignDivisions");
-                handleClose();
-              }}
-            >
-              Распределение по округам
-            </MenuItem>
-            <MenuItem
-              button
-              onClick={() => {
-                history.push("/assignUsers");
-                handleClose();
-              }}
-            >
-              Назначение пользователей
-            </MenuItem>
-            {claims.indexOf('.monkey.') < 0 ? (<MenuItem
-              button
-              onClick={() => {
-                history.push("/adminPanel");
-                handleClose();
-              }}
-            >
-              Администрирование
-            </MenuItem>) : null}
+            {claims.indexOf(".monkey.") >= 0 ? (
+              <>
+                <MenuItem
+                  button
+                  onClick={() => {
+                    history.push("/assignDivisions");
+                    handleClose();
+                  }}
+                >
+                  Распределение по округам
+                </MenuItem>
+                <MenuItem
+                  button
+                  onClick={() => {
+                    history.push("/assignUsers");
+                    handleClose();
+                  }}
+                >
+                  Назначение пользователей
+                </MenuItem>
+              </>
+            ) : null}
+            {claims.indexOf(".monkey.") < 0 ? (
+              <MenuItem
+                button
+                onClick={() => {
+                  history.push("/adminPanel");
+                  handleClose();
+                }}
+              >
+                Администрирование
+              </MenuItem>
+            ) : null}
           </>
         ) : null}
         <MenuItem
