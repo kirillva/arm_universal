@@ -9,12 +9,13 @@ import {
 } from "components/table/Filters";
 import { NumberCell, StringCell } from "components/table/Cell";
 import { getUserId } from "utils/user";
-import { Button } from "@material-ui/core";
+import { Button, FormControlLabel } from "@material-ui/core";
 import {
   assignDivisionToHouse,
   assignApproveDivisionToHouse,
 } from "./AssignDivisionsHelper";
 import { getUsers } from "utils/getUsers";
+import SwitchIcon from "@material-ui/core/Switch";
 
 import { useMessageContext } from "context/MessageContext";
 
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     gap: theme.spacing(1),
     marginBottom: theme.spacing(2),
-  }
+  },
 }));
 
 export const AssignDivisions = () => {
@@ -52,6 +53,7 @@ export const AssignDivisions = () => {
   const [users, setUsers] = useState(null);
   // const [state, setState] = useState(null);
   const { ShowAcceptWindow } = useMessageContext();
+  const [checked, setChecked] = useState(null);
 
   const match = useRouteMatch();
   const cs_appartament = useMemo(
@@ -124,9 +126,14 @@ export const AssignDivisions = () => {
               value: users[0].division.f_division,
             }
           : null,
+        {
+          property: "n_gos_subdivision",
+          value: null,
+          operator: checked ? "isnot" : "is",
+        },
       ].filter((item) => item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [users, usersLoaded]
+    [users, usersLoaded, checked]
   );
 
   const params = useMemo(
@@ -153,7 +160,7 @@ export const AssignDivisions = () => {
   }, []);
 
   const isRowsSelected = Object.keys(tableComponent.selectedRowIds).length > 0;
-  
+
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
@@ -219,13 +226,12 @@ export const AssignDivisions = () => {
               (response) => {
                 const { houseWithGos } = response;
                 if (houseWithGos && houseWithGos.length) {
-                  assignApproveDivisionToHouse(
-                    houseWithGos,
-                    null
-                  ).then((response) => {
-                    tableComponent.loadData();
-                    tableComponent.handleUnselectAll(false);
-                  });
+                  assignApproveDivisionToHouse(houseWithGos, null).then(
+                    (response) => {
+                      tableComponent.loadData();
+                      tableComponent.handleUnselectAll(false);
+                    }
+                  );
                 }
               }
             );
@@ -235,6 +241,16 @@ export const AssignDivisions = () => {
         >
           Отвязать от округа
         </Button>
+        <FormControlLabel
+          control={
+            <SwitchIcon
+              checked={checked}
+              onChange={(e) => setChecked(e.target.checked)}
+              color="primary"
+            />
+          }
+          label="Показать непривязанные/привязанные"
+        />
       </div>
       <Switch>
         <Route path={match.path}>{tableComponent.table}</Route>
