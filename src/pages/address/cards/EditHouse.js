@@ -386,6 +386,7 @@ export const useHouse = (props) => {
   };
   const {
     addNewForm,
+    addOrDisableForm,
     appartamentsController,
     appartaments,
     loadData,
@@ -509,6 +510,7 @@ export const useHouse = (props) => {
               }}
             />
             {addNewForm}
+            {addOrDisableForm}
             {appartamentsController}
             {appartaments}
           </>

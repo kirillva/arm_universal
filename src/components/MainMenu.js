@@ -74,7 +74,7 @@ export const SimpleMenu = ({ setAuth }) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {getItem("login") === "nov" ? (
+        {/* {getItem("login") === "nov" ? (
           <MenuItem
             button
             onClick={() => {
@@ -84,7 +84,7 @@ export const SimpleMenu = ({ setAuth }) => {
           >
             I этап: привязка домов
           </MenuItem>
-        ) : null}
+        ) : null} */}
         {/* {getItem("login") !== "nov" ? (
           <MenuItem
             button
@@ -105,43 +105,38 @@ export const SimpleMenu = ({ setAuth }) => {
         >
           III этап: избиратели
         </MenuItem>
-        {getItem("login") !== "nov" ? (
+        {claims.indexOf(".monkey.") >= 0 ? (
           <>
-            {claims.indexOf(".monkey.") >= 0 ? (
-              <>
-                <MenuItem
-                  button
-                  onClick={() => {
-                    history.push("/assignDivisions");
-                    handleClose();
-                  }}
-                >
-                  Распределение по округам
-                </MenuItem>
-                <MenuItem
-                  button
-                  onClick={() => {
-                    history.push("/assignUsers");
-                    handleClose();
-                  }}
-                >
-                  Назначение пользователей
-                </MenuItem>
-              </>
-            ) : null}
-            {claims.indexOf(".monkey.") < 0 ? (
-              <MenuItem
-                button
-                onClick={() => {
-                  history.push("/adminPanel");
-                  handleClose();
-                }}
-              >
-                Администрирование
-              </MenuItem>
-            ) : null}
+            <MenuItem
+              button
+              onClick={() => {
+                history.push("/assignDivisions");
+                handleClose();
+              }}
+            >
+              Распределение по округам
+            </MenuItem>
+            <MenuItem
+              button
+              onClick={() => {
+                history.push("/assignUsers");
+                handleClose();
+              }}
+            >
+              Назначение пользователей
+            </MenuItem>
           </>
-        ) : null}
+        ) : (
+          <MenuItem
+            button
+            onClick={() => {
+              history.push("/adminPanel");
+              handleClose();
+            }}
+          >
+            Администрирование
+          </MenuItem>
+        )}
         <MenuItem
           button
           key={"/"}

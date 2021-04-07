@@ -89,7 +89,7 @@ function ResponsiveDrawer() {
           })}
           {auth ? (
             <Route path="/">
-              <Redirect to={claims.indexOf('.monkey.') >= 0 ? '/assignDivisions' : login === "nov" ? "/part1" : "/part3"} />
+              <Redirect to={claims.indexOf('.monkey.') >= 0 ? '/assignDivisions' : "/part3"} />
             </Route>
           ) : (
             <Route path="/">
