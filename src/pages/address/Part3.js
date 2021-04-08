@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { VotersList } from "pages/VotersList";
 import { VoterSearchForm } from "pages/VoterSearchForm";
 import { SelectUik } from "components/SelectUik";
 import { getDivisionByLogin } from "utils/helpers";
 import { getItem, getUserId } from "utils/user";
 import { getUsers } from "utils/getUsers";
-
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -36,15 +36,16 @@ export const Part3 = () => {
   const classes = useStyles();
   const [state, setState] = useState(null);
   const match = useRouteMatch();
+  const history = useHistory();
 
   const [house, setHouse] = useState(null);
   const [street, setStreet] = useState(null);
   const [appartment, setAppartment] = useState(null);
   const [uik, setUik] = useState(null);
   const [users, setUsers] = useState([]);
-  
+
   const login = getItem("login");
-  
+
   useEffect(() => {
     getUsers(getUserId()).then((_users) => setUsers(_users));
   }, []);
@@ -52,7 +53,7 @@ export const Part3 = () => {
   const usersLoaded = users && users.length;
 
   const division = usersLoaded ? users[0].division.f_division : 0;
-  
+
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
@@ -74,6 +75,13 @@ export const Part3 = () => {
             className={classes.selectUik}
             handleChange={(e) => setUik(e.target.value)}
           />
+          <Button
+            onClick={() => history.push(`${match.path}/search`)}
+            color="primary"
+            variant="outlined"
+          >
+            Перейти к поиску
+          </Button>
           <VotersList
             uik={uik}
             division={division}
