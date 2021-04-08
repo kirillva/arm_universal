@@ -36,7 +36,7 @@ export const SelectUik = ({
       });
     }
     runRpc({
-      action: login == "nov" ? "cv_uik_tmp_nov_ref" : "cv_uik_ref",
+      action: login === "nov" ? "cv_uik_tmp_nov_ref" : "cv_uik_ref",
       method: "Query",
       data: [
         {
@@ -50,7 +50,7 @@ export const SelectUik = ({
       setUik(responce.result.records);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subdivision]);
+  }, [division, subdivision]);
 
   return (
     <TextField

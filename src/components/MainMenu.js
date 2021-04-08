@@ -105,28 +105,26 @@ export const SimpleMenu = ({ setAuth }) => {
         >
           III этап: избиратели
         </MenuItem>
-        {claims.indexOf(".monkey.") >= 0 ? (
-          <>
-            <MenuItem
-              button
-              onClick={() => {
-                history.push("/assignDivisions");
-                handleClose();
-              }}
-            >
-              Распределение по округам
-            </MenuItem>
-            <MenuItem
-              button
-              onClick={() => {
-                history.push("/assignUsers");
-                handleClose();
-              }}
-            >
-              Назначение пользователей
-            </MenuItem>
-          </>
-        ) : (
+        <>
+          <MenuItem
+            button
+            onClick={() => {
+              history.push("/assignDivisions");
+              handleClose();
+            }}
+          >
+            Распределение по округам
+          </MenuItem>
+          <MenuItem
+            button
+            onClick={() => {
+              history.push("/assignUsers");
+              handleClose();
+            }}
+          >
+            Назначение пользователей
+          </MenuItem>
+
           <MenuItem
             button
             onClick={() => {
@@ -136,7 +134,7 @@ export const SimpleMenu = ({ setAuth }) => {
           >
             Администрирование
           </MenuItem>
-        )}
+        </>
         <MenuItem
           button
           key={"/"}

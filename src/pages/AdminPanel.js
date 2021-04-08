@@ -4,11 +4,12 @@ import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
 import { BoolEditor } from "components/table/Editors";
 import { useTableComponent } from "components/table/useTableComponent";
-import { getDivisionByLogin, getSelectByColumns } from "utils/helpers";
-import { getItem, getUserId } from "utils/user";
+import { getSelectByColumns } from "utils/helpers";
+import { getClaims, getItem, getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
 import { Button } from "@material-ui/core";
 import { getUsers } from "utils/getUsers";
+import { SelectUik } from "components/SelectUik";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -28,6 +29,8 @@ export const AdminPanel = () => {
   const classes = useStyles();
 
   const [users, setUsers] = useState(null);
+  const [uik, setUik] = useState(null);
+  const claims = getClaims();
 
   const pd_userindivisions = React.useMemo(
     () => [
@@ -88,8 +91,27 @@ export const AdminPanel = () => {
         Filter: StringFilter,
         Cell: StringCell,
       },
-    ],
-    []
+      claims.indexOf(".monkey.") >= 0
+        ? {
+            title: "УИК",
+            accessor: "f_uik",
+            operator: Operators.number,
+            Filter: StringFilter,
+            Cell: StringCell,
+            Editor: (props) => (
+              <SelectUik
+                value={props.value || uik}
+                division={usersLoaded ? users[0].division.f_division : null}
+                handleChange={(e) => {
+                  props.setFieldValue("f_uik", e.target.value);
+                }}
+              />
+            ),
+          }
+        : null,
+    ].filter(item=>item),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [uik]
   );
 
   useEffect(() => {
@@ -105,34 +127,65 @@ export const AdminPanel = () => {
         login === "nov"
           ? {
               property: "f_user___c_login",
-              value: 'kalinin',
-              operator: '<>'
+              value: "kalinin",
+              operator: "<>",
             }
           : {
               property: "f_user___c_login",
-              value: 'nov',
-              operator: '<>'
+              value: "nov",
+              operator: "<>",
             },
         usersLoaded
-          ? {
-              property: "f_division",
-              value: users[0].division.f_division,
-            }
+          ? claims.indexOf(".monkey.") >= 0
+            ? uik
+              ? {
+                  property: "f_uik",
+                  value: uik,
+                }
+              : null
+            : {
+                property: "f_division",
+                value: users[0].division.f_division,
+              }
           : null,
       ].filter((item) => item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [users, usersLoaded]
+    [users, usersLoaded, uik]
   );
+
+  const uikComponent = useMemo(() => {
+    const options = {
+      margin: "dense",
+      size: "small",
+      name: "n_uik",
+      value: uik,
+      handleChange: (e) => setUik(e.target.value),
+    };
+    if (usersLoaded) {
+      options.division = users[0].division.f_division;
+    } else {
+      options.division = null;
+    }
+
+    if (claims.indexOf(".monkey.") >= 0) {
+      return <SelectUik {...options} />;
+    } else {
+      return null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users, usersLoaded, uik]);
 
   const tableComponent = useTableComponent({
     className: classes.table,
     title: "Список пользователей",
     columns: pd_userindivisions,
-    select: `id,f_user,n_gos_subdivision,${getSelectByColumns(
+    select: `id,f_user,n_gos_subdivision,f_uik,${getSelectByColumns(
       pd_userindivisions
     )}`,
-    allowLoad: usersLoaded,
     globalFilters,
+    allowLoad:
+      usersLoaded &&
+      (claims.indexOf(".monkey.") >= 0 ? uik : users[0].division.f_division),
     handleAdd: (record) => {
       runRpc({
         action: "pd_users",
@@ -160,6 +213,7 @@ export const AdminPanel = () => {
                   f_user: response.sql.rows[0].id,
                   f_division: users[0].division.f_division,
                   n_gos_subdivision: record.n_gos_subdivision,
+                  f_uik: record.f_uik || uik
                 },
               ],
               type: "rpc",
@@ -170,8 +224,8 @@ export const AdminPanel = () => {
                 data: [
                   {
                     f_user: response.sql.rows[0].id,
-                    f_role: 6,
-                  }
+                    f_role: claims.indexOf(".monkey.") >= 0 ? 5 : 6,
+                  },
                 ],
                 type: "rpc",
               }).then(() => {
@@ -185,7 +239,7 @@ export const AdminPanel = () => {
                     },
                   ],
                   type: "rpc",
-                }).then(()=>{
+                }).then(() => {
                   tableComponent.setSelectedRow(null);
                   tableComponent.loadData();
                 });
@@ -210,9 +264,9 @@ export const AdminPanel = () => {
         f_user___c_phone: c_phone,
         n_gos_subdivision,
         f_user___c_password: c_password,
+        f_uik,
       } = record;
-
-      const pd_usersResponse = await runRpc({
+      await runRpc({
         action: "pd_users",
         method: "Update",
         data: [
@@ -230,13 +284,14 @@ export const AdminPanel = () => {
         type: "rpc",
       });
 
-      const pd_userindivisionsResponse = await runRpc({
+      await runRpc({
         action: "pd_userindivisions",
         method: "Update",
         data: [
           {
             id,
             n_gos_subdivision,
+            f_uik,
           },
         ],
         type: "rpc",
@@ -252,7 +307,9 @@ export const AdminPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
+      {uikComponent}
       <Button
+        disabled={claims.indexOf(".monkey.") >= 0 ? !uik : false}
         variant="contained"
         color="primary"
         onClick={() => tableComponent.setSelectedRow({ original: {} })}

@@ -83,6 +83,7 @@ export const VotersAssignList = () => {
       size: "small",
       idProperty: "id",
       nameProperty: "c_login",
+      method: 'Select',
       table: "cf_bss_pd_users",
     },
     label: "Пользователь",

@@ -47,6 +47,7 @@ export const AddHouse = ({ street, refreshPage, validate = () => {} }) => {
     c_house_number: "",
     c_house_corp: null,
     f_subdivision: null,
+    c_house_litera: null
   };
 
   const {
@@ -56,7 +57,6 @@ export const AddHouse = ({ street, refreshPage, validate = () => {} }) => {
     isSubmitting,
     setSubmitting,
     errors,
-    submitForm,
     setFieldValue,
   } = useFormik({
     validationSchema: Yup.object().shape({
@@ -134,6 +134,17 @@ export const AddHouse = ({ street, refreshPage, validate = () => {} }) => {
             value={values.c_house_corp}
             error={errors.c_house_corp}
             helperText={errors.c_house_corp}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            variant="outlined"
+          />
+          <TextField
+            size="small"
+            label="Литера"
+            name="c_house_litera"
+            value={values.c_house_litera}
+            error={errors.c_house_litera}
+            helperText={errors.c_house_litera}
             onChange={handleChange}
             disabled={isSubmitting}
             variant="outlined"

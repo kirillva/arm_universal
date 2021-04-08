@@ -77,7 +77,7 @@ export const useSelectEditor = ({
   name,
   ...rest
 }) => {
-  const { idProperty, nameProperty, table } = fieldProps;
+  const { idProperty, nameProperty, table, method } = fieldProps;
   const [inputValue, _setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -93,7 +93,7 @@ export const useSelectEditor = ({
       setLoading(true);
       runRpc({
         action: table,
-        method: "Query",
+        method: method || "Query",
         data: [
           {
             limit: 1,
