@@ -244,6 +244,7 @@ export const AddNewAppartament = ({
                 n_number: Number.parseInt(appartamentNumber),
                 f_house: houseId,
                 b_off_range: false,
+                f_created_user: getUserId()
               },
             ],
             type: "rpc",
