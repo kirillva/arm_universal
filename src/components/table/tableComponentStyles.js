@@ -22,7 +22,7 @@ export const useTableComponentStyles = makeStyles((theme) => ({
     userSelect: "none",
     display: "flex",
     flexDirection: "row",
-    margin: 'auto'
+    margin: "auto",
   },
   headerTitleText: {
     overflow: "hidden",
@@ -76,8 +76,13 @@ export const useTableComponentStyles = makeStyles((theme) => ({
     backgroundColor: "#FAFAFA",
   },
   checkBoxComponent: {
-    padding: '0px',
-    display: 'flex',
-    margin: 'auto'
-  }
+    padding: "0px",
+    display: "flex",
+    margin: "auto",
+  },
+  tableRow: {
+    "&:hover": {
+      backgroundColor: "rgba(0, 0, 0, 0.2)!important",
+    },
+  },
 }));

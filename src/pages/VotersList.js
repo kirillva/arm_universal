@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   selectedRow: {
-    backgroundColor: '#e0e0e0'
+    backgroundColor: '#eaeaea'
   }
 }));
 

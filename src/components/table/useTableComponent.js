@@ -636,10 +636,13 @@ export const useTableComponent = ({
                     return (
                       <TableRow
                         hover
+                        // classes={{
+                        //   hover: classes.hoverRow
+                        // }}
                         role="checkbox"
                         tabIndex={-1}
                         {...row.getRowProps()}
-                        className={getRowClassName(row)}
+                        className={classNames(getRowClassName(row), classes.tableRow)}
                       >
                         {row.cells.map((cell) => {
                           const filterProps = cell.column.fieldProps;

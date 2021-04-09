@@ -4,7 +4,7 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { VotersList } from "pages/VotersList";
 import { VoterSearchForm } from "pages/VoterSearchForm";
 import { SelectUik } from "components/SelectUik";
-import { getDivisionByLogin } from "utils/helpers";
+// import { getDivisionByLogin } from "utils/helpers";
 import { getItem, getUserId } from "utils/user";
 import { getUsers } from "utils/getUsers";
 import { Button } from "@material-ui/core";
@@ -80,7 +80,7 @@ export const Part3 = () => {
             color="primary"
             variant="outlined"
           >
-            Перейти к поиску
+            Перейти к поиску/редактированию
           </Button>
           <VotersList
             uik={uik}
