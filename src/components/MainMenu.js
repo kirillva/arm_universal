@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Divider,
   List,
@@ -8,11 +8,12 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { getClaims, getItem, getUsername, logout } from "utils/user";
+import { getItem, getUserId, getUsername, logout } from "utils/user";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-
+import { getUsers } from "utils/getUsers";
+import { getConfig } from "utils/helpers";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -57,9 +58,13 @@ export const SimpleMenu = ({ setAuth }) => {
     setAnchorEl(null);
   };
 
-  const claims = getClaims();
+  const [users, setUsers] = useState(null);
+  const usersLoaded = users && users.length;
 
-  console.log("claims", claims);
+  useEffect(() => {
+    getUsers(getUserId()).then((_users) => setUsers(_users));
+  }, []);
+
   return (
     <>
       <div className={classes.avatar} onClick={handleClick}>
@@ -133,6 +138,19 @@ export const SimpleMenu = ({ setAuth }) => {
             }}
           >
             Администрирование
+          </MenuItem>
+          <MenuItem
+            button
+            disabled={!usersLoaded || users[0].division.n_gos_subdivision === null}
+            onClick={() => {
+              window.open(
+                `${getConfig().WS_URL}/pentaho/api/repos/%3Apublic%3Avote%3A2021%3A%D0%BF%D1%80%D0%B8%D0%B2%D1%8F%D0%B7%D0%BA%D0%B0%20%D0%B0%D0%B3%D0%B8%D1%82%D0%B0%D1%82%D0%BE%D1%80%20%D0%BA%20%D0%BA%D0%B2%D0%B0%D1%80%D1%82%D0%B8%D1%80%D0%B0%D0%BC.prpt/viewer?n_gos_subdivision=${users[0].division.n_gos_subdivision}&userid=Admin&password=qwe-123&output-target=pageable/pdf`,
+                "_blank"
+              );
+              handleClose();
+            }}
+          >
+            Скачать отчет
           </MenuItem>
         </>
         <MenuItem
