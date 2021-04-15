@@ -74,7 +74,7 @@ export const AddOrDisableAppartament = ({
           f_house: houseId,
           b_off_range: false,
           b_disabled: false,
-          dx_date: moment().toISOString(true)
+          dx_date: moment().toISOString(true),
         });
       }
     }
@@ -96,21 +96,49 @@ export const AddOrDisableAppartament = ({
         });
     }
   };
-
   const disableMany = () => {
     const appartaments = appartament
-          .filter((item) => {
-            const c_number = Number(item.c_number);
-            return c_number >= from && c_number <= to && item.f_created_user === getUserId();
-          })
-          .map((item) => ({ id: item.id }));
+      .filter((item) => {
+        const c_number = Number(item.c_number);
+        return c_number >= from && c_number <= to;
+      })
+      .map((item) => ({ b_disabled: true, id: item.id }));
+
+    runRpc({
+      action: "cs_appartament",
+      method: "Update",
+      data: [appartaments],
+      type: "rpc",
+    })
+      .then((responce) => {
+        onSave();
+      })
+      .then(() => {
+        onSave();
+        setTo("");
+        setFrom("");
+      })
+      .catch((e) => {
+        setTo("");
+        setFrom("");
+      });
+  };
+  const deleteMany = () => {
+    const appartaments = appartament
+      .filter((item) => {
+        const c_number = Number(item.c_number);
+        return (
+          c_number >= from &&
+          c_number <= to &&
+          item.f_created_user === getUserId()
+        );
+      })
+      .map((item) => ({ id: item.id }));
 
     runRpc({
       action: "cs_appartament",
       method: "Delete",
-      data: [
-        appartaments
-      ],
+      data: [appartaments],
       type: "rpc",
     })
       .then((responce) => {
@@ -182,9 +210,18 @@ export const AddOrDisableAppartament = ({
           disabled={!Boolean(from) || !Boolean(to)}
           color="primary"
           variant="contained"
-          onClick={disableMany}
+          onClick={deleteMany}
         >
           Удалить
+        </Button>
+        <Button
+          className={classNames(classes.button, classes.buttonFirst)}
+          disabled={!Boolean(from) || !Boolean(to)}
+          color="primary"
+          variant="contained"
+          onClick={disableMany}
+        >
+          Деактивировать
         </Button>
       </div>
     </div>
@@ -244,7 +281,7 @@ export const AddNewAppartament = ({
                 n_number: Number.parseInt(appartamentNumber),
                 f_house: houseId,
                 b_off_range: false,
-                f_created_user: getUserId()
+                f_created_user: getUserId(),
               },
             ],
             type: "rpc",
