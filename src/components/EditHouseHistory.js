@@ -155,7 +155,7 @@ export const EditHouseHistory = ({
             { property: "id", value: 0, operator: "gt" },
             {
               property: "b_city",
-              value: login == "nov",
+              value: login.indexOf("nov") >= 0,
               operator: "=",
             },
           ],
