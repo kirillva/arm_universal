@@ -85,4 +85,8 @@ export const useTableComponentStyles = makeStyles((theme) => ({
       backgroundColor: "rgba(0, 0, 0, 0.2)!important",
     },
   },
+  buttonsWrapper: {
+    display: 'flex',
+    gap: theme.spacing(2)
+  }
 }));

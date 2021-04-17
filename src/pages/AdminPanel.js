@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
 import { BoolCell, StringCell } from "components/table/Cell";
@@ -7,8 +7,10 @@ import { useTableComponent } from "components/table/useTableComponent";
 import { getSelectByColumns } from "utils/helpers";
 import { getClaims, getItem, getUserId } from "utils/user";
 import { runRpc } from "utils/rpc";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import { useWindow } from "components/hooks/useWindow";
+import { PlusOne } from "@material-ui/icons";
+import { AdminDetail } from "./AdminDetail";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -28,7 +30,7 @@ export const AdminPanel = () => {
   const classes = useStyles();
 
   const [selectedRow, setSelectedRow] = useState(null);
-  const { Window, setWindowOpen } = useWindow();
+  const [open, setOpen] = useState(null);
 
   const pd_user = React.useMemo(
     () =>
@@ -63,7 +65,7 @@ export const AdminPanel = () => {
         },
         {
           title: "Удален",
-          accessor: "c_phone",
+          accessor: "b_disabled",
           operator: Operators.bool,
           Filter: BoolFilter,
           Cell: BoolCell,
@@ -81,28 +83,31 @@ export const AdminPanel = () => {
     []
   );
 
-  useEffect(() => {
-    console.log();
-  }, [selectedRow]);
-
-  // console.log(selectedRow);
-  // console.log(open);
-
   const tableComponent = useTableComponent({
     className: classes.table,
     title: "Список пользователей",
     columns: pd_user,
     action: "pd_users",
-    globalFilters: React.useMemo(() => [], []),
+    globalFilters: React.useMemo(
+      () => [
+        {
+          property: "c_login",
+          value: ["anonymous", "admin"].map((key) => `'${key}'`),
+          operator: "notin",
+        },
+      ],
+      []
+    ),
     select: `id,${getSelectByColumns(pd_user)}`,
     buttons: (
       <>
         <Button
           variant="contained"
           color="primary"
+          endIcon={<PlusOne />}
           onClick={() => {
             setSelectedRow(null);
-            setWindowOpen(true);
+            setOpen(true);
           }}
         >
           Добавить
@@ -111,33 +116,22 @@ export const AdminPanel = () => {
     ),
     handleClick: (record) => {
       setSelectedRow(record.row);
-      setWindowOpen(true);
-      // setOpen(true);
+      setOpen(true);
     },
   });
 
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <Window
-        title={"Пользователь"}
-        buttons={
-          <>
-            <Button variant="contained" color="primary">
-              Сохранение
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => setWindowOpen(false)}
-              color="primary"
-            >
-              Отмена
-            </Button>
-          </>
-        }
-      >
-        {JSON.stringify(selectedRow && selectedRow.original)}
-      </Window>
+      <AdminDetail
+        onSubmit={() => {
+          tableComponent.loadData();
+          setOpen(false);
+        }}
+        record={selectedRow ? selectedRow.original : null}
+        open={open}
+        setOpen={setOpen}
+      />
 
       {tableComponent.table}
     </div>

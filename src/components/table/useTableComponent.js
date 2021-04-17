@@ -63,7 +63,6 @@ export const useTableComponent = ({
   selectedRow: _selectedRow,
   handleSave = () => {},
   handleAdd = () => {},
-
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -72,12 +71,12 @@ export const useTableComponent = ({
   const [loading, setLoading] = useState(false);
   const [size, setSize] = useState({ width: 500, height: 300 });
   const [filterHidden, setFilterHidden] = useState(false);
-  const [editError, setEditError] = useState('');
+  const [editError, setEditError] = useState("");
 
   const setSelectedRow = (...props) => {
     _setSelectedRow(...props);
-    setEditError('');
-  }
+    setEditError("");
+  };
   const childRef = useRef(null);
   const parentRef = useRef(null);
 
@@ -477,48 +476,44 @@ export const useTableComponent = ({
           <Typography variant="h6">{title}</Typography>
         )}
         <div className={classes.iconButtonFlex} />
-        {buttons}
-        {numSelected > 0 ? (
+        <Box className={classes.buttonsWrapper}>
+          {buttons}
+          {numSelected > 0 ? (
+            <Button
+              title={"Сбросить выделение"}
+              className={classes.iconButton}
+              color={filters && filters.length ? "primary" : "black"}
+              onClick={() => handleUnselectAll()}
+            >
+              <ReplayOutlined />
+            </Button>
+          ) : null}
           <Button
-            title={"Сбросить выделение"}
-            className={classes.iconButton}
-            color={filters && filters.length ? "primary" : "black"}
-            onClick={() => handleUnselectAll()}
+            endIcon={<FilterListIcon />}
+            title={"Фильтры"}
+            variant="contained"
+            color="primary"
+            onClick={() => setFilterHidden(!filterHidden)}
           >
-            <ReplayOutlined />
+            Фильтры
           </Button>
-        ) : null}
-        <Button
-          title={"Фильтры"}
-          className={classes.iconButton}
-          color={filters && filters.length ? "primary" : "black"}
-          onClick={() => setFilterHidden(!filterHidden)}
-        >
-          <FilterListIcon />
-        </Button>
-        {numSelected > 0 &&
-          actionButtons.map((item) => {
-            const { handler, title, icon } = item;
-            return (
-              <Button
-                onClick={() => {
-                  handler(selectedRowIds);
-                  handleUnselectAll();
-                  loadData();
-                }}
-                title={title}
-              >
-                {icon}
-              </Button>
-            );
-          })}
-        {/* <Button
-            title={"Экспорт в эксель"}
-            // className={classes.iconButton}
-            onClick={ExportToCsv}
-          >
-            <Description />
-          </Button> */}
+          {numSelected > 0 &&
+            actionButtons.map((item) => {
+              const { handler, title, icon } = item;
+              return (
+                <Button
+                  onClick={() => {
+                    handler(selectedRowIds);
+                    handleUnselectAll();
+                    loadData();
+                  }}
+                  title={title}
+                >
+                  {icon}
+                </Button>
+              );
+            })}
+        </Box>
       </Toolbar>
     );
   }
@@ -602,7 +597,10 @@ export const useTableComponent = ({
                   } else {
                     return (
                       <TableCell
-                        style={column.style || (column.id === "selection" ? { width: '80px' } : {})}
+                        style={
+                          column.style ||
+                          (column.id === "selection" ? { width: "80px" } : {})
+                        }
                         {...column.getHeaderProps()}
                       >
                         <span
@@ -651,7 +649,10 @@ export const useTableComponent = ({
                         role="checkbox"
                         tabIndex={-1}
                         {...row.getRowProps()}
-                        className={classNames(getRowClassName(row), classes.tableRow)}
+                        className={classNames(
+                          getRowClassName(row),
+                          classes.tableRow
+                        )}
                       >
                         {row.cells.map((cell) => {
                           const filterProps = cell.column.fieldProps;
@@ -677,7 +678,12 @@ export const useTableComponent = ({
                                 align="left"
                                 {...cell.getCellProps()}
                                 className={classes.cell}
-                                style={cell.column.style || (cell.column.id === "selection" ? { width: '80px' } : {})}
+                                style={
+                                  cell.column.style ||
+                                  (cell.column.id === "selection"
+                                    ? { width: "80px" }
+                                    : {})
+                                }
                               >
                                 {cell.render("Cell", {
                                   ...(filterProps || {}),

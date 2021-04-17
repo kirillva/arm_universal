@@ -208,6 +208,21 @@ export const runRpc = (body, token) => {
   });
 };
 
+export const runRpcRecords = async body => {
+	const response = await runRpc(body);
+	return response.result.records;
+}
+
+export const runRpcSingleRecord = async body => {
+	const response = await runRpc({...body, limit: 1});
+	const records = response.result.records;
+	if (records && records.length) {
+		return records[0];
+	} else {
+		return null;
+	}
+}
+
 /**
  * Выполнить rpc-запрос
  * @param {*} body
