@@ -60,17 +60,24 @@ export const useTableComponent = ({
   actionButtons = [
     /** {  icon, title, handler },*/
   ],
+  selectedRow: _selectedRow,
   handleSave = () => {},
   handleAdd = () => {},
+
 }) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [total, setTotal] = useState(0);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, _setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(false);
   const [size, setSize] = useState({ width: 500, height: 300 });
   const [filterHidden, setFilterHidden] = useState(false);
+  const [editError, setEditError] = useState('');
 
+  const setSelectedRow = (...props) => {
+    _setSelectedRow(...props);
+    setEditError('');
+  }
   const childRef = useRef(null);
   const parentRef = useRef(null);
 
@@ -538,14 +545,16 @@ export const useTableComponent = ({
     setSelectedRow,
     selectedRow,
     handleUnselectAll,
+    setEditError,
     table: (
       <Box className={className} ref={parentRef}>
         <EditRowForm
+          error={editError}
           title={title}
           action={action}
           idProperty={idProperty}
           setSelectedRow={setSelectedRow}
-          selectedRow={selectedRow}
+          selectedRow={_selectedRow || selectedRow}
           columns={columns}
           editForm={editForm}
           handleSave={handleSave}

@@ -7,6 +7,7 @@ import {
   DialogTitle,
   makeStyles,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { runRpc } from "utils/rpc";
 import { useField, Formik } from "formik";
@@ -28,7 +29,8 @@ export const EditRowForm = ({
   columns,
   editForm,
   handleSave,
-  handleAdd
+  handleAdd,
+  error,
 }) => {
   const classes = useStyles();
 
@@ -41,48 +43,47 @@ export const EditRowForm = ({
     });
     record[idProperty] = values[idProperty];
 
-    isEdit ? handleSave(values) : handleAdd(values);  
+    isEdit ? handleSave(values) : handleAdd(values);
   }
 
   return (
     <Dialog onClose={() => setSelectedRow(null)} open={Boolean(selectedRow)}>
-      <DialogTitle>
-        {isEdit
-          ? "Редактирование"
-          : "Добавление"}
-      </DialogTitle>
+      <DialogTitle>{isEdit ? "Редактирование" : "Добавление"}</DialogTitle>
       <Formik
         initialValues={selectedRow ? selectedRow.original : {}}
         onSubmit={updateSelectedRow}
       >
         {(props) => (
           <form onSubmit={props.handleSubmit}>
-            <DialogContent className={classes.dialogContent}>
-              <input
-                hidden
-                name={idProperty}
-                value={selectedRow ? selectedRow.original[idProperty] : ""}
-              />
-              {editForm
-                ? editForm(selectedRow ? selectedRow.original : null)
-                : columns.map((item) => {
-                    const options = {
-                      label: item.title,
-                      onChange: props.handleChange,
-                      onBlur: props.handleBlur,
-                      setFieldValue: props.setFieldValue,
-                      value: props.values[item.accessor],
-                      name: item.accessor,
-                      variant: "outlined",
-                      margin: "dense",
-                      fieldProps: item.fieldProps || null,
-                    };
-                    if (item.Editor) {
-                      return React.createElement(item.Editor, options);
-                    } else {
-                      return <TextField {...options} />;
-                    }
-                  })}
+            <DialogContent>
+              <Typography color="error">{error}</Typography>
+              <div className={classes.dialogContent}>
+                <input
+                  hidden
+                  name={idProperty}
+                  value={selectedRow ? selectedRow.original[idProperty] : ""}
+                />
+                {editForm
+                  ? editForm(selectedRow ? selectedRow.original : null)
+                  : columns.map((item) => {
+                      const options = {
+                        label: item.title,
+                        onChange: props.handleChange,
+                        onBlur: props.handleBlur,
+                        setFieldValue: props.setFieldValue,
+                        value: props.values[item.accessor],
+                        name: item.accessor,
+                        variant: "outlined",
+                        margin: "dense",
+                        fieldProps: item.fieldProps || null,
+                      };
+                      if (item.Editor) {
+                        return React.createElement(item.Editor, options);
+                      } else {
+                        return <TextField {...options} />;
+                      }
+                    })}
+              </div>
             </DialogContent>
             <DialogActions>
               <Button color="primary" variant="contained" type="submit">
