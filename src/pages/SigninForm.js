@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const SigninForm = withRouter(({ history, setAuth }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const { handleSubmit, handleChange, values, isSubmitting } = useFormik({
+  const { handleSubmit, handleChange, errors, values, isSubmitting, setSubmitting, setErrors } = useFormik({
     initialValues: {
       login: "",
       password: "",
@@ -54,9 +54,31 @@ export const SigninForm = withRouter(({ history, setAuth }) => {
         login: values.login,
         password: values.password,
         persist: true,
-      }).then(() => {
-        setAuth(true);
-        history.push("/");
+        onDisabled: () => {
+          setErrors({
+            login: 'Учетная запись отключена',
+            password: '',
+            remember: ''
+          });
+          setSubmitting(false);
+        },
+        onSuccess: () => {
+          setErrors({
+            login: '',
+            password: '',
+            remember: ''
+          });
+          setAuth(true);
+          history.push("/");
+        },
+        onError: () => {
+          setErrors({
+            login: 'Логин или пароль введены неверно',
+            password: '',
+            remember: ''
+          });
+          setSubmitting(false);
+        },
       });
     },
   });
@@ -68,6 +90,7 @@ export const SigninForm = withRouter(({ history, setAuth }) => {
           <Typography variant="h6" className={classes.title}>
             Вход
           </Typography>
+          <Typography color="error">{errors.login}</Typography>
           <TextField
             label="Логин"
             name="login"

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   BoolFilter,
+  DateSingleFilter,
   NumberFilter,
   Operators,
   StringFilter,
@@ -64,8 +65,8 @@ export const DocumentsPanel = () => {
           title: "Дата рождения",
           accessor: "d_birthday",
           operator: Operators.date,
-          style: { width: '100px', textAlign: 'center' },
-          Filter: () => null,
+          style: { width: '170px', textAlign: 'center' },
+          Filter: DateSingleFilter,
           Cell: DateCell,
         },
         {
@@ -95,7 +96,8 @@ export const DocumentsPanel = () => {
           title: "Дата подачи заявления",
           accessor: "d_date",
           operator: Operators.date,
-          Filter: () => null,
+          style: { width: '170px', textAlign: 'center' },
+          Filter: DateSingleFilter,
           Cell: DateCell,
         },
         {
@@ -139,16 +141,16 @@ export const DocumentsPanel = () => {
           title: "Решение о снятии с учета",
           accessor: "d_take_off_solution",
           operator: Operators.date,
-          style: { width: '100px', textAlign: 'center' },
-          Filter: () => null,
+          style: { width: '170px', textAlign: 'center' },
+          Filter: DateSingleFilter,
           Cell: DateCell,
         },
         {
           title: "Сообщение заявителю о снятии с учета",
           accessor: "d_take_off_message",
           operator: Operators.date,
-          style: { width: '100px', textAlign: 'center' },
-          Filter: () => null,
+          style: { width: '170px', textAlign: 'center' },
+          Filter: DateSingleFilter,
           Cell: DateCell,
         },
         {

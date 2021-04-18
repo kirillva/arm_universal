@@ -6,11 +6,17 @@ import {
   IconButton,
 } from "@material-ui/core";
 import _ from "lodash";
-import DatePicker from "./DatePicker";
 import Hidden from "@material-ui/core/Hidden";
 import { Clear } from "@material-ui/icons";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+  DatePicker
+} from "@material-ui/pickers";
 
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
+import MomentUtils from "@date-io/moment";
 const useStyles = makeStyles((theme) => ({
   adornedEnd: {
     paddingRight: "3px",
@@ -88,6 +94,36 @@ export const NumberFilter = ({
         }
       }}
     />
+  );
+};
+
+export const DateSingleFilter = ({
+  column: { filterValue, setFilter },
+  className,
+  hidden,
+}) => {
+  const classes = useStyles();
+  return (
+    <MuiPickersUtilsProvider
+      libInstance={moment}
+      utils={MomentUtils}
+      locale={"ru"}
+    >
+      <DatePicker
+        autoOk
+        placeholder="Поиск..."
+        inputVariant="outlined"
+        format={"DD.MM.YYYY"}
+        value={filterValue || null}
+        size="small"
+        onChange={(date) => setFilter(date)}
+        clearable={true}
+        clearLabel={'Сбросить'}
+        okLabel={'Ок'}
+        cancelLabel={'Отмена'}
+       
+      />
+    </MuiPickersUtilsProvider>
   );
 };
 

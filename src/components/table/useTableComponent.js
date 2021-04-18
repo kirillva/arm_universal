@@ -33,6 +33,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { EditRowForm } from "./EditRowForm";
 import { ArrowDropDown, ArrowDropUp, ReplayOutlined } from "@material-ui/icons";
 import { TablePaginationActions } from "./TablePaginationActions";
+import moment from "moment";
 
 export const useTableComponent = ({
   columns,
@@ -235,13 +236,18 @@ export const useTableComponent = ({
               break;
 
             case "date":
-              // if (item.value.start) {
-              //   _filters.push({
-              //     property: item.id,
-              //     value: moment(item.value.start).toISOString(true),
-              //     operator: "gt",
-              //   });
-              // }
+              if (item.value) {
+                _filters.push({
+                  property: item.id,
+                  value: moment(item.value).startOf('day').toISOString(true),
+                  operator: ">=",
+                });
+                _filters.push({
+                  property: item.id,
+                  value: moment(item.value).endOf('day').toISOString(true),
+                  operator: "<=",
+                });
+              }
 
               // if (item.value.finish) {
               //   _filters.push({
