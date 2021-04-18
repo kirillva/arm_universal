@@ -20,7 +20,6 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log('record', record)
   const handleUpdate = () => {
     const {
       c_login,

@@ -43,6 +43,10 @@ export const DocumentsPanel = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [open, setOpen] = useState(null);
 
+  const isReadOnly = getClaims().indexOf(".readonly.") >= 0;
+  const isFullAccess = getClaims().indexOf(".full.") >= 0;
+  const isOnlyChange = getClaims().indexOf(".change.") >= 0;
+
   const pd_user = React.useMemo(
     () =>
       [
@@ -167,17 +171,17 @@ export const DocumentsPanel = () => {
 
   const tableComponent = useTableComponent({
     className: classes.table,
-    title: "Документы",
+    title: "Заявления",
     columns: pd_user,
     action: "dd_documents",
     sortBy: [{ id: 'n_number', desc: true }],
     globalFilters: React.useMemo(
       () => [
-        // {
-        //   property: "c_login",
-        //   value: ["anonymous", "admin"].map((key) => `'${key}'`),
-        //   operator: "notin",
-        // },
+        {
+          property: "sn_delete",
+          value: false,
+          operator: "=",
+        },
       ],
       []
     ),
@@ -188,6 +192,7 @@ export const DocumentsPanel = () => {
           variant="contained"
           color="primary"
           endIcon={<PlusOne />}
+          disabled={!isFullAccess}
           onClick={() => {
             setSelectedRow(null);
             setOpen(true);
@@ -206,15 +211,15 @@ export const DocumentsPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <DocumentsDetail
+      {open && <DocumentsDetail
         onSubmit={() => {
           tableComponent.loadData();
           setOpen(false);
         }}
-        record={selectedRow ? selectedRow.original : null}
+        recordID={selectedRow ? selectedRow.original.id : -1}
         open={open}
         setOpen={setOpen}
-      />
+      />}
       {tableComponent.table}
     </div>
   );

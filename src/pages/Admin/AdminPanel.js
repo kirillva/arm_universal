@@ -88,7 +88,7 @@ export const AdminPanel = () => {
     title: "Список пользователей",
     columns: pd_user,
     action: "pd_users",
-    sortBy: [{ id: 'c_login', desc: false }, { id: 'b_disabled', desc: true }],
+    sortBy: [{ id: 'b_disabled', desc: false }, { id: 'c_login', desc: false }],
     globalFilters: React.useMemo(
       () => [
         {

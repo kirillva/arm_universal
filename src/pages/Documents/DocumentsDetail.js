@@ -26,7 +26,10 @@ import MomentUtils from "@date-io/moment";
 import "moment/locale/ru";
 import moment from "moment";
 import Card from "@material-ui/core/Card";
-import { getUserId } from "utils/user";
+import { getClaims, getUserId } from "utils/user";
+import * as Yup from "yup";
+
+import { useMessageContext } from "context/MessageContext";
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -36,13 +39,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const DocumentsDetail = ({
-  record,
+  recordID,
   open,
   setOpen,
   onSubmit = () => {},
 }) => {
   const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState(false);
   const [jbchild, setjbchild] = useState([]);
+
+  const isReadOnly = getClaims().indexOf(".readonly.") >= 0;
+  const isFullAccess = getClaims().indexOf(".full.") >= 0;
+  const isOnlyChange = getClaims().indexOf(".change.") >= 0;
+  const { ShowAcceptWindow } = useMessageContext();
 
   const classes = useStyles();
   const {
@@ -53,10 +62,39 @@ export const DocumentsDetail = ({
     setSubmitting,
     setFieldValue,
     resetForm,
-
+    errors,
     setValues,
+    validateField,
+    validateForm,
   } = useFormik({
+    // validateOnMount: true,
+    validationSchema: Yup.object().shape({
+      c_fio: Yup.string().nullable().required("Не заполнено обязательное поле"),
+      d_birthday: Yup.date()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      n_year: Yup.number()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      c_document: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      c_address: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      d_date: Yup.date().nullable().required("Не заполнено обязательное поле"),
+      c_time: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      c_intent: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+      c_account: Yup.string()
+        .nullable()
+        .required("Не заполнено обязательное поле"),
+    }),
     // enableReinitialize: true,
+    // validateOnMount: true,
     initialValues: {
       n_number: "",
       c_fio: "",
@@ -65,7 +103,7 @@ export const DocumentsDetail = ({
       c_document: "",
       c_address: "",
       d_date: moment(),
-      c_time:  moment().format('HH.mm'),
+      c_time: moment().format("HH.mm"),
       c_intent: "",
       c_account: "",
       c_accept: "",
@@ -77,7 +115,7 @@ export const DocumentsDetail = ({
       sn_delete: false,
       // jb_child: [],
       c_import_doc: "",
-      c_import_warning: ""
+      c_import_warning: "",
     },
     onSubmit: (values) => {
       values.jb_child = jbchild;
@@ -85,7 +123,7 @@ export const DocumentsDetail = ({
         runRpc({
           action: "dd_documents",
           method: "Update",
-          data: [{...values, n_year: Number(values.n_year)}],
+          data: [{ ...values, n_year: Number(values.n_year) }],
           type: "rpc",
         }).finally(() => {
           setSubmitting(false);
@@ -105,23 +143,30 @@ export const DocumentsDetail = ({
               ],
             },
           ],
-        }).then(last_dd_document=>{
-          runRpc({
-            action: "dd_documents",
-            method: "Add",
-            data: [{ ...values, n_number: last_dd_document.n_number + 1, n_year: Number(values.n_year) }],
-            type: "rpc",
-          }).finally(() => {
+        })
+          .then((last_dd_document) => {
+            runRpc({
+              action: "dd_documents",
+              method: "Add",
+              data: [
+                {
+                  ...values,
+                  n_number: last_dd_document.n_number + 1,
+                  n_year: Number(values.n_year),
+                },
+              ],
+              type: "rpc",
+            }).finally(() => {
+              setSubmitting(false);
+              onSubmit();
+            });
+          })
+          .catch(() => {
             setSubmitting(false);
-            onSubmit();
           });
-        }).catch(() => {
-          setSubmitting(false);
-        });
       }
     },
   });
-
   const onChangeJbChild = (id, name) => {
     return (e) => {
       if (name !== "d_birthday") {
@@ -133,35 +178,34 @@ export const DocumentsDetail = ({
     };
   };
   const loadData = async () => {
-    if (record && record.id) {
-      setLoading(true);
-      const dd_document = await runRpcSingleRecord({
-        action: "dd_documents",
-        method: "Query",
-        data: [
-          {
-            filter: [
-              {
-                property: "id",
-                value: record.id,
-                operator: "=",
-              },
-            ],
-          },
-        ],
-      });
-      setjbchild(dd_document.jb_child || []);
-      setValues(dd_document);
-      setLoading(false);
-    }
+    setLoading(true);
+    const dd_document = await runRpcSingleRecord({
+      action: "dd_documents",
+      method: "Query",
+      data: [
+        {
+          filter: [
+            {
+              property: "id",
+              value: recordID,
+              operator: "=",
+            },
+          ],
+        },
+      ],
+    });
+    setjbchild(dd_document.jb_child || []);
+    setValues(dd_document);
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (record && record.id) {
+    if (recordID !== -1) {
       loadData();
+      validateForm(values);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [record]);
+  }, [recordID]);
 
   const options = {
     disabled: isSubmitting,
@@ -190,7 +234,7 @@ export const DocumentsDetail = ({
       PaperProps={{ className: classes.Paper }}
       maxWidth="calc(100% - 60px)"
     >
-      <DialogTitle id="form-dialog-title">Документ</DialogTitle>
+      <DialogTitle id="form-dialog-title">Заявление</DialogTitle>
       <DialogContent>
         <MuiPickersUtilsProvider
           libInstance={moment}
@@ -219,12 +263,16 @@ export const DocumentsDetail = ({
                     label={"Номер"}
                     name={"n_number"}
                     value={values.n_number}
+                    disabled={true}
                   />
                 )}
                 <TextField
                   {...options}
                   label={"ФИО заявителя"}
+                  disabled={!isFullAccess}
                   name={"c_fio"}
+                  error={errors.c_fio}
+                  helperText={errors.c_fio}
                   value={values.c_fio}
                 />
                 <KeyboardDatePicker
@@ -233,27 +281,43 @@ export const DocumentsDetail = ({
                   inputVariant="outlined"
                   name={"d_birthday"}
                   label={"Дата рождения"}
+                  disabled={!isFullAccess}
                   format={dateFormat}
                   size="small"
+                  error={errors.d_birthday}
+                  helperText={errors.d_birthday}
                   InputAdornmentProps={{ position: "end" }}
-                  value={values.d_birthday || moment()}
-                  onChange={onChangeDate("d_birthday")}
+                  value={values.d_birthday}
+                  onChange={(date) => {
+                    setFieldValue("d_birthday", moment(date).toISOString(true));
+                    setFieldValue("n_year", moment().diff(date, "year"));
+                    validateField("d_birthday");
+                  }}
                 />
                 <TextField
                   {...options}
                   label={"Возраст на момент постановки"}
                   name={"n_year"}
+                  disabled={true}
+                  error={errors.n_year}
+                  helperText={errors.n_year}
                   value={values.n_year}
                 />
                 <TextField
                   {...options}
                   label={"Реквизиты документа, удостоверяющего личность"}
                   name={"c_document"}
+                  disabled={!isFullAccess}
+                  error={errors.c_document}
+                  helperText={errors.c_document}
                   value={values.c_document}
                 />
                 <TextField
                   {...options}
                   label={"Адрес, телефон"}
+                  disabled={!isFullAccess}
+                  error={errors.c_address}
+                  helperText={errors.c_address}
                   name={"c_address"}
                   value={values.c_address}
                 />
@@ -323,8 +387,11 @@ export const DocumentsDetail = ({
                   variant="inline"
                   inputVariant="outlined"
                   label={"Дата подачи заявления"}
+                  disabled={!isFullAccess}
                   name={"d_date"}
                   value={values.d_date}
+                  error={errors.d_date}
+                  helperText={errors.d_date}
                   format={dateFormat}
                   size="small"
                   InputAdornmentProps={{ position: "end" }}
@@ -333,19 +400,28 @@ export const DocumentsDetail = ({
                 <TextField
                   {...options}
                   label={"Время подачи заявления"}
+                  disabled={!isFullAccess}
+                  error={errors.c_time}
+                  helperText={errors.c_time}
                   name={"c_time"}
                   value={values.c_time}
                 />
                 <TextField
                   {...options}
                   label={"Цель использования земельного участка"}
+                  disabled={!isFullAccess}
+                  error={errors.c_intent}
+                  helperText={errors.c_intent}
                   name={"c_intent"}
                   value={values.c_intent}
                 />
                 <TextField
                   {...options}
                   label={"Постановление о постановке на учет"}
+                  disabled={!isFullAccess}
                   name={"c_account"}
+                  error={errors.c_account}
+                  helperText={errors.c_account}
                   value={values.c_account}
                 />
                 {/* <TextField
@@ -359,8 +435,11 @@ export const DocumentsDetail = ({
                   variant="inline"
                   inputVariant="outlined"
                   label={"Решение о снятии с учета"}
+                  disabled={!isFullAccess}
                   name={"d_take_off_solution"}
-                  value={values.d_take_off_solution || null }
+                  error={errors.c_account}
+                  helperText={errors.c_account}
+                  value={values.d_take_off_solution || null}
                   format={dateFormat}
                   size="small"
                   InputAdornmentProps={{ position: "end" }}
@@ -377,8 +456,9 @@ export const DocumentsDetail = ({
                   variant="inline"
                   inputVariant="outlined"
                   label={"Сообщение заявителю о снятии с учета"}
+                  disabled={!isFullAccess}
                   name={"d_take_off_message"}
-                  value={values.d_take_off_message || null }
+                  value={values.d_take_off_message || null}
                   format={dateFormat}
                   size="small"
                   InputAdornmentProps={{ position: "end" }}
@@ -387,6 +467,7 @@ export const DocumentsDetail = ({
                 <TextField
                   {...options}
                   label={"Примечание"}
+                  disabled={!isFullAccess}
                   multiline
                   rows={4}
                   name={"c_notice"}
@@ -412,12 +493,14 @@ export const DocumentsDetail = ({
               >
                 <TextField
                   {...options}
+                  disabled={isReadOnly}
                   label={"Дата и номер принятия решения"}
                   name={"c_accept"}
                   value={values.c_accept}
                 />
                 <TextField
                   {...options}
+                  disabled={isReadOnly}
                   label={"Кадастровый номер принятия решения"}
                   name={"c_earth"}
                   value={values.c_earth}
@@ -448,6 +531,7 @@ export const DocumentsDetail = ({
                       <TextField
                         {...options}
                         onChange={onChangeJbChild(id, "c_fio")}
+                        disabled={!isFullAccess}
                         label={"ФИО"}
                         name={`c_fio`}
                         value={item.c_fio || ""}
@@ -462,6 +546,7 @@ export const DocumentsDetail = ({
                       <TextField
                         {...options}
                         onChange={onChangeJbChild(id, "c_address")}
+                        disabled={!isFullAccess}
                         label={"Адрес, телефон"}
                         name={`c_address`}
                         value={item.c_address || ""}
@@ -469,6 +554,7 @@ export const DocumentsDetail = ({
                       <TextField
                         {...options}
                         onChange={onChangeJbChild(id, "c_document")}
+                        disabled={!isFullAccess}
                         label={"Реквизиты документа, удостоверяющего личность"}
                         name={`c_document`}
                         value={item.c_document || ""}
@@ -478,7 +564,8 @@ export const DocumentsDetail = ({
                         variant="inline"
                         inputVariant="outlined"
                         label={"Дата рождения"}
-                        value={item.d_birthday || moment()}
+                        disabled={!isFullAccess}
+                        value={item.d_birthday || null}
                         format={dateFormat}
                         size="small"
                         InputAdornmentProps={{ position: "end" }}
@@ -487,12 +574,26 @@ export const DocumentsDetail = ({
                     </Box>
                     <Button
                       style={{ width: "100px", margin: "0 10px 20px auto" }}
+                      disabled={!isFullAccess}
                       onClick={() => {
-                        // debugger;
-                        // console.log(values.jb_child);
-                        jbchild.splice(id, 1);
-                        setjbchild([...jbchild]);
-                        // setFieldValue()
+                        ShowAcceptWindow({
+                          title: "Предупреждение",
+                          components: `Вы действительно хотите удалить родственника? Данные могут быть потеряны.`,
+                          buttons: [
+                            {
+                              text: "Да",
+                              color: "secondary",
+                              handler: () => {
+                                jbchild.splice(id, 1);
+                                setjbchild([...jbchild]);
+                              },
+                            },
+                            {
+                              text: "Нет",
+                              color: "primary",
+                            },
+                          ],
+                        });
                       }}
                       color="primary"
                       variant="contained"
@@ -505,6 +606,7 @@ export const DocumentsDetail = ({
               {
                 <Button
                   style={{ margin: "0 10px 10px 10px" }}
+                  disabled={!isFullAccess}
                   onClick={() => {
                     // debugger;
                     // console.log(values.jb_child);
@@ -537,12 +639,14 @@ export const DocumentsDetail = ({
               >
                 <TextField
                   {...options}
+                  disabled={true}
                   label={"В рамках какого документа был импорт"}
                   name={"c_import_doc"}
                   value={values.c_import_doc}
                 />
                 <TextField
                   {...options}
+                  disabled={true}
                   label={"Текст предупреждения"}
                   name={"c_import_warning"}
                   value={values.c_import_warning}
@@ -553,7 +657,45 @@ export const DocumentsDetail = ({
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        {values.id && <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            ShowAcceptWindow({
+              title: "Предупреждение",
+              components: `Вы действительно хотите удалить заявку? Данные могут быть потеряны.`,
+              buttons: [
+                {
+                  text: "Да",
+                  color: "secondary",
+                  handler: () => {
+                    runRpc({
+                      action: "dd_documents",
+                      method: "Update",
+                      data: [{ id: values.id, sn_delete: true}],
+                      type: "rpc",
+                    }).finally(() => {
+                      onSubmit();
+                    });
+                  },
+                },
+                {
+                  text: "Нет",
+                  color: "primary",
+                },
+              ],
+            });
+          }}
+          disabled={!isFullAccess}
+        >
+          Удалить
+        </Button>}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={isReadOnly}
+        >
           Сохранение
         </Button>
         <Button variant="contained" onClick={onClose} color="primary">

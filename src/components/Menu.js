@@ -96,6 +96,6 @@ export const menuItems = [
     ],
     icon: AssignmentIcon,
     path: "/documents",
-    title: "Документы",
+    title: "Заявления",
   }
 ];

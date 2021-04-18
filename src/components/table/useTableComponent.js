@@ -239,12 +239,12 @@ export const useTableComponent = ({
               if (item.value) {
                 _filters.push({
                   property: item.id,
-                  value: moment(item.value).startOf('day').toISOString(true),
+                  value: moment(item.value).startOf("day").toISOString(true),
                   operator: ">=",
                 });
                 _filters.push({
                   property: item.id,
-                  value: moment(item.value).endOf('day').toISOString(true),
+                  value: moment(item.value).endOf("day").toISOString(true),
                   operator: "<=",
                 });
               }
@@ -434,16 +434,32 @@ export const useTableComponent = ({
       action,
     }).then(({ data }) => {
       if (!data || !data.length) return null;
+      const labels = {};
+      Object.keys(columns).forEach(
+        (key) => (labels[columns[key].accessor] = columns[key].title)
+      );
 
       var textToSaveAsBlob = new Blob(
         [
           "\uFEFF" +
-            Object.keys(data[0]).join(";") +
+            Object.keys(data[0])
+              .map((key) => labels[key])
+              .join(";") +
             "\n" +
             data
               .map((e) =>
                 Object.keys(e)
-                  .map((key) => e[key])
+                  .map((key) => {
+                    if (e[key]) {
+                      if (e[key].replace && e[key].trim) {
+                        return e[key].replace(/[\\n]/g, "").replace(/[\\r]/g, "").replace(/[↵]/g, " ").trim();
+                      } else {
+                        return e[key];
+                      }
+                    } else {
+                      return "";
+                    }
+                  })
                   .join(";")
               )
               .join("\n"),
@@ -454,7 +470,7 @@ export const useTableComponent = ({
       var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
 
       var downloadLink = document.createElement("a");
-      downloadLink.download = `${title} ${action}.csv`;
+      downloadLink.download = `${title}.csv`;
 
       downloadLink.href = textToSaveAsURL;
       downloadLink.onclick = function (event) {
@@ -494,6 +510,15 @@ export const useTableComponent = ({
               <ReplayOutlined />
             </Button>
           ) : null}
+          <Button
+            endIcon={<FilterListIcon />}
+            title={"Фильтры"}
+            variant="contained"
+            color="primary"
+            onClick={ExportToCsv}
+          >
+            Экспорт
+          </Button>
           {/* <Button
             endIcon={<FilterListIcon />}
             title={"Фильтры"}
