@@ -13,7 +13,7 @@ import { Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   adornedEnd: {
-    paddingRight: '3px',
+    paddingRight: "3px",
   },
   root: {
     padding: "6px",
@@ -27,7 +27,7 @@ export const Operators = {
   bool: "bool",
   user: "user",
   status: "status",
-  fromTo: 'fromTo'
+  fromTo: "fromTo",
 };
 
 function applyFilter(filterValue, value, setFilter) {
@@ -41,7 +41,6 @@ function applyFilter(filterValue, value, setFilter) {
 }
 
 const applyFilterDebounced = _.debounce(applyFilter, 1000);
-
 
 export const NumberFilter = ({
   column: { filterValue, setFilter },
@@ -65,6 +64,7 @@ export const NumberFilter = ({
   return (
     <TextField
       type="number"
+      placeholder="Поиск..."
       style={{ display: hidden ? "none" : "unset" }}
       variant="outlined"
       margin="dense"
@@ -76,21 +76,13 @@ export const NumberFilter = ({
       onChange={(e) => {
         setValue(e.target.value);
         if (!error) {
-          applyFilterDebounced(
-            filterValue,
-            e.target.value,
-            setFilter
-          );
+          applyFilterDebounced(filterValue, e.target.value, setFilter);
         }
       }}
       onKeyDown={(e) => {
         if (!error) {
           if (e.key === "Enter") {
-            applyFilter(
-              filterValue,
-              e.target.value,
-              setFilter
-            );
+            applyFilter(filterValue, e.target.value, setFilter);
             applyFilterDebounced.cancel();
           }
         }
@@ -105,9 +97,9 @@ export const FromToFilter = ({
   hidden,
 }) => {
   // const classes = useStyles();
-  const [from, setFrom] = useState(filterValue ? filterValue.from : '');
-  const [to, setTo] = useState(filterValue ? filterValue.to : '');
-  
+  const [from, setFrom] = useState(filterValue ? filterValue.from : "");
+  const [to, setTo] = useState(filterValue ? filterValue.to : "");
+
   return (
     <>
       <TextField
@@ -122,11 +114,7 @@ export const FromToFilter = ({
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            applyFilter(
-              filterValue,
-              e.target.value,
-              setFilter
-            );
+            applyFilter(filterValue, e.target.value, setFilter);
             applyFilterDebounced.cancel();
           }
         }}
@@ -143,11 +131,7 @@ export const FromToFilter = ({
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            applyFilter(
-              filterValue,
-              e.target.value,
-              setFilter
-            );
+            applyFilter(filterValue, e.target.value, setFilter);
             applyFilterDebounced.cancel();
           }
         }}
@@ -165,6 +149,7 @@ export const StringFilter = ({
   const [value, setValue] = useState(filterValue);
   return (
     <TextField
+      placeholder="Поиск..."
       fullWidth
       style={{ display: hidden ? "none" : "unset" }}
       variant="outlined"
@@ -253,12 +238,7 @@ export const UserFilter = ({
 //   );
 // };
 
-export const BoolFilter = ({
-  column,
-  className,
-  hidden,
-  props = {}
-}) => {
+export const BoolFilter = ({ column, className, hidden, props = {} }) => {
   const defaultProps = {
     BOOL_TRUE: "Да",
     BOOL_FALSE: "Нет",
@@ -275,12 +255,16 @@ export const BoolFilter = ({
       name={column.id}
       className={className}
       onChange={(e) => {
-        setFilter(e.target.value)
+        setFilter(e.target.value);
       }}
     >
       <MenuItem value={""}>Все</MenuItem>
-      <MenuItem value={"true"}>{props.BOOL_TRUE || defaultProps.BOOL_TRUE}</MenuItem>
-      <MenuItem value={"false"}>{props.BOOL_FALSE || defaultProps.BOOL_FALSE}</MenuItem>
+      <MenuItem value={"true"}>
+        {props.BOOL_TRUE || defaultProps.BOOL_TRUE}
+      </MenuItem>
+      <MenuItem value={"false"}>
+        {props.BOOL_FALSE || defaultProps.BOOL_FALSE}
+      </MenuItem>
     </TextField>
   );
 };

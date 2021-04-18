@@ -26,6 +26,7 @@ import MomentUtils from "@date-io/moment";
 import "moment/locale/ru";
 import moment from "moment";
 import Card from "@material-ui/core/Card";
+import { getUserId } from "utils/user";
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -51,118 +52,84 @@ export const DocumentsDetail = ({
     isSubmitting,
     setSubmitting,
     setFieldValue,
+    resetForm,
+
     setValues,
   } = useFormik({
     // enableReinitialize: true,
     initialValues: {
       n_number: "",
       c_fio: "",
-      d_birthday: "",
+      d_birthday: moment(),
       n_year: "",
       c_document: "",
       c_address: "",
-      d_date: moment().toISOString(true),
-      c_time: "",
+      d_date: moment(),
+      c_time:  moment().format('HH.mm'),
       c_intent: "",
       c_account: "",
       c_accept: "",
       c_earth: "",
-      d_take_off_solution: "",
-      d_take_off_message: "",
+      d_take_off_solution: null,
+      d_take_off_message: null,
       c_notice: "",
-      f_user: "",
+      f_user: getUserId(),
       sn_delete: false,
       // jb_child: [],
       c_import_doc: "",
-      c_import_warning: "",
-      ...record,
+      c_import_warning: ""
     },
     onSubmit: (values) => {
-      // if (values.id) {
-      //   const {
-      //     c_login,
-      //     c_password,
-      //     c_first_name,
-      //     c_description,
-      //     b_disabled,
-      //     c_phone,
-      //     c_email,
-      //   } = values;
-      //   runRpc({
-      //     action: "pd_users",
-      //     method: "Update",
-      //     data: [
-      //       {
-      //         c_login,
-      //         c_password,
-      //         c_first_name,
-      //         c_description,
-      //         b_disabled,
-      //         c_phone,
-      //         c_email,
-      //       },
-      //     ],
-      //     type: "rpc",
-      //   }).then(() => {
-      //     runRpc({
-      //       action: "pd_userinroles",
-      //       method: "Update",
-      //       data: [{ id: values.f_role, f_role: values.c_claims }],
-      //       type: "rpc",
-      //     }).then(() => {
-      //       onSubmit(values);
-      //       setSubmitting(false);
-      //     });
-      //   });
-      // } else {
-      //   const {
-      //     c_login,
-      //     c_password,
-      //     c_first_name,
-      //     c_description,
-      //     b_disabled,
-      //     c_phone,
-      //     c_email,
-      //   } = values;
-      //   runRpc({
-      //     action: "pd_users",
-      //     method: "Add",
-      //     data: [
-      //       {
-      //         c_login,
-      //         c_password,
-      //         c_first_name,
-      //         c_description,
-      //         b_disabled,
-      //         c_phone,
-      //         c_email,
-      //       },
-      //     ],
-      //     type: "rpc",
-      //   }).then((response) => {
-      //     if (response.sql.rows && response.sql.rows.length) {
-      //       runRpc({
-      //         action: "pd_userinroles",
-      //         method: "Add",
-      //         data: [
-      //           { f_user: response.sql.rows[0].id, f_role: values.c_claims },
-      //         ],
-      //         type: "rpc",
-      //       }).then(() => {
-      //         onSubmit(values);
-      //         setSubmitting(false);
-      //       });
-      //     }
-      //   });
-      // }
+      values.jb_child = jbchild;
+      if (values.id) {
+        runRpc({
+          action: "dd_documents",
+          method: "Update",
+          data: [{...values, n_year: Number(values.n_year)}],
+          type: "rpc",
+        }).finally(() => {
+          setSubmitting(false);
+          onSubmit();
+        });
+      } else {
+        runRpcSingleRecord({
+          action: "dd_documents",
+          method: "Query",
+          data: [
+            {
+              sort: [
+                {
+                  property: "n_number",
+                  direction: "desc",
+                },
+              ],
+            },
+          ],
+        }).then(last_dd_document=>{
+          runRpc({
+            action: "dd_documents",
+            method: "Add",
+            data: [{ ...values, n_number: last_dd_document.n_number + 1, n_year: Number(values.n_year) }],
+            type: "rpc",
+          }).finally(() => {
+            setSubmitting(false);
+            onSubmit();
+          });
+        }).catch(() => {
+          setSubmitting(false);
+        });
+      }
     },
   });
 
   const onChangeJbChild = (id, name) => {
     return (e) => {
-      debugger;
-      jbchild[id] = { ...jbchild[id], [name]: e.target.value };
-      setjbchild(jbchild);
+      if (name !== "d_birthday") {
+        jbchild[id] = { ...jbchild[id], [name]: e.target.value };
+      } else {
+        jbchild[id] = { ...jbchild[id], [name]: moment(e).toISOString(true) };
+      }
+      setjbchild([...jbchild]);
     };
   };
   const loadData = async () => {
@@ -183,7 +150,6 @@ export const DocumentsDetail = ({
           },
         ],
       });
-      debugger;
       setjbchild(dd_document.jb_child || []);
       setValues(dd_document);
       setLoading(false);
@@ -204,11 +170,22 @@ export const DocumentsDetail = ({
     margin: "none",
     onChange: handleChange,
   };
+  const dateFormat = "DD.MM.YYYY";
+
+  const onChangeDate = (name) => {
+    return (date) => setFieldValue(name, moment(date).toISOString(true));
+  };
+
+  const onClose = () => {
+    resetForm();
+    setOpen(false);
+    setjbchild([]);
+  };
 
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={onClose}
       aria-labelledby="form-dialog-title"
       PaperProps={{ className: classes.Paper }}
       maxWidth="calc(100% - 60px)"
@@ -236,12 +213,14 @@ export const DocumentsDetail = ({
                 gridTemplateColumns="1fr 1fr"
                 padding="10px"
               >
-                <TextField
-                  {...options}
-                  label={"Номер"}
-                  name={"n_number"}
-                  value={values.n_number}
-                />
+                {values.id && (
+                  <TextField
+                    {...options}
+                    label={"Номер"}
+                    name={"n_number"}
+                    value={values.n_number}
+                  />
+                )}
                 <TextField
                   {...options}
                   label={"ФИО заявителя"}
@@ -254,11 +233,11 @@ export const DocumentsDetail = ({
                   inputVariant="outlined"
                   name={"d_birthday"}
                   label={"Дата рождения"}
-                  format="DD.MM.YYYY"
+                  format={dateFormat}
                   size="small"
                   InputAdornmentProps={{ position: "end" }}
-                  value={values.d_birthday}
-                  onChange={(date) => handleChange(date.format("DD.MM.YYYY"))}
+                  value={values.d_birthday || moment()}
+                  onChange={onChangeDate("d_birthday")}
                 />
                 <TextField
                   {...options}
@@ -340,6 +319,18 @@ export const DocumentsDetail = ({
                 gridTemplateColumns="1fr 1fr"
                 padding="10px"
               >
+                <KeyboardDatePicker
+                  autoOk
+                  variant="inline"
+                  inputVariant="outlined"
+                  label={"Дата подачи заявления"}
+                  name={"d_date"}
+                  value={values.d_date}
+                  format={dateFormat}
+                  size="small"
+                  InputAdornmentProps={{ position: "end" }}
+                  onChange={onChangeDate("d_date")}
+                />
                 <TextField
                   {...options}
                   label={"Время подачи заявления"}
@@ -370,11 +361,11 @@ export const DocumentsDetail = ({
                   inputVariant="outlined"
                   label={"Решение о снятии с учета"}
                   name={"d_take_off_solution"}
-                  value={values.d_take_off_solution}
-                  format="DD.MM.YYYY"
+                  value={values.d_take_off_solution || null }
+                  format={dateFormat}
                   size="small"
                   InputAdornmentProps={{ position: "end" }}
-                  onChange={(date) => handleChange(date.format("DD.MM.YYYY"))}
+                  onChange={onChangeDate("d_take_off_solution")}
                 />
                 {/* <TextField
                 {...options}
@@ -388,11 +379,11 @@ export const DocumentsDetail = ({
                   inputVariant="outlined"
                   label={"Сообщение заявителю о снятии с учета"}
                   name={"d_take_off_message"}
-                  value={values.d_take_off_message}
-                  format="DD.MM.YYYY"
+                  value={values.d_take_off_message || null }
+                  format={dateFormat}
                   size="small"
                   InputAdornmentProps={{ position: "end" }}
-                  onChange={(date) => handleChange(date.format("DD.MM.YYYY"))}
+                  onChange={onChangeDate("d_take_off_message")}
                 />
                 <TextField
                   {...options}
@@ -488,14 +479,11 @@ export const DocumentsDetail = ({
                         variant="inline"
                         inputVariant="outlined"
                         label={"Дата рождения"}
-                        name={`d_birthday`}
                         value={item.d_birthday || moment()}
-                        format="DD.MM.YYYY"
+                        format={dateFormat}
                         size="small"
                         InputAdornmentProps={{ position: "end" }}
-                        // onChange={(date) =>
-                        //   handleChange(date.format("DD.MM.YYYY"))
-                        // }
+                        onChange={onChangeJbChild(id, "d_birthday")}
                       />
                     </Box>
                     <Button
@@ -517,7 +505,7 @@ export const DocumentsDetail = ({
               })}
               {
                 <Button
-                  style={{ margin: "0 15px 15px 15px" }}
+                  style={{ margin: "0 10px 10px 10px" }}
                   onClick={() => {
                     // debugger;
                     // console.log(values.jb_child);
@@ -527,7 +515,7 @@ export const DocumentsDetail = ({
                   color="primary"
                   variant="contained"
                 >
-                  Добавить
+                  Добавить родственника
                 </Button>
               }
             </Box>
@@ -569,11 +557,7 @@ export const DocumentsDetail = ({
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           Сохранение
         </Button>
-        <Button
-          variant="contained"
-          onClick={() => setOpen(false)}
-          color="primary"
-        >
+        <Button variant="contained" onClick={onClose} color="primary">
           Отмена
         </Button>
       </DialogActions>

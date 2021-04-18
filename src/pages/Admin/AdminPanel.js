@@ -64,7 +64,7 @@ export const AdminPanel = () => {
           Cell: StringCell,
         },
         {
-          title: "Удален",
+          title: "Неактивен",
           accessor: "b_disabled",
           operator: Operators.bool,
           Filter: BoolFilter,

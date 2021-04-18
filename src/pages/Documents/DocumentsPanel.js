@@ -46,55 +46,117 @@ export const DocumentsPanel = () => {
     () =>
       [
         {
-          title: "n_number",
+          title: "Номер",
           accessor: "n_number",
           operator: Operators.number,
           Filter: NumberFilter,
           Cell: NumberCell,
-          style: { width: '80px', textAlign: 'center' }
+          style: { width: '100px', textAlign: 'center' }
         },
         {
-          title: "c_fio",
+          title: "ФИО заявителя",
           accessor: "c_fio",
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,
         },
         {
-          title: "d_birthday",
+          title: "Дата рождения",
           accessor: "d_birthday",
           operator: Operators.date,
+          style: { width: '100px', textAlign: 'center' },
           Filter: () => null,
           Cell: DateCell,
         },
         {
-          title: "n_year",
+          title: "Возраст на момент постановки",
           accessor: "n_year",
           operator: Operators.number,
           Filter: StringFilter,
           Cell: StringCell,
-          style: { width: '80px', textAlign: 'center' }
+          style: { width: '100px', textAlign: 'center' }
         },
         {
-          title: "c_document",
+          title: "Реквизиты документа, удостоверяющего личность",
           accessor: "c_document",
           operator: Operators.string,
+          style: { width: '150px', textAlign: 'center' },
           Filter: StringFilter,
           Cell: StringCell,
         },
         {
-          title: "c_address",
+          title: "Адрес, телефон",
           accessor: "c_address",
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,
         },
         {
-          title: "d_date",
+          title: "Дата подачи заявления",
           accessor: "d_date",
           operator: Operators.date,
           Filter: () => null,
           Cell: DateCell,
+        },
+        {
+          title: "Время подачи заявления",
+          accessor: "c_time",
+          operator: Operators.string,
+          style: { width: '100px', textAlign: 'center' },
+          Filter: StringFilter,
+          Cell: StringCell,
+        },
+        {
+          title: "Цель использования земельного участка",
+          accessor: "c_intent",
+          operator: Operators.string,
+          Filter: StringFilter,
+          Cell: StringCell,
+        },
+        {
+          title: "Постановление о постановке на учет",
+          accessor: "c_account",
+          operator: Operators.string,
+          Filter: StringFilter,
+          Cell: StringCell,
+        },
+        {
+          title: "Дата и номер принятия решения",
+          accessor: "c_accept",
+          operator: Operators.string,
+          style: { width: '100px', textAlign: 'center' },
+          Filter: StringFilter,
+          Cell: StringCell,
+        },
+        {
+          title: "Кадастровый номер принятия решения",
+          accessor: "c_earth",
+          operator: Operators.string,
+          Filter: StringFilter,
+          Cell: StringCell,
+        },
+        {
+          title: "Решение о снятии с учета",
+          accessor: "d_take_off_solution",
+          operator: Operators.date,
+          style: { width: '100px', textAlign: 'center' },
+          Filter: () => null,
+          Cell: DateCell,
+        },
+        {
+          title: "Сообщение заявителю о снятии с учета",
+          accessor: "d_take_off_message",
+          operator: Operators.date,
+          style: { width: '100px', textAlign: 'center' },
+          Filter: () => null,
+          Cell: DateCell,
+        },
+        {
+          title: "Примечание",
+          accessor: "c_notice",
+          operator: Operators.string,
+          Filter: StringFilter,
+          Cell: StringCell,
         },
       ].filter((item) => item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,6 +168,7 @@ export const DocumentsPanel = () => {
     title: "Документы",
     columns: pd_user,
     action: "dd_documents",
+    sortBy: [{ id: 'n_number', desc: true }],
     globalFilters: React.useMemo(
       () => [
         // {

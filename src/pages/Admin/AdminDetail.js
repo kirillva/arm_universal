@@ -20,6 +20,96 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  console.log('record', record)
+  const handleUpdate = () => {
+    const {
+      c_login,
+      c_password,
+      c_first_name,
+      c_description,
+      b_disabled,
+      c_phone,
+      c_email,
+    } = values;
+    runRpc({
+      action: "pd_users",
+      method: "Update",
+      data: [
+        {
+          id: values.id,
+          c_login,
+          c_password,
+          c_first_name,
+          c_description,
+          b_disabled,
+          c_phone,
+          c_email,
+        },
+      ],
+      type: "rpc",
+    })
+      .then(() => {
+        runRpc({
+          action: "pd_userinroles",
+          method: "Update",
+          data: [{ id: values.f_role, f_role: values.c_claims }],
+          type: "rpc",
+        }).then(() => {
+          onSubmit(values);
+          setSubmitting(false);
+        });
+      })
+      .catch(() => {
+        setSubmitting(false);
+      });
+  };
+
+  const handleAdd = () => {
+    const {
+      c_login,
+      c_password,
+      c_first_name,
+      c_description,
+      b_disabled,
+      c_phone,
+      c_email,
+    } = values;
+    runRpc({
+      action: "pd_users",
+      method: "Add",
+      data: [
+        {
+          c_login,
+          c_password,
+          c_first_name,
+          c_description,
+          b_disabled,
+          c_phone,
+          c_email,
+        },
+      ],
+      type: "rpc",
+    })
+      .then((response) => {
+        if (response.sql.rows && response.sql.rows.length) {
+          runRpc({
+            action: "pd_userinroles",
+            method: "Add",
+            data: [
+              { f_user: response.sql.rows[0].id, f_role: values.c_claims },
+            ],
+            type: "rpc",
+          }).then(() => {
+            onSubmit(values);
+            setSubmitting(false);
+          });
+        }
+      })
+      .catch(() => {
+        setSubmitting(false);
+      });
+  };
+
   const {
     handleSubmit,
     handleChange,
@@ -42,88 +132,14 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
     },
     onSubmit: (values) => {
       if (values.id) {
-        const {
-          c_login,
-          c_password,
-          c_first_name,
-          c_description,
-          b_disabled,
-          c_phone,
-          c_email,
-        } = values;
-        runRpc({
-          action: "pd_users",
-          method: "Update",
-          data: [
-            {
-              id: values.id,
-              c_login,
-              c_password,
-              c_first_name,
-              c_description,
-              b_disabled,
-              c_phone,
-              c_email,
-            },
-          ],
-          type: "rpc",
-        }).then(() => {
-          runRpc({
-            action: "pd_userinroles",
-            method: "Update",
-            data: [{ id: values.f_role, f_role: values.c_claims }],
-            type: "rpc",
-          }).then(() => {
-            onSubmit(values);
-            setSubmitting(false);
-          });
-        });
+        handleUpdate();
       } else {
-        const {
-          c_login,
-          c_password,
-          c_first_name,
-          c_description,
-          b_disabled,
-          c_phone,
-          c_email,
-        } = values;
-        runRpc({
-          action: "pd_users",
-          method: "Add",
-          data: [
-            {
-              c_login,
-              c_password,
-              c_first_name,
-              c_description,
-              b_disabled,
-              c_phone,
-              c_email,
-            },
-          ],
-          type: "rpc",
-        }).then((response) => {
-          if (response.sql.rows && response.sql.rows.length) {
-            runRpc({
-              action: "pd_userinroles",
-              method: "Add",
-              data: [
-                { f_user: response.sql.rows[0].id, f_role: values.c_claims },
-              ],
-              type: "rpc",
-            }).then(() => {
-              onSubmit(values);
-              setSubmitting(false);
-            });
-          }
-        });
+        handleAdd();
       }
     },
   });
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadRoles = async () => {
     const _roles = await runRpcRecords({
       action: "pd_roles",
       method: "Query",
@@ -142,6 +158,9 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
       ],
     });
     setRoles(_roles);
+  };
+
+  const loadClaims = async () => {
     const _claims = await runRpcRecords({
       action: "pd_userinroles",
       method: "Query",
@@ -163,14 +182,19 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
       setFieldValue("c_claims", _claims[0].f_role);
       setFieldValue("f_role", _claims[0].id);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    if (record && record.id) {
-      loadData();
-      console.log("values", values);
-    }
+    setLoading(true);
+    loadRoles().then(() => {
+      if (record && record.id) {
+        loadClaims().then(() => {
+          setLoading(false);
+        });
+      } else {
+        setLoading(false);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [record]);
 
@@ -228,7 +252,7 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
               {...options}
             />
             <TextField
-              label="Удален"
+              label="Неактивен"
               name={"b_disabled"}
               value={values.b_disabled}
               {...options}

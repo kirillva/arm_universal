@@ -488,7 +488,7 @@ export const useTableComponent = ({
               <ReplayOutlined />
             </Button>
           ) : null}
-          <Button
+          {/* <Button
             endIcon={<FilterListIcon />}
             title={"Фильтры"}
             variant="contained"
@@ -496,7 +496,7 @@ export const useTableComponent = ({
             onClick={() => setFilterHidden(!filterHidden)}
           >
             Фильтры
-          </Button>
+          </Button> */}
           {numSelected > 0 &&
             actionButtons.map((item) => {
               const { handler, title, icon } = item;
