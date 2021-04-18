@@ -85,5 +85,17 @@ export const menuItems = [
     icon: AssignmentIcon,
     path: "/adminPanel",
     title: "Администрирование",
+  },
+  {
+    claims: [
+      "manual_edit",
+      "admin",
+      "food_kit",
+      "manager_candidate",
+      "division",
+    ],
+    icon: AssignmentIcon,
+    path: "/documents",
+    title: "Документы",
   }
 ];

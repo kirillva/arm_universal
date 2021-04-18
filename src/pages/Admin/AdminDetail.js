@@ -56,6 +56,7 @@ export const AdminDetail = ({ record, open, setOpen, onSubmit = () => {} }) => {
           method: "Update",
           data: [
             {
+              id: values.id,
               c_login,
               c_password,
               c_first_name,

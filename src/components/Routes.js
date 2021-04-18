@@ -5,7 +5,8 @@ import { Part3StreetTable } from "pages/address/Part3StreetTable";
 import { Part3 } from "pages/address/Part3";
 import { AssignUsers } from "pages/address/AssignUsers";
 import { AssignDivisions } from "pages/address/AssignDivisions";
-import { AdminPanel } from "pages/AdminPanel";
+import { AdminPanel } from "pages/Admin/AdminPanel";
+import { DocumentsPanel } from "pages/Documents/DocumentsPanel";
 
 export const routeItems = [
   {
@@ -56,6 +57,12 @@ export const routeItems = [
     exact: true,
     path: "/adminPanel",
     component: AdminPanel,
+  },
+  {
+    claims: ["manager"],
+    exact: true,
+    path: "/documents",
+    component: DocumentsPanel,
   }
 ];
 
