@@ -72,7 +72,7 @@ export const auth = async ({
   formData.append("Password", password);
   try {
     const responce = await sendFormData("auth", formData);
-    if (responce.user.b_disabled) {
+    if (responce.user.disabled) {
       onDisabled();
     } else {
       authenticate({

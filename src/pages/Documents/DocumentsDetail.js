@@ -302,7 +302,6 @@ export const DocumentsDetail = ({
             /> */}
               </Box>
             </Box>
-
             <Box
               display="flex"
               flexDirection={"column"}

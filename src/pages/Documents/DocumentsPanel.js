@@ -215,7 +215,6 @@ export const DocumentsPanel = () => {
         open={open}
         setOpen={setOpen}
       />
-
       {tableComponent.table}
     </div>
   );

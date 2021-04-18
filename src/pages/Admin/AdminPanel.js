@@ -42,13 +42,13 @@ export const AdminPanel = () => {
           Filter: StringFilter,
           Cell: StringCell,
         },
-        {
-          title: "Пароль",
-          accessor: "c_password",
-          operator: Operators.string,
-          Filter: StringFilter,
-          Cell: StringCell,
-        },
+        // {
+        //   title: "Пароль",
+        //   accessor: "c_password",
+        //   operator: Operators.string,
+        //   Filter: StringFilter,
+        //   Cell: StringCell,
+        // },
         {
           title: "ФИО",
           accessor: "c_first_name",
@@ -88,6 +88,7 @@ export const AdminPanel = () => {
     title: "Список пользователей",
     columns: pd_user,
     action: "pd_users",
+    sortBy: [{ id: 'c_login', desc: false }, { id: 'b_disabled', desc: true }],
     globalFilters: React.useMemo(
       () => [
         {
