@@ -41,12 +41,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     gap: "15px",
+    // minHeight: '64px'
   },
   searchToolbar: {
     display: "flex",
     flexDirection: "row",
     gap: "15px",
-    margin: "0 24px 0 0",
+    // margin: "0 24px 0 0",
     alignItems: 'center'
   },
   searchField: {

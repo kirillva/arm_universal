@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
+  Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     makeStyles,
   } from "@material-ui/core";
-
+import { runRpc, runRpcRecords } from "utils/rpc";
+  
 const useStyles = makeStyles((theme) => ({
     toolbar: theme.mixins.toolbar,
     content: {
@@ -24,6 +26,22 @@ const useStyles = makeStyles((theme) => ({
 export const DocumentsList = ({ text, open, onClose }) => {  
   const classes = useStyles();
 
+  useEffect(()=>{
+    runRpcRecords({
+      action: "cf_arm_dd_documents_search",
+      method: "Select",
+      data: [
+        {
+          params: [text]
+        },
+      ],
+      type: "rpc",
+    }).then((records)=>{
+      console.log('records', records)
+    });
+    
+  }, [text]);
+
   return (
     <Dialog
       open={open}
@@ -34,10 +52,10 @@ export const DocumentsList = ({ text, open, onClose }) => {
     >
       <DialogTitle id="form-dialog-title">Найденные заявления</DialogTitle>
       <DialogContent>
-        
+        {text}
       </DialogContent>
       <DialogActions>
-        
+        <Button variant="contained" color="primary" onClick={onClose}>Закрыть</Button>
       </DialogActions>
     </Dialog>
   );

@@ -609,8 +609,8 @@ export const useTableComponent = ({
             {...getTableProps()}
             className={classes.container}
             style={{
-              maxHeight: size.height - 116,
-              height: size.height - 116,
+              maxHeight: hideTitle ? size.height - 55 : size.height - 116,
+              height: hideTitle ? size.height - 55 : size.height - 116,
 
               // width: size.width,
             }}
