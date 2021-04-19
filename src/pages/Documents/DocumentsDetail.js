@@ -671,8 +671,8 @@ export const DocumentsDetail = ({
                   handler: () => {
                     runRpc({
                       action: "dd_documents",
-                      method: "Update",
-                      data: [{ id: values.id, sn_delete: true}],
+                      method: "Delete",
+                      data: [{ id: values.id }],
                       type: "rpc",
                     }).finally(() => {
                       onSubmit();

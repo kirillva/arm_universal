@@ -42,13 +42,14 @@ export const AdminPanel = () => {
           Filter: StringFilter,
           Cell: StringCell,
         },
-        // {
-        //   title: "Пароль",
-        //   accessor: "c_password",
-        //   operator: Operators.string,
-        //   Filter: StringFilter,
-        //   Cell: StringCell,
-        // },
+        {
+          title: "Пароль",
+          accessor: "c_password",
+          operator: Operators.string,
+          style: { display: 'none' },
+          Filter: StringFilter,
+          Cell: StringCell,
+        },
         {
           title: "ФИО",
           accessor: "c_first_name",
