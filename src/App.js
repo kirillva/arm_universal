@@ -51,7 +51,7 @@ function ResponsiveDrawer() {
   const login = getItem("login");
 
   const claims = getClaims();
-  
+
   return (
     <div className={classes.root}>
       <MessageContextProvider>
@@ -66,15 +66,6 @@ function ResponsiveDrawer() {
               <PrivateRoute path={item.path}>
                 <AppBar position="fixed" className={classes.appBar}>
                   <Toolbar>
-                    {/* <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={handleDrawerToggle}
-                    className={classes.menuButton}
-                  >
-                    <MenuIcon />
-                  </IconButton> */}
                     <MainMenu
                       mobileOpen={mobileOpen}
                       data={menuItems}
@@ -89,7 +80,11 @@ function ResponsiveDrawer() {
           })}
           {auth ? (
             <Route path="/">
-              <Redirect to={claims.indexOf('.admin.') >= 0 ? '/adminPanel' : '/documents'} />
+              <Redirect
+                to={
+                  claims.indexOf(".admin.") >= 0 ? "/adminPanel" : "/documents"
+                }
+              />
             </Route>
           ) : (
             <Route path="/">

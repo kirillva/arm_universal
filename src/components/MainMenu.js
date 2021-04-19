@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { getItem, getUsername, logout } from "utils/user";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+// import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 export const SimpleMenu = ({ setAuth }) => {
@@ -16,13 +16,8 @@ export const SimpleMenu = ({ setAuth }) => {
     <Box display="flex" >
       <Button
         style={{flex: 1}}
-        endIcon={<AccountCircleIcon />}
+        // endIcon={<AccountCircleIcon />}
         color="secondary"
-        onClick={() => {
-          logout();
-          history.push("/");
-          setAuth(false);
-        }}
         size="small"
       >
         {getUsername() || getItem("login")}
@@ -44,14 +39,14 @@ export const SimpleMenu = ({ setAuth }) => {
   );
 };
 
-export const MainMenu = ({ data, mobileOpen, handleDrawerToggle, setAuth }) => {
+export const MainMenu = ({ data, mobileOpen, handleDrawerToggle, setAuth, buttons }) => {
   const location = useLocation();
 
   const item = data.find((item) => location.pathname.indexOf(item.path) === 0);
 
   return (
     <Box width="100%" display="flex" alignItems="center">
-      <Typography style={{flex: 1}}>{item ? item.title : ""}</Typography>
+      {buttons ? buttons : <Typography style={{flex: 1}}>{item ? item.title : ""}</Typography>}
       <SimpleMenu setAuth={setAuth} />
     </Box>
   );

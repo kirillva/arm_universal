@@ -29,17 +29,18 @@ import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 import { useTableComponentStyles } from "./tableComponentStyles";
 import { runRpc } from "utils/rpc";
 import classNames from "classnames";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import { EditRowForm } from "./EditRowForm";
 import { ArrowDropDown, ArrowDropUp, ReplayOutlined } from "@material-ui/icons";
 import { TablePaginationActions } from "./TablePaginationActions";
 import moment from "moment";
+import RedoIcon from "@material-ui/icons/Redo";
 
 export const useTableComponent = ({
   columns,
   action,
   idProperty = "id",
   title = "Таблица",
+  hideTitle = false,
   method = "Query",
   params = null,
   select = null,
@@ -452,7 +453,11 @@ export const useTableComponent = ({
                   .map((key) => {
                     if (e[key]) {
                       if (e[key].replace && e[key].trim) {
-                        return e[key].replace(/[\\n]/g, "").replace(/[\\r]/g, "").replace(/[↵]/g, " ").trim();
+                        return e[key]
+                          .replace(/[\\n]/g, "")
+                          .replace(/[\\r]/g, "")
+                          .replace(/[↵]/g, " ")
+                          .trim();
                       } else {
                         return e[key];
                       }
@@ -510,15 +515,6 @@ export const useTableComponent = ({
               <ReplayOutlined />
             </Button>
           ) : null}
-          <Button
-            endIcon={<FilterListIcon />}
-            title={"Фильтры"}
-            variant="contained"
-            color="primary"
-            onClick={ExportToCsv}
-          >
-            Экспорт
-          </Button>
           {/* <Button
             endIcon={<FilterListIcon />}
             title={"Фильтры"}
@@ -572,6 +568,17 @@ export const useTableComponent = ({
     selectedRow,
     handleUnselectAll,
     setEditError,
+    exportButton: (
+      <Button
+        endIcon={<RedoIcon />}
+        title={"Экспорт"}
+        variant="contained"
+        color="primary"
+        onClick={ExportToCsv}
+      >
+        Экспорт
+      </Button>
+    ),
     table: (
       <Box className={className} ref={parentRef}>
         <EditRowForm
@@ -591,13 +598,13 @@ export const useTableComponent = ({
           ref={childRef}
           // style={{ width: size.width, height: size.height }}
         >
-          <EnhancedTableHead
+          {!hideTitle && <EnhancedTableHead
             filters={filters}
             setFilterHidden={setFilterHidden}
             title={title}
             classes={classes}
             numSelected={Object.keys(selectedRowIds).length}
-          />
+          />}
           <TableContainer
             {...getTableProps()}
             className={classes.container}
