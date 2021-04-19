@@ -239,7 +239,7 @@ export const DocumentsPanel = () => {
       
     // ),
     handleClick: (record) => {
-      setSelectedRow(record.row);
+      setSelectedRow(record.row.original.id);
       setOpen(true);
     },
   });
@@ -270,7 +270,7 @@ export const DocumentsPanel = () => {
             tableComponent.loadData();
             setOpen(false);
           }}
-          recordID={selectedRow ? selectedRow.original.id : -1}
+          recordID={selectedRow ? selectedRow : -1}
           open={open}
           setOpen={setOpen}
         />
@@ -279,6 +279,7 @@ export const DocumentsPanel = () => {
         <DocumentsList
           text={documentText}
           open={searchOpen}
+          onSelect={(id)=>{setSelectedRow(id);setOpen(true); setSearchOpen(false); }}
           onClose={() => {
             setSearchOpen(false);
           }}

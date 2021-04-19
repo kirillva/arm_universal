@@ -611,10 +611,7 @@ export const useTableComponent = ({
             style={{
               maxHeight: hideTitle ? size.height - 55 : size.height - 116,
               height: hideTitle ? size.height - 55 : size.height - 116,
-
-              // width: size.width,
             }}
-            // className={className}
           >
             <MaterialTable
               stickyHeader
