@@ -693,7 +693,7 @@ export const useTableComponent = ({
               <TablePaginationActions
                 {...props}
                 gotoPage={gotoPage}
-                loadData={loadData}
+                loadData={allowLoad ? loadData : ()=>{}}
                 loading={loading}
               />
             )}
