@@ -120,9 +120,9 @@ export const DocumentsDetail = ({
       c_intent: Yup.string()
         .nullable()
         .required("Не заполнено обязательное поле"),
-      c_account: Yup.string()
-        .nullable()
-        .required("Не заполнено обязательное поле"),
+      // c_account: Yup.string()
+      //   .nullable()
+      //   .required("Не заполнено обязательное поле"),
     }),
     // enableReinitialize: true,
     // validateOnMount: true,
@@ -134,7 +134,7 @@ export const DocumentsDetail = ({
       c_document: "",
       c_address: "",
       d_date: moment(),
-      c_time: moment().format("HH.mm"),
+      c_time: moment().format("HH:mm"),
       c_intent: "",
       c_account: "",
       c_accept: "",

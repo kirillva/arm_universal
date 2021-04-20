@@ -11,7 +11,7 @@ export const useTableComponentStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "200px",
+    maxWidth: "400px",
     borderLeft: "1px solid #e0e0e0",
   },
   headerOuterWrapper: {
