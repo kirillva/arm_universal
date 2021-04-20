@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
+  LinearProgress,
   makeStyles,
+  TextField,
   Typography,
 } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { runRpc, runRpcRecords } from "utils/rpc";
+import SearchIcon from "@material-ui/icons/Search";
+import useDebounce from "components/hooks/useDebounce";
+import { Clear } from "@material-ui/icons";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -32,65 +40,144 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     textDecoration: "underline",
   },
+  Paper: {
+    width: "calc(100% - 40px)",
+    height: "calc(100% - 40px)",
+    maxWidth: "calc(100% - 60px)",
+    // padding: theme.spacing(3),
+  },
+  searchToolbar: {
+    display: "flex",
+    flexDirection: "row",
+    gap: "15px",
+    // margin: "0 24px 0 0",
+    alignItems: "center",
+  },
+  searchField: {
+    flex: 1,
+  },
+  title: {
+    flex: 1,
+    margin: "0 0 0 15px",
+  },
 }));
 
-export const DocumentsList = ({ onSelect, text, open, onClose }) => {
+export const DocumentsList = ({ onSelect, setOpen, open, onClose }) => {
   const classes = useStyles();
   const [documents, setDocuments] = useState([]);
+  const [text, setText] = useState("");
+  const deferredText = useDebounce(text, 1000);
+  const [loading, setLoading] = useState(false);
+
+  const buttons = useMemo(
+    () => (
+      <div className={classes.searchToolbar}>
+        <TextField
+          variant="outlined"
+          className={classes.searchField}
+          size="small"
+          margin="none"
+          value={text}
+          placeholder="Поиск заявлений..."
+          onChange={(e) => setText(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                classes={{
+                  root: classes.root,
+                }}
+                onClick={() => {
+                  setText("");
+                }}
+              >
+                <Clear fontSize="small" />
+              </IconButton>
+            ),
+          }}
+        />
+      </div>
+    ),
+    [text]
+  );
 
   useEffect(() => {
-    runRpcRecords({
-      action: "cf_arm_dd_documents_search",
-      method: "Select",
-      data: [
-        {
-          params: [text],
-          filter: [
-            {
-              property: "sn_delete",
-              value: false,
-              operator: "=",
-            },
-          ],
-          limit: 10,
-        },
-      ],
-      type: "rpc",
-    }).then((records) => {
-      setDocuments(records);
-    });
-  }, [text]);
+    if (deferredText) {
+      setLoading(true);
+      runRpcRecords({
+        action: "cf_arm_dd_documents_search",
+        method: "Select",
+        data: [
+          {
+            params: [deferredText],
+            filter: [
+              {
+                property: "sn_delete",
+                value: false,
+                operator: "=",
+              },
+            ],
+            limit: 10,
+          },
+        ],
+        type: "rpc",
+      })
+        .then((records) => {
+          setDocuments(records);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [deferredText]);
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        setText("");
+        onClose();
+      }}
       aria-labelledby="form-dialog-title"
       PaperProps={{ className: classes.Paper }}
-      maxWidth="calc(100% - 60px)"
     >
-      <DialogTitle id="form-dialog-title">Найденные заявления</DialogTitle>
+      <DialogTitle id="form-dialog-title">Поиск заявлений</DialogTitle>
       <DialogContent>
-        <List className={classes.root}>
-          {documents.map((item) => {
-            const { id, c_fio, c_address, c_notice, c_account } = item;
-            return (
-              <ListItem className={classes.item}>
-                <ListItemText
-                  primaryTypographyProps={{
-                    className: classes.itemTitle,
-                  }}
-                  onClick={()=>onSelect(id)}
-                  primary={`${c_fio} ${c_address}`}
-                  secondary={`${c_notice} ${c_account}`}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
+        {buttons}
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <List className={classes.root}>
+            {documents.length ? (
+              documents.map((item) => {
+                const { id, c_fio, c_address, d_date, c_notice, c_account } = item;
+                return (
+                  <ListItem className={classes.item}>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        className: classes.itemTitle,
+                      }}
+                      onClick={() => onSelect(id)}
+                      primary={`${c_fio} ${moment(d_date).format('DD.MM.YYYY')}`}
+                      secondary={`${c_address} ${c_account} ${c_notice}`}
+                    />
+                  </ListItem>
+                );
+              })
+            ) : (
+              <Typography>Заявления не найдены</Typography>
+            )}
+          </List>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={onClose}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setText("");
+            onClose();
+          }}
+        >
           Закрыть
         </Button>
       </DialogActions>

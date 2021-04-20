@@ -454,8 +454,8 @@ export const useTableComponent = ({
                     if (e[key]) {
                       if (e[key].replace && e[key].trim) {
                         return e[key]
-                          .replace(/[\\n]/g, "")
-                          .replace(/[\\r]/g, "")
+                          .replace(/[\n]/g, "")
+                          .replace(/[\r]/g, "")
                           .replace(/[↵]/g, " ")
                           .trim();
                       } else {
@@ -568,6 +568,7 @@ export const useTableComponent = ({
     selectedRow,
     handleUnselectAll,
     setEditError,
+    state,
     exportButton: (
       <Button
         endIcon={<RedoIcon />}

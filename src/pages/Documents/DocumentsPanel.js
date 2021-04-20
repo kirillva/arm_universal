@@ -41,22 +41,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     gap: "15px",
+    marginBottom: '15px'
     // minHeight: '64px'
   },
-  searchToolbar: {
-    display: "flex",
-    flexDirection: "row",
-    gap: "15px",
-    // margin: "0 24px 0 0",
-    alignItems: 'center'
-  },
-  searchField: {
-    flex: 1,
-  },
+
   title: {
     flex: 1,
-    margin: '0 0 0 15px'
-  }
+    margin: "0 0 0 15px",
+  },
 }));
 
 export const DocumentsPanel = () => {
@@ -64,37 +56,12 @@ export const DocumentsPanel = () => {
 
   const [selectedRow, setSelectedRow] = useState(null);
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const isReadOnly = getClaims().indexOf(".readonly.") >= 0;
   const isFullAccess = getClaims().indexOf(".full.") >= 0;
   const isOnlyChange = getClaims().indexOf(".change.") >= 0;
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [documentText, setDocumentText] = useState("");
 
-  const buttons = useMemo(
-    () => (
-      <div className={classes.searchToolbar}>
-        <TextField
-          variant="outlined"
-          className={classes.searchField}
-          size="small"
-          margin="none"
-          value={documentText}
-          placeholder="Поиск заявлений..."
-          onChange={(e) => setDocumentText(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="secondary"
-          endIcon={<SearchIcon />}
-          onClick={() => setSearchOpen(true)}
-        >
-          Поиск
-        </Button>
-      </div>
-    ),
-    [documentText]
-  );
   const pd_user = React.useMemo(
     () =>
       [
@@ -219,7 +186,6 @@ export const DocumentsPanel = () => {
 
   const tableComponent = useTableComponent({
     className: classes.table,
-    // title: "Заявления",
     hideTitle: true,
     columns: pd_user,
     action: "dd_documents",
@@ -235,9 +201,6 @@ export const DocumentsPanel = () => {
       []
     ),
     select: `id,${getSelectByColumns(pd_user)}`,
-    // buttons: (
-      
-    // ),
     handleClick: (record) => {
       setSelectedRow(record.row.original.id);
       setOpen(true);
@@ -247,9 +210,18 @@ export const DocumentsPanel = () => {
   return (
     <div className={classes.content}>
       <div className={classes.toolbar} />
-      <div className={classes.buttons} >
-        <Typography className={classes.title} variant="h5">Заявления</Typography> 
-        {buttons}
+      <div className={classes.buttons}>
+        <Typography className={classes.title} variant="h5">
+          Заявления
+        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          endIcon={<SearchIcon />}
+          onClick={() => setSearchOpen(true)}
+        >
+          Поиск
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -277,16 +249,19 @@ export const DocumentsPanel = () => {
       )}
       {searchOpen && (
         <DocumentsList
-          text={documentText}
+          setOpen={setSearchOpen}
           open={searchOpen}
-          onSelect={(id)=>{setSelectedRow(id);setOpen(true); setSearchOpen(false); }}
+          onSelect={(id) => {
+            setSelectedRow(id);
+            setOpen(true);
+            setSearchOpen(false);
+          }}
           onClose={() => {
             setSearchOpen(false);
           }}
         />
       )}
       {tableComponent.table}
-      
     </div>
   );
 };

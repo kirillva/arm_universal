@@ -130,40 +130,66 @@ export const DocumentsDetail = ({
           onSubmit();
         });
       } else {
-        runRpcSingleRecord({
+        runRpcRecords({
           action: "dd_documents",
           method: "Query",
           data: [
             {
-              sort: [
+              filter: [
                 {
-                  property: "n_number",
-                  direction: "desc",
+                  property: "c_fio",
+                  value: `${values.c_fio.replace}`,
+                  operator: "like",
+                },
+                {
+                  property: "d_date",
+                  value: values.d_date.startOf('day').toISOString(true),
+                  operator: ">=",
+                },
+                {
+                  property: "d_date",
+                  value: values.d_date.endOf('day').toISOString(true),
+                  operator: "<=",
                 },
               ],
             },
           ],
-        })
-          .then((last_dd_document) => {
-            runRpc({
-              action: "dd_documents",
-              method: "Add",
-              data: [
-                {
-                  ...values,
-                  n_number: last_dd_document.n_number + 1,
-                  n_year: Number(values.n_year),
-                },
-              ],
-              type: "rpc",
-            }).finally(() => {
-              setSubmitting(false);
-              onSubmit();
-            });
+        }).then((dd_docs_records) => {
+          runRpcSingleRecord({
+            action: "dd_documents",
+            method: "Query",
+            data: [
+              {
+                sort: [
+                  {
+                    property: "n_number",
+                    direction: "desc",
+                  },
+                ],
+              },
+            ],
           })
-          .catch(() => {
-            setSubmitting(false);
-          });
+            .then((last_dd_document) => {
+              runRpc({
+                action: "dd_documents",
+                method: "Add",
+                data: [
+                  {
+                    ...values,
+                    n_number: last_dd_document.n_number + 1,
+                    n_year: Number(values.n_year),
+                  },
+                ],
+                type: "rpc",
+              }).finally(() => {
+                setSubmitting(false);
+                onSubmit();
+              });
+            })
+            .catch(() => {
+              setSubmitting(false);
+            });
+        });
       }
     },
   });
@@ -571,6 +597,16 @@ export const DocumentsDetail = ({
                         InputAdornmentProps={{ position: "end" }}
                         onChange={onChangeJbChild(id, "d_birthday")}
                       />
+                      <TextField
+                        {...options}
+                        onChange={onChangeJbChild(id, "c_note")}
+                        disabled={!isFullAccess}
+                        multiline
+                        rows={4}
+                        label={"Примечание"}
+                        name={`c_note`}
+                        value={item.c_note || ""}
+                      />
                     </Box>
                     <Button
                       style={{ width: "100px", margin: "0 10px 20px auto" }}
@@ -657,39 +693,41 @@ export const DocumentsDetail = ({
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>
-        {values.id && <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            ShowAcceptWindow({
-              title: "Предупреждение",
-              components: `Вы действительно хотите удалить заявку? Данные могут быть потеряны.`,
-              buttons: [
-                {
-                  text: "Да",
-                  color: "secondary",
-                  handler: () => {
-                    runRpc({
-                      action: "dd_documents",
-                      method: "Delete",
-                      data: [{ id: values.id }],
-                      type: "rpc",
-                    }).finally(() => {
-                      onSubmit();
-                    });
+        {values.id && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              ShowAcceptWindow({
+                title: "Предупреждение",
+                components: `Вы действительно хотите удалить заявку? Данные могут быть потеряны.`,
+                buttons: [
+                  {
+                    text: "Да",
+                    color: "secondary",
+                    handler: () => {
+                      runRpc({
+                        action: "dd_documents",
+                        method: "Delete",
+                        data: [{ id: values.id }],
+                        type: "rpc",
+                      }).finally(() => {
+                        onSubmit();
+                      });
+                    },
                   },
-                },
-                {
-                  text: "Нет",
-                  color: "primary",
-                },
-              ],
-            });
-          }}
-          disabled={!isFullAccess}
-        >
-          Удалить
-        </Button>}
+                  {
+                    text: "Нет",
+                    color: "primary",
+                  },
+                ],
+              });
+            }}
+            disabled={!isFullAccess}
+          >
+            Удалить
+          </Button>
+        )}
         <Button
           variant="contained"
           color="primary"
