@@ -35,7 +35,9 @@ import { useMessageContext } from "context/MessageContext";
 import { DocumentHistory } from "./DocumentHistory";
 import DescriptionIcon from "@material-ui/icons/Description";
 import HistoryIcon from "@material-ui/icons/History";
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import SaveAltIcon from "@material-ui/icons/SaveAlt";
+import PrintIcon from "@material-ui/icons/Print";
+import { DocumentPrint } from "./DocumentPrint";
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -45,11 +47,27 @@ const useStyles = makeStyles((theme) => ({
   titleWrapper: {
     display: "flex",
     margin: "20px",
+    gap: "10px",
   },
   title: {
     flex: 1,
   },
 }));
+
+const STATE = {
+  DETAIL: {
+    title: "Заявка",
+    icon: <DescriptionIcon />,
+  },
+  PRINT: {
+    title: "Печать",
+    icon: <PrintIcon />,
+  },
+  HISTORY: {
+    title: "История",
+    icon: <HistoryIcon />,
+  },
+};
 
 export const DocumentsDetail = ({
   recordID,
@@ -58,7 +76,7 @@ export const DocumentsDetail = ({
   onSubmit = () => {},
 }) => {
   const [loading, setLoading] = useState(true);
-  const [showHistory, setShowHistory] = useState(false);
+  const [viewState, setViewState] = useState("DETAIL");
   const [jbchild, setjbchild] = useState([]);
 
   const isReadOnly = getClaims().indexOf(".readonly.") >= 0;
@@ -215,11 +233,11 @@ export const DocumentsDetail = ({
                   </p>
                   <List>
                     {dd_docs_records.map((item) => {
-                      const { n_number, c_fio, d_birthday } = item;
+                      const { n_number, d_date, c_fio, d_birthday } = item;
                       return (
                         <ListItem>
                           <ListItemText
-                            primary={`Заявка № ${n_number}`}
+                            primary={`Заявка № ${n_number}. Дата подачи: ${d_date}`}
                             secondary={`Заявитель: ${c_fio} ${moment(
                               d_birthday
                             ).format("DD.MM.YYYY")}`}
@@ -323,15 +341,40 @@ export const DocumentsDetail = ({
           Заявление
         </Typography>
         <Button
+          disabled={viewState === "DETAIL" || loading}
           onClick={() => {
-            setShowHistory(!showHistory);
+            setViewState("DETAIL");
           }}
           color="primary"
           variant="contained"
           size="small"
-          endIcon={!showHistory ? <HistoryIcon /> : <DescriptionIcon />}
+          endIcon={STATE["DETAIL"].icon}
         >
-          {!showHistory ? "История заявки" : "Заявка"}
+          {STATE["DETAIL"].title}
+        </Button>
+        <Button
+          disabled={viewState === "PRINT" || loading}
+          onClick={() => {
+            setViewState("PRINT");
+          }}
+          color="primary"
+          variant="contained"
+          size="small"
+          endIcon={STATE["PRINT"].icon}
+        >
+          {STATE["PRINT"].title}
+        </Button>
+        <Button
+          disabled={viewState === "HISTORY" || loading}
+          onClick={() => {
+            setViewState("HISTORY");
+          }}
+          color="primary"
+          variant="contained"
+          size="small"
+          endIcon={STATE["HISTORY"].icon}
+        >
+          {STATE["HISTORY"].title}
         </Button>
       </Box>
       <DialogContent>
@@ -340,7 +383,7 @@ export const DocumentsDetail = ({
           utils={MomentUtils}
           locale={"ru"}
         >
-          {!showHistory ? (
+          {viewState == "DETAIL" && (
             <Box display="flex" flexDirection={"column"}>
               <Box
                 display="flex"
@@ -769,9 +812,9 @@ export const DocumentsDetail = ({
                 </Box>
               </Box>
             </Box>
-          ) : (
-            <DocumentHistory id={recordID} />
           )}
+          {viewState == "PRINT" && <DocumentPrint />}
+          {viewState == "HISTORY" && <DocumentHistory />}
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>
@@ -805,7 +848,7 @@ export const DocumentsDetail = ({
                 ],
               });
             }}
-            disabled={!isFullAccess}
+            disabled={!isFullAccess || loading}
           >
             Удалить
           </Button>
@@ -814,7 +857,7 @@ export const DocumentsDetail = ({
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          disabled={isReadOnly}
+          disabled={isReadOnly || loading}
           startIcon={<SaveAltIcon />}
         >
           Сохранение
