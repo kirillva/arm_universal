@@ -14,20 +14,21 @@ export const useTableComponentStyles = makeStyles((theme) => ({
     maxWidth: "200px",
     borderLeft: "1px solid #e0e0e0",
   },
-  headerTitle: {
-    overflow: "hidden",
-    maxHeight: "30px",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    userSelect: "none",
-    display: "flex",
-    flexDirection: "row",
-    margin: "auto",
+  headerOuterWrapper: {
+    verticalAlign: 'bottom',
+    padding: '5px'
   },
   headerTitleText: {
     overflow: "hidden",
     textOverflow: "ellipsis",
-    // flex: 1,
+    flex: 1,
+  },
+  headerFilter: {
+    flex: 1,
+  },
+  headerWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
   },
   visuallyHidden: {
     border: 0,

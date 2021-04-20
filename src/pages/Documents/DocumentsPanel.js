@@ -66,7 +66,7 @@ export const DocumentsPanel = () => {
     () =>
       [
         {
-          title: "Номер",
+          title: "№ п/п",
           accessor: "n_number",
           operator: Operators.number,
           Filter: NumberFilter,
@@ -74,7 +74,7 @@ export const DocumentsPanel = () => {
           style: { width: "100px", textAlign: "center" },
         },
         {
-          title: "ФИО заявителя",
+          title: "Фамилия, имя, отчество заявителя",
           accessor: "c_fio",
           operator: Operators.string,
           Filter: StringFilter,
@@ -135,14 +135,14 @@ export const DocumentsPanel = () => {
           Cell: StringCell,
         },
         {
-          title: "Постановление о постановке на учет",
+          title: "Постановление о постановке на учет (дата и номер)",
           accessor: "c_account",
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,
         },
         {
-          title: "Дата и номер принятия решения",
+          title: "Дата и номер принятия решения о предоставлении земельного участка",
           accessor: "c_accept",
           operator: Operators.string,
           style: { width: "100px", textAlign: "center" },
@@ -150,14 +150,14 @@ export const DocumentsPanel = () => {
           Cell: StringCell,
         },
         {
-          title: "Кадастровый номер принятия решения",
+          title: "Кадастровый номер земельного участка, предоставленного многодетной семье",
           accessor: "c_earth",
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,
         },
         {
-          title: "Решение о снятии с учета",
+          title: "Решение о снятии с учета (дата решения и номер) ",
           accessor: "d_take_off_solution",
           operator: Operators.date,
           style: { width: "170px", textAlign: "center" },

@@ -637,6 +637,7 @@ export const useTableComponent = ({
                           column.style ||
                           (column.id === "selection" ? { width: "80px" } : {})
                         }
+                        className={classes.headerOuterWrapper}
                         {...column.getHeaderProps()}
                       >
                         <span
