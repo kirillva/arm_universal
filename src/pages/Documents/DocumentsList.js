@@ -9,6 +9,7 @@ import {
   IconButton,
   LinearProgress,
   makeStyles,
+  Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -60,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     margin: "0 0 0 15px",
   },
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px'
+  }
 }));
 
 export const DocumentsList = ({ onSelect, setOpen, open, onClose }) => {
@@ -149,18 +155,46 @@ export const DocumentsList = ({ onSelect, setOpen, open, onClose }) => {
           <List className={classes.root}>
             {documents.length ? (
               documents.map((item) => {
-                const { id, c_fio, c_address, d_date, c_notice, c_account } = item;
+                const {
+                  id,
+                  c_fio,
+                  c_address,
+                  d_date,
+                  c_notice,
+                  c_account,
+                  n_number,
+                } = item;
+                const jb_child = JSON.parse(item.jb_child);
                 return (
-                  <ListItem className={classes.item}>
-                    <ListItemText
-                      primaryTypographyProps={{
-                        className: classes.itemTitle,
-                      }}
-                      onClick={() => onSelect(id)}
-                      primary={`${c_fio} ${moment(d_date).format('DD.MM.YYYY')}`}
-                      secondary={`${c_address} ${c_account} ${c_notice}`}
-                    />
-                  </ListItem>
+                  <Paper>
+                    <ListItem className={classes.item}>
+                      <ListItemText
+                        primaryTypographyProps={{
+                          className: classes.itemTitle,
+                        }}
+                        onClick={() => onSelect(id)}
+                        primary={`№${n_number}; ${moment(d_date).format(
+                          "DD.MM.YYYY"
+                        )}; ${c_fio};`}
+                        secondary={`${c_address}; ${c_account}; ${c_notice}`}
+                      />
+                    </ListItem>
+                    <List>
+                      <ListItem className={classes.item}>
+                        {jb_child.map((item) => {
+                          const { c_address, c_fio, d_birthday } = item;
+                          return (
+                            <ListItemText
+                              primary={`${c_fio} ${moment(d_birthday).format(
+                                "DD.MM.YYYY"
+                              )}`}
+                              secondary={c_address}
+                            />
+                          );
+                        })}
+                      </ListItem>
+                    </List>
+                  </Paper>
                 );
               })
             ) : (

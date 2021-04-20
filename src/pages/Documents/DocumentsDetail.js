@@ -296,7 +296,7 @@ export const DocumentsDetail = ({
         },
       ],
     });
-    setjbchild(dd_document.jb_child || []);
+    setjbchild(dd_document ? dd_document.jb_child : []);
     setValues(dd_document);
     setLoading(false);
   };
@@ -417,6 +417,15 @@ export const DocumentsDetail = ({
                     error={errors.c_fio}
                     helperText={errors.c_fio}
                     value={values.c_fio}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Номер телефона"}
+                    disabled={!isFullAccess}
+                    name={"c_phone"}
+                    error={errors.c_phone}
+                    helperText={errors.c_phone}
+                    value={values.c_phone}
                   />
                   <KeyboardDatePicker
                     autoOk
