@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { BoolFilter, Operators, StringFilter } from "components/table/Filters";
-import { BoolCell, StringCell } from "components/table/Cell";
-import { BoolEditor } from "components/table/Editors";
+import { BoolCell, DateCell, StringCell } from "components/table/Cell";
+import { BoolEditor, DateEditor } from "components/table/Editors";
 import { useTableComponent } from "components/table/useTableComponent";
 import { getSelectByColumns } from "utils/helpers";
 import { getClaims, getItem, getUserId } from "utils/user";
@@ -125,7 +125,11 @@ export const AdminPanel = () => {
       { style: { display: 'none' }, title: "Секретарь МО", accessor: "f_user___c_bit7", operator: Operators.string, Filter: StringFilter, Cell: StringCell }, 
       { style: { display: 'none' }, title: "Партийный статус", accessor: "f_user___c_bit8", operator: Operators.string, Filter: StringFilter, Cell: StringCell }, 
       { style: { display: 'none' }, title: "Примечание", accessor: "f_user___c_notice", operator: Operators.string, Filter: StringFilter, Cell: StringCell }, 
-      { style: { display: 'none' }, title: "Телефон ответственного", accessor: "f_user___c_phone_main", operator: Operators.string, Filter: StringFilter, Cell: StringCell }
+      { style: { display: 'none' }, title: "Телефон ответственного", accessor: "f_user___c_phone_main", operator: Operators.string, Filter: StringFilter, Cell: StringCell },
+      
+      { style: { display: 'none' }, title: "Дата рождения", accessor: "f_user___d_birthday", operator: Operators.string, Filter: ()=>null, Cell: DateCell, Editor: DateEditor }, 
+      { style: { display: 'none' }, title: "Адрес", accessor: "f_user___c_address", operator: Operators.string, Filter: StringFilter, Cell: StringCell }
+      
     ].filter(item=>item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [uik]
@@ -196,24 +200,7 @@ export const AdminPanel = () => {
     className: classes.table,
     title: "Список пользователей",
     columns: pd_userindivisions,
-    select: `id,f_user,n_gos_subdivision,f_uik,
-    f_user___c_phone_home,
-    f_user___c_facebook,
-    f_user___c_vk,
-    f_user___c_ok,
-    f_user___c_twitter,
-    f_user___c_work,
-    f_user___c_job,
-    f_user___c_bit1,
-    f_user___c_bit2,
-    f_user___c_bit3,
-    f_user___c_bit4,
-    f_user___c_bit5,
-    f_user___c_bit6,
-    f_user___c_bit7,
-    f_user___c_bit8,
-    f_user___c_notice,
-    f_user___c_phone_main,
+    select: `id,f_user,n_gos_subdivision,f_uik,f_user___c_phone_home,f_user___c_facebook,f_user___c_vk,f_user___c_ok,f_user___c_twitter,f_user___c_work,f_user___c_job,f_user___c_bit1,f_user___c_bit2,f_user___c_bit3,f_user___c_bit4,f_user___c_bit5,f_user___c_bit6,f_user___c_bit7,f_user___c_bit8,f_user___c_notice,f_user___c_phone_main,
     ${getSelectByColumns(
       pd_userindivisions
     )}`,
@@ -249,7 +236,9 @@ export const AdminPanel = () => {
             c_bit7: record.f_user___c_bit7,	
             c_bit8: record.f_user___c_bit8,	
             c_notice: record.f_user___c_notice,	
-            c_phone_main: record.f_user___c_phone_main,
+            c_phone_main: record.f_user___c_phone_main,  
+            d_birthday: record.f_user___d_birthday,	
+            c_address: record.f_user___c_address,	
           },
         ],
         type: "rpc",
@@ -347,6 +336,8 @@ export const AdminPanel = () => {
             c_bit8: record.f_user___c_bit8,
             c_notice: record.f_user___c_notice,
             c_phone_main: record.f_user___c_phone_main,
+            d_birthday: record.f_user___d_birthday,	
+            c_address: record.f_user___c_address,	
           },
         ],
         type: "rpc",
