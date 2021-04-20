@@ -15,6 +15,9 @@ import {
   DialogTitle,
   Paper,
   Typography,
+  List,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import { runRpc, runRpcRecords, runRpcSingleRecord } from "utils/rpc";
 import { makeStyles } from "@material-ui/core/styles";
@@ -138,57 +141,99 @@ export const DocumentsDetail = ({
               filter: [
                 {
                   property: "c_fio",
-                  value: `${values.c_fio.replace}`,
+                  value: `${values.c_fio.replace(/[\s]+/g, "%")}`,
                   operator: "like",
                 },
                 {
                   property: "d_date",
-                  value: values.d_date.startOf('day').toISOString(true),
+                  value: values.d_date.startOf("day").toISOString(true),
                   operator: ">=",
                 },
                 {
                   property: "d_date",
-                  value: values.d_date.endOf('day').toISOString(true),
+                  value: values.d_date.endOf("day").toISOString(true),
                   operator: "<=",
                 },
               ],
             },
           ],
         }).then((dd_docs_records) => {
-          runRpcSingleRecord({
-            action: "dd_documents",
-            method: "Query",
-            data: [
-              {
-                sort: [
-                  {
-                    property: "n_number",
-                    direction: "desc",
-                  },
-                ],
-              },
-            ],
-          })
-            .then((last_dd_document) => {
-              runRpc({
-                action: "dd_documents",
-                method: "Add",
-                data: [
-                  {
-                    ...values,
-                    n_number: last_dd_document.n_number + 1,
-                    n_year: Number(values.n_year),
-                  },
-                ],
-                type: "rpc",
-              }).finally(() => {
-                setSubmitting(false);
-                onSubmit();
-              });
+          const addRequest = () => {
+            runRpcSingleRecord({
+              action: "dd_documents",
+              method: "Query",
+              data: [
+                {
+                  sort: [
+                    {
+                      property: "n_number",
+                      direction: "desc",
+                    },
+                  ],
+                },
+              ],
             })
-            .catch(() => {
-              setSubmitting(false);
+              .then((last_dd_document) => {
+                runRpc({
+                  action: "dd_documents",
+                  method: "Add",
+                  data: [
+                    {
+                      ...values,
+                      n_number: last_dd_document.n_number + 1,
+                      n_year: Number(values.n_year),
+                    },
+                  ],
+                  type: "rpc",
+                }).finally(() => {
+                  setSubmitting(false);
+                  onSubmit();
+                });
+              })
+              .catch(() => {
+                setSubmitting(false);
+              });
+          };
+          if (dd_docs_records && dd_docs_records.length) {
+            ShowAcceptWindow({
+              title: "Предупреждение",
+              components: (
+                <div>
+                  <p>Вы действительно хотите добавить заявку? Существуют похожие заявки: </p>
+                  <List>
+                    {dd_docs_records.map((item) => {
+                      const { n_number, c_fio, d_birthday } = item;
+                      return (
+                        <ListItem>
+                          <ListItemText
+                            primary={`Заявка № ${n_number}`}
+                            secondary={`Заявитель: ${c_fio} ${moment(
+                              d_birthday
+                            ).format("DD.MM.YYYY")}`}
+                          />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </div>
+              ),
+              buttons: [
+                {
+                  text: "Да",
+                  color: "secondary",
+                  handler: () => {
+                    addRequest();
+                  },
+                },
+                {
+                  text: "Нет",
+                  color: "primary",
+                },
+              ],
             });
+          } else {
+            addRequest();
+          }
         });
       }
     },
@@ -463,8 +508,8 @@ export const DocumentsDetail = ({
                   label={"Решение о снятии с учета"}
                   disabled={!isFullAccess}
                   name={"d_take_off_solution"}
-                  error={errors.c_account}
-                  helperText={errors.c_account}
+                  error={errors.d_take_off_solution}
+                  helperText={errors.d_take_off_solution}
                   value={values.d_take_off_solution || null}
                   format={dateFormat}
                   size="small"
