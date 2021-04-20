@@ -31,13 +31,23 @@ import moment from "moment";
 import Card from "@material-ui/core/Card";
 import { getClaims, getUserId } from "utils/user";
 import * as Yup from "yup";
-
 import { useMessageContext } from "context/MessageContext";
+import { DocumentHistory } from "./DocumentHistory";
+import DescriptionIcon from "@material-ui/icons/Description";
+import HistoryIcon from "@material-ui/icons/History";
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
     width: "calc(100% - 40px)",
     // padding: theme.spacing(3),
+  },
+  titleWrapper: {
+    display: "flex",
+    margin: "20px",
+  },
+  title: {
+    flex: 1,
   },
 }));
 
@@ -48,7 +58,7 @@ export const DocumentsDetail = ({
   onSubmit = () => {},
 }) => {
   const [loading, setLoading] = useState(true);
-  const [history, setHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [jbchild, setjbchild] = useState([]);
 
   const isReadOnly = getClaims().indexOf(".readonly.") >= 0;
@@ -199,7 +209,10 @@ export const DocumentsDetail = ({
               title: "Предупреждение",
               components: (
                 <div>
-                  <p>Вы действительно хотите добавить заявку? Существуют похожие заявки: </p>
+                  <p>
+                    Вы действительно хотите добавить заявку? Существуют похожие
+                    заявки:
+                  </p>
                   <List>
                     {dd_docs_records.map((item) => {
                       const { n_number, c_fio, d_birthday } = item;
@@ -305,107 +318,126 @@ export const DocumentsDetail = ({
       PaperProps={{ className: classes.Paper }}
       maxWidth="calc(100% - 60px)"
     >
-      <DialogTitle id="form-dialog-title">Заявление</DialogTitle>
+      <Box className={classes.titleWrapper}>
+        <Typography variant="h6" className={classes.title}>
+          Заявление
+        </Typography>
+        <Button
+          onClick={() => {
+            setShowHistory(!showHistory);
+          }}
+          color="primary"
+          variant="contained"
+          size="small"
+          endIcon={!showHistory ? <HistoryIcon /> : <DescriptionIcon />}
+        >
+          {!showHistory ? "История заявки" : "Заявка"}
+        </Button>
+      </Box>
       <DialogContent>
         <MuiPickersUtilsProvider
           libInstance={moment}
           utils={MomentUtils}
           locale={"ru"}
         >
-          <Box display="flex" flexDirection={"column"}>
-            <Box
-              display="flex"
-              flexDirection={"column"}
-              border="1px solid #c4c4c4"
-              borderRadius="5px"
-            >
-              <Typography style={{ margin: "15px 0 0 15px" }}>
-                Заявитель
-              </Typography>
+          {!showHistory ? (
+            <Box display="flex" flexDirection={"column"}>
               <Box
-                display="grid"
-                gridGap="15px"
-                gridTemplateColumns="1fr 1fr"
-                padding="10px"
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
+                borderRadius="5px"
               >
-                {values.id && (
+                <Typography style={{ margin: "15px 0 0 15px" }}>
+                  Заявитель
+                </Typography>
+                <Box
+                  display="grid"
+                  gridGap="15px"
+                  gridTemplateColumns="1fr 1fr"
+                  padding="10px"
+                >
+                  {values.id && (
+                    <TextField
+                      {...options}
+                      label={"Номер"}
+                      name={"n_number"}
+                      value={values.n_number}
+                      disabled={true}
+                    />
+                  )}
                   <TextField
                     {...options}
-                    label={"Номер"}
-                    name={"n_number"}
-                    value={values.n_number}
-                    disabled={true}
+                    label={"ФИО заявителя"}
+                    disabled={!isFullAccess}
+                    name={"c_fio"}
+                    error={errors.c_fio}
+                    helperText={errors.c_fio}
+                    value={values.c_fio}
                   />
-                )}
-                <TextField
-                  {...options}
-                  label={"ФИО заявителя"}
-                  disabled={!isFullAccess}
-                  name={"c_fio"}
-                  error={errors.c_fio}
-                  helperText={errors.c_fio}
-                  value={values.c_fio}
-                />
-                <KeyboardDatePicker
-                  autoOk
-                  variant="inline"
-                  inputVariant="outlined"
-                  name={"d_birthday"}
-                  label={"Дата рождения"}
-                  disabled={!isFullAccess}
-                  format={dateFormat}
-                  size="small"
-                  error={errors.d_birthday}
-                  helperText={errors.d_birthday}
-                  InputAdornmentProps={{ position: "end" }}
-                  value={values.d_birthday}
-                  onChange={(date) => {
-                    setFieldValue("d_birthday", moment(date).toISOString(true));
-                    setFieldValue("n_year", moment().diff(date, "year"));
-                    validateField("d_birthday");
-                  }}
-                />
-                <TextField
-                  {...options}
-                  label={"Возраст на момент постановки"}
-                  name={"n_year"}
-                  disabled={true}
-                  error={errors.n_year}
-                  helperText={errors.n_year}
-                  value={values.n_year}
-                />
-                <TextField
-                  {...options}
-                  label={"Реквизиты документа, удостоверяющего личность"}
-                  name={"c_document"}
-                  disabled={!isFullAccess}
-                  error={errors.c_document}
-                  helperText={errors.c_document}
-                  value={values.c_document}
-                />
-                <TextField
-                  {...options}
-                  label={"Адрес, телефон"}
-                  disabled={!isFullAccess}
-                  error={errors.c_address}
-                  helperText={errors.c_address}
-                  name={"c_address"}
-                  value={values.c_address}
-                />
-                {/* <TextField
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    name={"d_birthday"}
+                    label={"Дата рождения"}
+                    disabled={!isFullAccess}
+                    format={dateFormat}
+                    size="small"
+                    error={errors.d_birthday}
+                    helperText={errors.d_birthday}
+                    InputAdornmentProps={{ position: "end" }}
+                    value={values.d_birthday}
+                    onChange={(date) => {
+                      setFieldValue(
+                        "d_birthday",
+                        moment(date).toISOString(true)
+                      );
+                      setFieldValue("n_year", moment().diff(date, "year"));
+                      validateField("d_birthday");
+                    }}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Возраст на момент постановки"}
+                    name={"n_year"}
+                    disabled={true}
+                    error={errors.n_year}
+                    helperText={errors.n_year}
+                    value={values.n_year}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Реквизиты документа, удостоверяющего личность"}
+                    name={"c_document"}
+                    disabled={!isFullAccess}
+                    error={errors.c_document}
+                    helperText={errors.c_document}
+                    value={values.c_document}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Адрес, телефон"}
+                    disabled={!isFullAccess}
+                    error={errors.c_address}
+                    helperText={errors.c_address}
+                    name={"c_address"}
+                    value={values.c_address}
+                  />
+                  {/* <TextField
                 {...options}
                 label={"Дата подачи заявления"}
                 name={"d_date"}
                 value={values.d_date}
               /> */}
 
-                {/* <TextField
+                  {/* <TextField
               {...options}
               label={"Идентификатор пользователя"}
               name={"f_user"}
               value={values.f_user}
             /> */}
-                {/* <TextField
+                  {/* <TextField
               label="sn_delete"
               name={"sn_delete"}
               value={values.sn_delete}
@@ -417,7 +449,7 @@ export const DocumentsDetail = ({
               <MenuItem value={false}>Нет</MenuItem>
             </TextField> */}
 
-                {/* <TextField
+                  {/* <TextField
               label="Роли"
               name={"c_claims"}
               value={values.c_claims}
@@ -435,306 +467,311 @@ export const DocumentsDetail = ({
               value={values.c_email}
               {...options}
             /> */}
+                </Box>
               </Box>
-            </Box>
-            <Box
-              display="flex"
-              flexDirection={"column"}
-              border="1px solid #c4c4c4"
-              borderRadius="5px"
-              margin="15px 0 0 0"
-            >
-              <Typography style={{ margin: "15px 0 0 15px" }}>
-                Заявление
-              </Typography>
               <Box
-                display="grid"
-                gridGap="15px"
-                gridTemplateColumns="1fr 1fr"
-                padding="10px"
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
+                borderRadius="5px"
+                margin="15px 0 0 0"
               >
-                <KeyboardDatePicker
-                  autoOk
-                  variant="inline"
-                  inputVariant="outlined"
-                  label={"Дата подачи заявления"}
-                  disabled={!isFullAccess}
-                  name={"d_date"}
-                  value={values.d_date}
-                  error={errors.d_date}
-                  helperText={errors.d_date}
-                  format={dateFormat}
-                  size="small"
-                  InputAdornmentProps={{ position: "end" }}
-                  onChange={onChangeDate("d_date")}
-                />
-                <TextField
-                  {...options}
-                  label={"Время подачи заявления"}
-                  disabled={!isFullAccess}
-                  error={errors.c_time}
-                  helperText={errors.c_time}
-                  name={"c_time"}
-                  value={values.c_time}
-                />
-                <TextField
-                  {...options}
-                  label={"Цель использования земельного участка"}
-                  disabled={!isFullAccess}
-                  error={errors.c_intent}
-                  helperText={errors.c_intent}
-                  name={"c_intent"}
-                  value={values.c_intent}
-                />
-                <TextField
-                  {...options}
-                  label={"Постановление о постановке на учет"}
-                  disabled={!isFullAccess}
-                  name={"c_account"}
-                  error={errors.c_account}
-                  helperText={errors.c_account}
-                  value={values.c_account}
-                />
-                {/* <TextField
+                <Typography style={{ margin: "15px 0 0 15px" }}>
+                  Заявление
+                </Typography>
+                <Box
+                  display="grid"
+                  gridGap="15px"
+                  gridTemplateColumns="1fr 1fr"
+                  padding="10px"
+                >
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    label={"Дата подачи заявления"}
+                    disabled={!isFullAccess}
+                    name={"d_date"}
+                    value={values.d_date}
+                    error={errors.d_date}
+                    helperText={errors.d_date}
+                    format={dateFormat}
+                    size="small"
+                    InputAdornmentProps={{ position: "end" }}
+                    onChange={onChangeDate("d_date")}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Время подачи заявления"}
+                    disabled={!isFullAccess}
+                    error={errors.c_time}
+                    helperText={errors.c_time}
+                    name={"c_time"}
+                    value={values.c_time}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Цель использования земельного участка"}
+                    disabled={!isFullAccess}
+                    error={errors.c_intent}
+                    helperText={errors.c_intent}
+                    name={"c_intent"}
+                    value={values.c_intent}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Постановление о постановке на учет"}
+                    disabled={!isFullAccess}
+                    name={"c_account"}
+                    error={errors.c_account}
+                    helperText={errors.c_account}
+                    value={values.c_account}
+                  />
+                  {/* <TextField
                 {...options}
                 label={"Решение о снятии с учета"}
                 name={"d_take_off_solution"}
                 value={values.d_take_off_solution}
               /> */}
-                <KeyboardDatePicker
-                  autoOk
-                  variant="inline"
-                  inputVariant="outlined"
-                  label={"Решение о снятии с учета"}
-                  disabled={!isFullAccess}
-                  name={"d_take_off_solution"}
-                  error={errors.d_take_off_solution}
-                  helperText={errors.d_take_off_solution}
-                  value={values.d_take_off_solution || null}
-                  format={dateFormat}
-                  size="small"
-                  InputAdornmentProps={{ position: "end" }}
-                  onChange={onChangeDate("d_take_off_solution")}
-                />
-                {/* <TextField
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    label={"Решение о снятии с учета"}
+                    disabled={!isFullAccess}
+                    name={"d_take_off_solution"}
+                    error={errors.d_take_off_solution}
+                    helperText={errors.d_take_off_solution}
+                    value={values.d_take_off_solution || null}
+                    format={dateFormat}
+                    size="small"
+                    InputAdornmentProps={{ position: "end" }}
+                    onChange={onChangeDate("d_take_off_solution")}
+                  />
+                  {/* <TextField
                 {...options}
                 label={"Сообщение заявителю о снятии с учета"}
                 name={"d_take_off_message"}
                 value={values.d_take_off_message}
               /> */}
-                <KeyboardDatePicker
-                  autoOk
-                  variant="inline"
-                  inputVariant="outlined"
-                  label={"Сообщение заявителю о снятии с учета"}
-                  disabled={!isFullAccess}
-                  name={"d_take_off_message"}
-                  value={values.d_take_off_message || null}
-                  format={dateFormat}
-                  size="small"
-                  InputAdornmentProps={{ position: "end" }}
-                  onChange={onChangeDate("d_take_off_message")}
-                />
-                <TextField
-                  {...options}
-                  label={"Примечание"}
-                  disabled={!isFullAccess}
-                  multiline
-                  rows={4}
-                  name={"c_notice"}
-                  value={values.c_notice}
-                />
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    label={"Сообщение заявителю о снятии с учета"}
+                    disabled={!isFullAccess}
+                    name={"d_take_off_message"}
+                    value={values.d_take_off_message || null}
+                    format={dateFormat}
+                    size="small"
+                    InputAdornmentProps={{ position: "end" }}
+                    onChange={onChangeDate("d_take_off_message")}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Примечание"}
+                    disabled={!isFullAccess}
+                    multiline
+                    rows={4}
+                    name={"c_notice"}
+                    value={values.c_notice}
+                  />
+                </Box>
               </Box>
-            </Box>
-            <Box
-              display="flex"
-              flexDirection={"column"}
-              border="1px solid #c4c4c4"
-              borderRadius="5px"
-              margin="15px 0 0 0"
-            >
-              <Typography style={{ margin: "15px 0 0 15px" }}>
-                Решение
-              </Typography>
               <Box
-                display="grid"
-                gridGap="15px"
-                gridTemplateColumns="1fr 1fr"
-                padding="10px"
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
+                borderRadius="5px"
+                margin="15px 0 0 0"
               >
-                <TextField
-                  {...options}
-                  disabled={isReadOnly}
-                  label={"Дата и номер принятия решения"}
-                  name={"c_accept"}
-                  value={values.c_accept}
-                />
-                <TextField
-                  {...options}
-                  disabled={isReadOnly}
-                  label={"Кадастровый номер принятия решения"}
-                  name={"c_earth"}
-                  value={values.c_earth}
-                />
+                <Typography style={{ margin: "15px 0 0 15px" }}>
+                  Решение
+                </Typography>
+                <Box
+                  display="grid"
+                  gridGap="15px"
+                  gridTemplateColumns="1fr 1fr"
+                  padding="10px"
+                >
+                  <TextField
+                    {...options}
+                    disabled={isReadOnly}
+                    label={"Дата и номер принятия решения"}
+                    name={"c_accept"}
+                    value={values.c_accept}
+                  />
+                  <TextField
+                    {...options}
+                    disabled={isReadOnly}
+                    label={"Кадастровый номер принятия решения"}
+                    name={"c_earth"}
+                    value={values.c_earth}
+                  />
+                </Box>
               </Box>
-            </Box>
 
-            <Box
-              display="flex"
-              flexDirection={"column"}
-              border="1px solid #c4c4c4"
-              borderRadius="5px"
-              margin="15px 0 0 0"
-            >
-              <Typography style={{ margin: "15px 0 0 15px" }}>
-                Родственники
-              </Typography>
-              {jbchild.map((item, id) => {
-                return (
-                  <>
-                    <Box
-                      display="grid"
-                      gridGap="15px"
-                      gridTemplateColumns="1fr 1fr"
-                      margin="15px 0 0 0"
-                      padding="0 10px 10px 10px"
-                    >
-                      <TextField
-                        {...options}
-                        onChange={onChangeJbChild(id, "c_fio")}
-                        disabled={!isFullAccess}
-                        label={"ФИО"}
-                        name={`c_fio`}
-                        value={item.c_fio || ""}
-                      />
-                      {/* <TextField
+              <Box
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
+                borderRadius="5px"
+                margin="15px 0 0 0"
+              >
+                <Typography style={{ margin: "15px 0 0 15px" }}>
+                  Родственники
+                </Typography>
+                {jbchild.map((item, id) => {
+                  return (
+                    <>
+                      <Box
+                        display="grid"
+                        gridGap="15px"
+                        gridTemplateColumns="1fr 1fr"
+                        margin="15px 0 0 0"
+                        padding="0 10px 10px 10px"
+                      >
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "c_fio")}
+                          disabled={!isFullAccess}
+                          label={"ФИО"}
+                          name={`c_fio`}
+                          value={item.c_fio || ""}
+                        />
+                        {/* <TextField
                         {...options}
                         onChange={onChangeJbChild(id, "n_year")}
                         label={"Возраст"}
                         name={`n_year`}
                         value={item.n_year || ""}
                       /> */}
-                      <TextField
-                        {...options}
-                        onChange={onChangeJbChild(id, "c_address")}
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "c_address")}
+                          disabled={!isFullAccess}
+                          label={"Адрес, телефон"}
+                          name={`c_address`}
+                          value={item.c_address || ""}
+                        />
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "c_document")}
+                          disabled={!isFullAccess}
+                          label={
+                            "Реквизиты документа, удостоверяющего личность"
+                          }
+                          name={`c_document`}
+                          value={item.c_document || ""}
+                        />
+                        <KeyboardDatePicker
+                          autoOk
+                          variant="inline"
+                          inputVariant="outlined"
+                          label={"Дата рождения"}
+                          disabled={!isFullAccess}
+                          value={item.d_birthday || null}
+                          format={dateFormat}
+                          size="small"
+                          InputAdornmentProps={{ position: "end" }}
+                          onChange={onChangeJbChild(id, "d_birthday")}
+                        />
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "c_note")}
+                          disabled={!isFullAccess}
+                          multiline
+                          rows={4}
+                          label={"Примечание"}
+                          name={`c_note`}
+                          value={item.c_note || ""}
+                        />
+                      </Box>
+                      <Button
+                        style={{ width: "100px", margin: "0 10px 20px auto" }}
                         disabled={!isFullAccess}
-                        label={"Адрес, телефон"}
-                        name={`c_address`}
-                        value={item.c_address || ""}
-                      />
-                      <TextField
-                        {...options}
-                        onChange={onChangeJbChild(id, "c_document")}
-                        disabled={!isFullAccess}
-                        label={"Реквизиты документа, удостоверяющего личность"}
-                        name={`c_document`}
-                        value={item.c_document || ""}
-                      />
-                      <KeyboardDatePicker
-                        autoOk
-                        variant="inline"
-                        inputVariant="outlined"
-                        label={"Дата рождения"}
-                        disabled={!isFullAccess}
-                        value={item.d_birthday || null}
-                        format={dateFormat}
-                        size="small"
-                        InputAdornmentProps={{ position: "end" }}
-                        onChange={onChangeJbChild(id, "d_birthday")}
-                      />
-                      <TextField
-                        {...options}
-                        onChange={onChangeJbChild(id, "c_note")}
-                        disabled={!isFullAccess}
-                        multiline
-                        rows={4}
-                        label={"Примечание"}
-                        name={`c_note`}
-                        value={item.c_note || ""}
-                      />
-                    </Box>
-                    <Button
-                      style={{ width: "100px", margin: "0 10px 20px auto" }}
-                      disabled={!isFullAccess}
-                      onClick={() => {
-                        ShowAcceptWindow({
-                          title: "Предупреждение",
-                          components: `Вы действительно хотите удалить родственника? Данные могут быть потеряны.`,
-                          buttons: [
-                            {
-                              text: "Да",
-                              color: "secondary",
-                              handler: () => {
-                                jbchild.splice(id, 1);
-                                setjbchild([...jbchild]);
+                        onClick={() => {
+                          ShowAcceptWindow({
+                            title: "Предупреждение",
+                            components: `Вы действительно хотите удалить родственника? Данные могут быть потеряны.`,
+                            buttons: [
+                              {
+                                text: "Да",
+                                color: "secondary",
+                                handler: () => {
+                                  jbchild.splice(id, 1);
+                                  setjbchild([...jbchild]);
+                                },
                               },
-                            },
-                            {
-                              text: "Нет",
-                              color: "primary",
-                            },
-                          ],
-                        });
-                      }}
-                      color="primary"
-                      variant="contained"
-                    >
-                      Удалить
-                    </Button>
-                  </>
-                );
-              })}
-              {
-                <Button
-                  style={{ margin: "0 10px 10px 10px" }}
-                  disabled={!isFullAccess}
-                  onClick={() => {
-                    // debugger;
-                    // console.log(values.jb_child);
-                    setjbchild([...jbchild, {}]);
-                    // setFieldValue()
-                  }}
-                  color="primary"
-                  variant="contained"
-                >
-                  Добавить родственника
-                </Button>
-              }
-            </Box>
-            <Box
-              display="flex"
-              flexDirection={"column"}
-              border="1px solid #c4c4c4"
-              borderRadius="5px"
-              margin="15px 0 0 0"
-            >
-              <Typography style={{ margin: "15px 0 0 15px" }}>
-                Технические данные
-              </Typography>
+                              {
+                                text: "Нет",
+                                color: "primary",
+                              },
+                            ],
+                          });
+                        }}
+                        color="primary"
+                        variant="contained"
+                      >
+                        Удалить
+                      </Button>
+                    </>
+                  );
+                })}
+                {
+                  <Button
+                    style={{ margin: "0 10px 10px 10px" }}
+                    disabled={!isFullAccess}
+                    onClick={() => {
+                      // debugger;
+                      // console.log(values.jb_child);
+                      setjbchild([...jbchild, {}]);
+                      // setFieldValue()
+                    }}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Добавить родственника
+                  </Button>
+                }
+              </Box>
               <Box
-                display="grid"
-                gridGap="15px"
-                gridTemplateColumns="1fr 1fr"
-                padding="10px"
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
                 borderRadius="5px"
+                margin="15px 0 0 0"
               >
-                <TextField
-                  {...options}
-                  disabled={true}
-                  label={"В рамках какого документа был импорт"}
-                  name={"c_import_doc"}
-                  value={values.c_import_doc}
-                />
-                <TextField
-                  {...options}
-                  disabled={true}
-                  label={"Текст предупреждения"}
-                  name={"c_import_warning"}
-                  value={values.c_import_warning}
-                />
+                <Typography style={{ margin: "15px 0 0 15px" }}>
+                  Технические данные
+                </Typography>
+                <Box
+                  display="grid"
+                  gridGap="15px"
+                  gridTemplateColumns="1fr 1fr"
+                  padding="10px"
+                  borderRadius="5px"
+                >
+                  <TextField
+                    {...options}
+                    disabled={true}
+                    label={"В рамках какого документа был импорт"}
+                    name={"c_import_doc"}
+                    value={values.c_import_doc}
+                  />
+                  <TextField
+                    {...options}
+                    disabled={true}
+                    label={"Текст предупреждения"}
+                    name={"c_import_warning"}
+                    value={values.c_import_warning}
+                  />
+                </Box>
               </Box>
             </Box>
-          </Box>
+          ) : (
+            <DocumentHistory id={recordID} />
+          )}
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>
@@ -778,6 +815,7 @@ export const DocumentsDetail = ({
           color="primary"
           onClick={handleSubmit}
           disabled={isReadOnly}
+          startIcon={<SaveAltIcon />}
         >
           Сохранение
         </Button>
