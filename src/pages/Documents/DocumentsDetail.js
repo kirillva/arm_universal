@@ -384,7 +384,7 @@ export const DocumentsDetail = ({
           utils={MomentUtils}
           locale={"ru"}
         >
-          {viewState == "DETAIL" && (
+          {viewState === "DETAIL" && (
             <Box display="flex" flexDirection={"column"}>
               <Box
                 display="flex"
@@ -478,7 +478,7 @@ export const DocumentsDetail = ({
                     value={values.c_address}
                   /> */}
                   <DistinctSelectEditorField
-                    // {...rest}
+                    onChange={(value)=>setFieldValue('c_address', value)}
                     fieldProps={{
                       margin: "none",
                       size: "small",
@@ -488,13 +488,7 @@ export const DocumentsDetail = ({
                     }}
                     label={"Адрес, телефон"}
                     name={"c_address"}
-                    // fieldProps={fieldProps}
-                    // value={{ [nameProperty]: inputValue, [idProperty]: value }}
-                    inputValue={values.c_address}
-                    // setInputValue={setInputValue}
-                    // setValue={(_value) => {
-                    //   debugger;
-                    // }}
+                    value={values.c_address}
                   />
                   {/* <TextField
                 {...options}
