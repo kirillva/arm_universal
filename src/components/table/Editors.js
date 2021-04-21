@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TextField } from "@material-ui/core";
 import _ from "lodash";
 import { runRpc } from "utils/rpc";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -320,6 +320,179 @@ export function SelectEditorField({
       loading={loading}
       onInputChange={onInputChange}
       onChange={onChange}
+      renderInput={(params) => (
+        <TextField
+          fullWidth
+          error={error}
+          helperText={helperText}
+          label={label}
+          {...params}
+          variant="outlined"
+          margin={margin || "dense"}
+          size={size || "small"}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: params.InputProps.endAdornment,
+          }}
+        />
+      )}
+    />
+  );
+}
+
+
+const optionsFilter = createFilterOptions();
+export function DistinctSelectEditorField({
+  fieldProps,
+  label,
+  className,
+  name,
+  inputValue: _inputValue
+}) {
+  const {
+    idProperty,
+    nameProperty,
+    table,
+    params,
+    method = "Query",
+    sortBy,
+    error,
+    helperText,
+    margin,
+    size,
+    operator,
+    filter: initialFilter,
+  } = fieldProps;
+  
+  const [inputValue, setInputValue] = useState(_inputValue);
+  const [value, setValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [inputProgress, setInputProgress] = useState(false);
+  const [options, setOptions] = useState([]);
+  const deferredInputValue = useDebounce(inputValue, 1000);
+  
+  const loadData = () => {
+    let filter = [];
+    setOptions([]);
+    if (initialFilter) {
+      filter = filter.concat(initialFilter);
+    }
+    if (nameProperty && inputValue) {
+      filter.push({
+        property: nameProperty,
+        value: inputValue,
+        operator: operator || "like",
+      });
+    }
+    const rpcData = {
+      limit: 50,
+      select: [idProperty, nameProperty, sortBy]
+        .filter((item) => item)
+        .join(","),
+      filter: filter,
+    };
+    if (params) {
+      rpcData.params = params;
+    }
+    if (sortBy) {
+      rpcData.sort = [
+        {
+          property: sortBy,
+          direction: "ASC",
+        },
+      ];
+    }
+    setInputProgress(false);
+    setLoading(true);
+    runRpc({
+      action: table,
+      method: method,
+      data: [rpcData],
+      type: "rpc",
+    }).then((responce) => {
+      setLoading(false);
+      setOptions(
+        responce.result.records.map((item) => {
+          return {
+            [idProperty]: String(item[idProperty]),
+            [nameProperty]:
+              String(item[nameProperty]) || String(item[idProperty]),
+          };
+        }) || []
+      );
+    });
+  };
+
+  useEffect(() => {
+    if (deferredInputValue) {
+      loadData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deferredInputValue]);
+
+  // const onChange = (event, newValue) => {
+  //   if (newValue) {
+  //     setValue(newValue);
+  //     setInputValue(newValue[nameProperty]);
+  //   } else {
+  //     setValue(null);
+  //     setInputValue("");
+  //     setOptions([]);
+  //   }
+  // };
+
+  const onInputChange = (event, newInputValue, reason) => {
+    // setLoading(true);
+    setInputProgress(true)
+    setOptions([]);
+    setInputValue(newInputValue);
+  };
+
+  return (
+    <Autocomplete
+      fullWidth
+      className={className}
+      noOptionsText="Нет данных"
+      loadingText="Загрузка..."
+      getOptionSelected={(option, value) =>
+        option[idProperty] === value[idProperty]
+      }
+      inputValue={inputValue}
+      value={value}
+      getOptionLabel={(option) => {
+        return option[nameProperty] || "";
+      }}
+      filterOptions={(options, params) => {
+        const filtered = optionsFilter(options, params);
+
+        console.log(params.inputValue, inputProgress, loading);
+        if (params.inputValue !== '' && !inputProgress && !loading) {
+          filtered.push({
+            // [idProperty]: `Добавить "${params.inputValue}"`,
+            [nameProperty]: params.inputValue,
+          });
+        }
+
+        return filtered;
+      }}
+      name={name}
+      options={options}
+      loading={loading}
+      onInputChange={onInputChange}
+      // onChange={onChange}
+      onChange={(event, newValue) => {
+        if (typeof newValue === "string") {
+          setValue({
+            [nameProperty]: newValue
+          });
+        } else if (newValue && newValue.inputValue) {
+          setValue({
+            [nameProperty]: newValue.inputValue
+          });
+        } else {
+          setValue(newValue);
+        }
+      }}
       renderInput={(params) => (
         <TextField
           fullWidth

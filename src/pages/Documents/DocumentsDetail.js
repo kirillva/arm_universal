@@ -38,6 +38,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import PrintIcon from "@material-ui/icons/Print";
 import { DocumentPrint } from "./DocumentPrint";
+import { DistinctSelectEditorField } from "components/table/Editors";
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -467,7 +468,7 @@ export const DocumentsDetail = ({
                     helperText={errors.c_document}
                     value={values.c_document}
                   />
-                  <TextField
+                  {/* <TextField
                     {...options}
                     label={"Адрес, телефон"}
                     disabled={!isFullAccess}
@@ -475,6 +476,25 @@ export const DocumentsDetail = ({
                     helperText={errors.c_address}
                     name={"c_address"}
                     value={values.c_address}
+                  /> */}
+                  <DistinctSelectEditorField
+                    // {...rest}
+                    fieldProps={{
+                      margin: "none",
+                      size: "small",
+                      idProperty: 'id',
+                      nameProperty: 'c_address',
+                      table: 'dd_documents',
+                    }}
+                    label={"Адрес, телефон"}
+                    name={"c_address"}
+                    // fieldProps={fieldProps}
+                    // value={{ [nameProperty]: inputValue, [idProperty]: value }}
+                    inputValue={values.c_address}
+                    // setInputValue={setInputValue}
+                    // setValue={(_value) => {
+                    //   debugger;
+                    // }}
                   />
                   {/* <TextField
                 {...options}
