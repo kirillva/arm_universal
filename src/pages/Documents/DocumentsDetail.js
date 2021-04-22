@@ -407,7 +407,7 @@ export const DocumentsDetail = ({
                       label={"Номер"}
                       name={"n_number"}
                       value={values.n_number}
-                      disabled={true}
+                      // disabled={true}
                     />
                   )}
                   <TextField
@@ -575,7 +575,20 @@ export const DocumentsDetail = ({
                     name={"c_time"}
                     value={values.c_time}
                   />
-                  <TextField
+                  <DistinctSelectEditorField
+                    onChange={(value)=>setFieldValue('c_intent', value)}
+                    fieldProps={{
+                      margin: "none",
+                      size: "small",
+                      idProperty: 'id',
+                      nameProperty: 'c_intent',
+                      table: 'dd_documents',
+                    }}
+                    label={"Цель использования земельного участка"}
+                    name={"c_intent"}
+                    value={values.c_intent}
+                  />
+                  {/* <TextField
                     {...options}
                     label={"Цель использования земельного участка"}
                     disabled={!isFullAccess}
@@ -583,7 +596,7 @@ export const DocumentsDetail = ({
                     helperText={errors.c_intent}
                     name={"c_intent"}
                     value={values.c_intent}
-                  />
+                  /> */}
                   <TextField
                     {...options}
                     label={"Постановление о постановке на учет"}
@@ -801,7 +814,7 @@ export const DocumentsDetail = ({
                   </Button>
                 }
               </Box>
-              <Box
+              {/* <Box
                 display="flex"
                 flexDirection={"column"}
                 border="1px solid #c4c4c4"
@@ -833,11 +846,11 @@ export const DocumentsDetail = ({
                     value={values.c_import_warning}
                   />
                 </Box>
-              </Box>
+              </Box> */}
             </Box>
           )}
-          {viewState == "PRINT" && <DocumentPrint />}
-          {viewState == "HISTORY" && <DocumentHistory />}
+          {viewState === "PRINT" && <DocumentPrint c_number={values.n_number} dx_date={values.d_date} />}
+          {viewState === "HISTORY" && <DocumentHistory />}
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>

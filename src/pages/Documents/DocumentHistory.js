@@ -1,5 +1,5 @@
 import React from 'react';
 
 export const DocumentHistory = () => {
-    return <div>DocumentHistory</div>;
+    return <div>История изменений</div>;
 }
