@@ -19,3 +19,32 @@ code {
 html, head, body, #root{
   height: 100%;
 }
+
+
+
+/******************** scrollbar modifications ******************/
+/* width */
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+::-webkit-scrollbar-button {
+	height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #BDBDBD;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #BDBDBD;
+}
+
+/******************** scrollbar modifications ******************/

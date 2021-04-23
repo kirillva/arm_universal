@@ -599,13 +599,15 @@ export const useTableComponent = ({
           ref={childRef}
           // style={{ width: size.width, height: size.height }}
         >
-          {!hideTitle && <EnhancedTableHead
-            filters={filters}
-            setFilterHidden={setFilterHidden}
-            title={title}
-            classes={classes}
-            numSelected={Object.keys(selectedRowIds).length}
-          />}
+          {!hideTitle && (
+            <EnhancedTableHead
+              filters={filters}
+              setFilterHidden={setFilterHidden}
+              title={title}
+              classes={classes}
+              numSelected={Object.keys(selectedRowIds).length}
+            />
+          )}
           <TableContainer
             {...getTableProps()}
             className={classes.container}
@@ -631,12 +633,19 @@ export const useTableComponent = ({
                   if (!selectable && column.id === "selection") {
                     return null;
                   } else {
+                    let style = { ...column.style };
+
+                    style.padding = "2px";
+                    if (column.id === "selection") {
+                      style.width = "80px";
+                    }
+                    if (column.width) {
+                      style.minWidth = column.width;
+                      style.width = column.width;
+                    }
                     return (
                       <TableCell
-                        style={
-                          column.style ||
-                          (column.id === "selection" ? { width: "80px" } : {})
-                        }
+                        style={style}
                         className={classes.headerOuterWrapper}
                         {...column.getHeaderProps()}
                       >
@@ -659,11 +668,6 @@ export const useTableComponent = ({
                             ""
                           )}
                         </span>
-                        <div>
-                          {column.canFilter
-                            ? column.render("Filter", filterProps)
-                            : null}
-                        </div>
                       </TableCell>
                     );
                   }
@@ -675,6 +679,41 @@ export const useTableComponent = ({
                 </div>
               ) : (
                 <TableBody className={classes.body}>
+                  {headers.map((column) => {
+                    let filterProps = { hidden: filterHidden };
+                    if (column.fieldProps) {
+                      filterProps = Object.assign(
+                        filterProps,
+                        column.fieldProps
+                      );
+                    }
+                    if (!selectable && column.id === "selection") {
+                      return null;
+                    } else {
+                      let style = { ...column.style };
+
+                      style.padding = "2px";
+                      if (column.id === "selection") {
+                        style.width = "80px";
+                      }
+                      if (column.width) {
+                        style.minWidth = column.width;
+                        style.width = column.width;
+                      }
+                      return (
+                        <TableCell
+                          style={style}
+                          {...column.getHeaderProps()}
+                        >
+                          <div>
+                            {column.canFilter
+                              ? column.render("Filter", filterProps)
+                              : null}
+                          </div>
+                        </TableCell>
+                      );
+                    }
+                  })}
                   {page.map((row) => {
                     prepareRow(row);
                     return (
@@ -738,6 +777,9 @@ export const useTableComponent = ({
             </MaterialTable>
           </TableContainer>
           <TablePagination
+            classes={{
+              toolbar: classes.paginationToolbar,
+            }}
             labelDisplayedRows={({ from, to, count }) =>
               `${from}-${to} из ${count}`
             }

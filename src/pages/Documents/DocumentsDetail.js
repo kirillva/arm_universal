@@ -454,7 +454,7 @@ export const DocumentsDetail = ({
                     {...options}
                     label={"Возраст на момент постановки"}
                     name={"n_year"}
-                    disabled={true}
+                    // disabled={true}
                     error={errors.n_year}
                     helperText={errors.n_year}
                     value={values.n_year}

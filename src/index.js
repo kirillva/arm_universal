@@ -13,7 +13,8 @@ import rootReducer from "rootReducer";
 const outerTheme = createMuiTheme({
   palette: {
     primary: {
-      main: '#2196F3',
+      // main: '#2196F3',
+      main: '#0f703b'
     },
     secondary: {
       main: '#FFFFFF',

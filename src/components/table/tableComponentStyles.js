@@ -15,13 +15,17 @@ export const useTableComponentStyles = makeStyles((theme) => ({
     borderLeft: "1px solid #e0e0e0",
   },
   headerOuterWrapper: {
-    verticalAlign: 'bottom',
-    padding: '5px'
+    verticalAlign: 'baseline',
+    padding: '5px',
+    backgroundColor: '#579a76',
+    color: 'black',
   },
   headerTitleText: {
     overflow: "hidden",
     textOverflow: "ellipsis",
+    fontSize: '0.8rem',
     flex: 1,
+    fontWeight: 'bold'
   },
   headerFilter: {
     flex: 1,
@@ -89,5 +93,8 @@ export const useTableComponentStyles = makeStyles((theme) => ({
   buttonsWrapper: {
     display: 'flex',
     gap: theme.spacing(2)
+  },
+  paginationToolbar: {
+    backgroundColor: '#579a76'
   }
 }));
