@@ -249,7 +249,7 @@ export const DocumentsPanel = () => {
           endIcon={<PlusOne />}
           disabled={!isFullAccess}
           onClick={() => {
-            setSelectedRow(null);
+            setSelectedRow(-1);
             setOpen(true);
           }}
         >

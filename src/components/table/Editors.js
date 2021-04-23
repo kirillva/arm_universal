@@ -454,6 +454,8 @@ export function DistinctSelectEditorField({
           label={label}
           margin={margin || "none"}
           size={size || "small"}
+          error={error}
+          helperText={helperText}
           variant="outlined"
           InputProps={{ ...params.InputProps, type: "search" }}
         />

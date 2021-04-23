@@ -76,7 +76,7 @@ export const DocumentsDetail = ({
   setOpen,
   onSubmit = () => {},
 }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [viewState, setViewState] = useState("DETAIL");
   const [jbchild, setjbchild] = useState([]);
 
@@ -485,7 +485,9 @@ export const DocumentsDetail = ({
                       idProperty: 'id',
                       nameProperty: 'c_address',
                       table: 'dd_documents',
-                    }}
+                      error: errors.c_address,
+                      helperText: errors.c_address,
+                    }}                    
                     label={"Адрес, телефон"}
                     name={"c_address"}
                     value={values.c_address}
@@ -583,6 +585,8 @@ export const DocumentsDetail = ({
                       idProperty: 'id',
                       nameProperty: 'c_intent',
                       table: 'dd_documents',
+                      error: errors.c_intent,
+                      helperText: errors.c_intent,
                     }}
                     label={"Цель использования земельного участка"}
                     name={"c_intent"}
