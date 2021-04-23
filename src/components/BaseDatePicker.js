@@ -82,7 +82,8 @@ const BaseDatePicker = ({
 	return (
 		<MuiPickersUtilsProvider aria-describedby={id} libInstance={moment} utils={MomentUtils} locale={'ru'}>
 			<TextField
-				margin="dense"
+				margin="none"
+				size="small"
 				variant="outlined"
 				value={renderPeriod()}
 				className={className}
