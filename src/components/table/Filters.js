@@ -17,6 +17,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
+import BaseDatePicker from "components/BaseDatePicker";
 const useStyles = makeStyles((theme) => ({
   adornedEnd: {
     paddingRight: "3px",
@@ -255,24 +256,20 @@ export const UserFilter = ({
   );
 };
 
-// export const DateFilter = ({
-//   column: { filterValue = { start: null, finish: null }, setFilter },
-//   className,
-//   hidden,
-// }) => {
-//   return (
-//     <DatePicker
-//       style={{ display: hidden ? "none" : "unset" }}
-//       value={filterValue}
-//       className={className}
-//       onChange={(props) => {
-//         setFilter({ ...filterValue, ...props, operator: Operators.date });
-//       }}
-//       initialDateStart={filterValue.start}
-//       initialDateFinish={filterValue.finish}
-//     />
-//   );
-// };
+export const DateFilter = ({ column: { filterValue = { start: null, finish: null }, setFilter }, className }) => {
+	return (
+		<BaseDatePicker
+			value={filterValue}
+			className={className}
+			// InputProps={{
+			// 	className: styles.DateFilter
+			// }}
+			onChange={props => setFilter({ ...filterValue, ...props, operator: Operators.date })}
+			initialDateStart={filterValue.start}
+			initialDateFinish={filterValue.finish}
+		/>
+	);
+};
 
 export const BoolFilter = ({ column, className, hidden, props = {} }) => {
   const defaultProps = {

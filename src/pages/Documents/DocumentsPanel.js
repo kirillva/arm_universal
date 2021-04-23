@@ -2,7 +2,9 @@ import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   BoolFilter,
+  DateFilter,
   DateSingleFilter,
+  FromToFilter,
   NumberFilter,
   Operators,
   StringFilter,
@@ -86,10 +88,10 @@ export const DocumentsPanel = () => {
         {
           title: "Дата рождения",
           accessor: "d_birthday",
-          operator: Operators.date,
+          operator: Operators.fromTo,
           width: "150px",
           style: { textAlign: "center" },
-          Filter: DateSingleFilter,
+          Filter: DateFilter,
           Cell: DateCell,
         },
         {

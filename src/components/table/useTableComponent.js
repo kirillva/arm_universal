@@ -219,18 +219,18 @@ export const useTableComponent = ({
         if (column) {
           switch (column.operator) {
             case "fromTo":
-              if (item.value.from) {
+              if (item.value.start) {
                 _filters.push({
                   property: item.id,
-                  value: item.value.from,
+                  value: moment(item.value.start).startOf('day').toISOString(true),
                   operator: ">=",
                 });
               }
 
-              if (item.value.to) {
+              if (item.value.finish) {
                 _filters.push({
                   property: item.id,
-                  value: item.value.to,
+                  value: moment(item.value.finish).endOf('day').toISOString(true),
                   operator: "<=",
                 });
               }
