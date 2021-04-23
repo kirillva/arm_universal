@@ -168,6 +168,8 @@ export const DocumentsPanel = () => {
           title: "Кадастровый номер земельного участка, предоставленного многодетной семье",
           accessor: "c_earth",
           operator: Operators.string,
+          width: "100px",
+          style: { textAlign: "center" },
           Filter: StringFilter,
           Cell: StringCell,
         },
@@ -192,6 +194,8 @@ export const DocumentsPanel = () => {
         {
           title: "Примечание",
           accessor: "c_notice",
+          width: "200px",
+          style: { textAlign: "center" },
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,

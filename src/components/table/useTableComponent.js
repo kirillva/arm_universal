@@ -635,7 +635,6 @@ export const useTableComponent = ({
                   } else {
                     let style = { ...column.style };
 
-                    style.padding = "2px";
                     if (column.id === "selection") {
                       style.width = "80px";
                     }
