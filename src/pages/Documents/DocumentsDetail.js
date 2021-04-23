@@ -456,7 +456,7 @@ export const DocumentsDetail = ({
                     name={"n_year"}
                     // disabled={true}
                     error={errors.n_year}
-                    helperText={errors.n_year}
+                    helperText={errors.n_year || (values.n_year >= 18 ? "Возраст > 18 лет" : '')}
                     value={values.n_year}
                   />
                   <TextField
