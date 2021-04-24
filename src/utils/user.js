@@ -38,13 +38,32 @@ export const getClaims = () => {
   return getItem("claims") || "";
 };
 
-export const authenticate = ({ userName, token, userId, claims, login, persist }) => {
-  setItem("userName", userName ? userName : '', persist);
+export const getActivate = () => {
+  switch (localStorage.getItem("activate")) {
+    case "1":
+      return "";
+    case "0":
+      return "";
+      // return "Доступен пробный период";
+    default:
+      return "Система не активирована";
+  }
+};
+
+export const authenticate = ({
+  userName,
+  token,
+  userId,
+  claims,
+  login,
+  persist,
+}) => {
+  setItem("userName", userName ? userName : "", persist);
   setItem("token", token, persist);
   setItem("login", login, persist);
   setItem("userid", userId, persist);
   setItem("claims", claims, persist);
-  
+
   if (global && global.__audit) {
     const config = getConfig();
     const BASE_URL = config.BASE_URL.replace("{0}", config.dir);
@@ -81,7 +100,7 @@ export const auth = async ({
         userId: responce.user.userId,
         persist: persist,
         claims: responce.user.claims,
-        login: login
+        login: login,
       });
       onSuccess();
     }

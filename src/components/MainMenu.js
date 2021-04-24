@@ -5,7 +5,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
-import { getItem, getUsername, logout } from "utils/user";
+import { getItem, getUsername, getActivate, logout } from "utils/user";
 // import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
@@ -14,6 +14,9 @@ export const SimpleMenu = ({ setAuth }) => {
 
   return (
     <Box display="flex" >
+      <Button color="secondary">
+        {getActivate()}
+      </Button>
       <Button
         style={{flex: 1}}
         // endIcon={<AccountCircleIcon />}

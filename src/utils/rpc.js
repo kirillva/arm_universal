@@ -299,6 +299,13 @@ const Execute = (url, options) => {
           response.json().then((json) => {
             if (json.length >= 1) json = json[0];
             if (json.meta) {
+              localStorage.setItem('activate', '');
+              if (json.meta.activate === true) {
+                localStorage.setItem('activate', 1);
+              }
+              if (json.meta.activate === false) {
+                localStorage.setItem('activate', 0);
+              }
               if (json.meta.success) resolve(json);
               else {
                 if (json.code === 401) logout();

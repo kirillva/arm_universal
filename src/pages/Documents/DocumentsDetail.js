@@ -18,6 +18,8 @@ import {
   List,
   ListItem,
   ListItemText,
+  Tabs,
+  Tab,
 } from "@material-ui/core";
 import { runRpc, runRpcRecords, runRpcSingleRecord } from "utils/rpc";
 import { makeStyles } from "@material-ui/core/styles";
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   Paper: {
     width: "calc(100% - 40px)",
     // padding: theme.spacing(3),
+    height: "calc(100% - 64px)",
   },
   titleWrapper: {
     display: "flex",
@@ -155,7 +158,7 @@ export const DocumentsDetail = ({
         runRpc({
           action: "dd_documents",
           method: "Update",
-          data: [{ ...values, n_year: Number(values.n_year) }],
+          data: [{ ...values, n_year: Number(values.n_year), jb_print: printState }],
           type: "rpc",
         }).finally(() => {
           setSubmitting(false);
@@ -209,7 +212,8 @@ export const DocumentsDetail = ({
                   data: [
                     {
                       ...values,
-                      n_number: last_dd_document.n_number + 1,
+                      // n_number: last_dd_document.n_number + 1,
+                      jb_print: last_dd_document.jb_print,
                       n_year: Number(values.n_year),
                     },
                   ],
@@ -238,7 +242,7 @@ export const DocumentsDetail = ({
                       return (
                         <ListItem>
                           <ListItemText
-                            primary={`Заявка № ${n_number}. Дата подачи: ${d_date}`}
+                            primary={`Заявка № ${n_number}. Дата подачи: ${moment(d_date).format('DD.MM.YYYY')}`}
                             secondary={`Заявитель: ${c_fio} ${moment(
                               d_birthday
                             ).format("DD.MM.YYYY")}`}
@@ -270,6 +274,22 @@ export const DocumentsDetail = ({
       }
     },
   });
+
+  const [printState, setPrintState] = useState({
+    registry: "13.04.2021 № 656",
+    land: "с 09.04.2021 под № 9914.",
+    position:
+      "Заместитель начальника управления ЖКХ, энергетики, транспорта и связи",
+    official_name: "Д.С. Денисов"
+  });
+
+  useEffect(()=>{
+    if (values.jb_print) {
+      setPrintState({...printState, ...values.jb_print})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.jb_print]);
+
   const onChangeJbChild = (id, name) => {
     return (e) => {
       if (name !== "d_birthday") {
@@ -306,6 +326,23 @@ export const DocumentsDetail = ({
     if (recordID !== -1) {
       loadData();
       validateForm(values);
+    } else {
+      runRpcSingleRecord({
+        action: "dd_documents",
+        method: "Query",
+        data: [
+          {
+            sort: [
+              {
+                property: "n_number",
+                direction: "desc",
+              },
+            ],
+          },
+        ],
+      }).then((last_dd_document) => {
+        setFieldValue("n_number", last_dd_document.n_number + 1);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordID]);
@@ -337,47 +374,38 @@ export const DocumentsDetail = ({
       PaperProps={{ className: classes.Paper }}
       maxWidth="calc(100% - 60px)"
     >
-      <Box className={classes.titleWrapper}>
-        <Typography variant="h6" className={classes.title}>
-          Заявление
-        </Typography>
-        <Button
-          disabled={viewState === "DETAIL" || loading}
-          onClick={() => {
-            setViewState("DETAIL");
-          }}
-          color="primary"
-          variant="contained"
-          size="small"
-          endIcon={STATE["DETAIL"].icon}
-        >
-          {STATE["DETAIL"].title}
-        </Button>
-        <Button
-          disabled={viewState === "PRINT" || loading}
-          onClick={() => {
-            setViewState("PRINT");
-          }}
-          color="primary"
-          variant="contained"
-          size="small"
-          endIcon={STATE["PRINT"].icon}
-        >
-          {STATE["PRINT"].title}
-        </Button>
-        <Button
-          disabled={viewState === "HISTORY" || loading}
-          onClick={() => {
-            setViewState("HISTORY");
-          }}
-          color="primary"
-          variant="contained"
-          size="small"
-          endIcon={STATE["HISTORY"].icon}
-        >
-          {STATE["HISTORY"].title}
-        </Button>
-      </Box>
+      <Tabs
+        value={viewState}
+        variant="fullWidth"
+        indicatorColor="primary"
+        onChange={(e, newValue) => setViewState(newValue)}
+      >
+        <Tab
+          disabled={recordID === -1 || viewState === "DETAIL" || loading}
+          // icon={STATE["DETAIL"].icon}
+          label={STATE["DETAIL"].title}
+          textColor="primary"
+          value={"DETAIL"}
+        />
+        {recordID !== -1 && (
+          <Tab
+            disabled={viewState === "PRINT" || loading}
+            // icon={STATE["PRINT"].icon}
+            label={STATE["PRINT"].title}
+            textColor="primary"
+            value={"PRINT"}
+          />
+        )}
+        {recordID !== -1 && (
+          <Tab
+            disabled={viewState === "HISTORY" || loading}
+            // icon={STATE["HISTORY"].icon}
+            label={STATE["HISTORY"].title}
+            textColor="primary"
+            value={"HISTORY"}
+          />
+        )}
+      </Tabs>
       <DialogContent>
         <MuiPickersUtilsProvider
           libInstance={moment}
@@ -401,15 +429,13 @@ export const DocumentsDetail = ({
                   gridTemplateColumns="1fr 1fr"
                   padding="10px"
                 >
-                  {values.id && (
-                    <TextField
-                      {...options}
-                      label={"Номер"}
-                      name={"n_number"}
-                      value={values.n_number}
-                      // disabled={true}
-                    />
-                  )}
+                  <TextField
+                    {...options}
+                    label={"Номер"}
+                    name={"n_number"}
+                    value={values.n_number}
+                    // disabled={true}
+                  />
                   <TextField
                     {...options}
                     label={"ФИО заявителя"}
@@ -456,7 +482,10 @@ export const DocumentsDetail = ({
                     name={"n_year"}
                     // disabled={true}
                     error={errors.n_year}
-                    helperText={errors.n_year || (values.n_year >= 18 ? "Возраст > 18 лет" : '')}
+                    helperText={
+                      errors.n_year ||
+                      (values.n_year >= 18 ? "Возраст > 18 лет" : "")
+                    }
                     value={values.n_year}
                   />
                   <TextField
@@ -478,16 +507,16 @@ export const DocumentsDetail = ({
                     value={values.c_address}
                   /> */}
                   <DistinctSelectEditorField
-                    onChange={(value)=>setFieldValue('c_address', value)}
+                    onChange={(value) => setFieldValue("c_address", value)}
                     fieldProps={{
                       margin: "none",
                       size: "small",
-                      idProperty: 'id',
-                      nameProperty: 'c_address',
-                      table: 'dd_documents',
+                      idProperty: "id",
+                      nameProperty: "c_address",
+                      table: "dd_documents",
                       error: errors.c_address,
                       helperText: errors.c_address,
-                    }}                    
+                    }}
                     label={"Адрес, телефон"}
                     name={"c_address"}
                     value={values.c_address}
@@ -578,13 +607,13 @@ export const DocumentsDetail = ({
                     value={values.c_time}
                   />
                   <DistinctSelectEditorField
-                    onChange={(value)=>setFieldValue('c_intent', value)}
+                    onChange={(value) => setFieldValue("c_intent", value)}
                     fieldProps={{
                       margin: "none",
                       size: "small",
-                      idProperty: 'id',
-                      nameProperty: 'c_intent',
-                      table: 'dd_documents',
+                      idProperty: "id",
+                      nameProperty: "c_intent",
+                      table: "dd_documents",
                       error: errors.c_intent,
                       helperText: errors.c_intent,
                     }}
@@ -853,7 +882,13 @@ export const DocumentsDetail = ({
               </Box> */}
             </Box>
           )}
-          {viewState === "PRINT" && <DocumentPrint c_number={values.n_number} dx_date={values.d_date} />}
+          {viewState === "PRINT" && (
+            <DocumentPrint
+              values={values}
+              state={printState}
+              setState={setPrintState}
+            />
+          )}
           {viewState === "HISTORY" && <DocumentHistory />}
         </MuiPickersUtilsProvider>
       </DialogContent>
