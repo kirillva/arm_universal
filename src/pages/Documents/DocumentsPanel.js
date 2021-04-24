@@ -26,6 +26,7 @@ import { PlusOne } from "@material-ui/icons";
 import { DocumentsDetail } from "./DocumentsDetail";
 import { DocumentsList } from "./DocumentsList";
 import SearchIcon from "@material-ui/icons/Search";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     gap: "15px",
-    marginBottom: '15px'
+    marginBottom: "15px",
     // minHeight: '64px'
   },
 
@@ -81,7 +82,18 @@ export const DocumentsPanel = () => {
           accessor: "c_fio",
           operator: Operators.string,
           Filter: StringFilter,
-          Cell: StringCell,
+          Cell: ({ cell, ...props }) => {
+            const value = cell.value;
+            
+
+            const {c_address, d_birthday} = props.row.original;
+            const jb_child = props.row.original.jb_child || [];
+            const title = `${value} ${c_address} ${moment(d_birthday).format('DD.MM.YYYY')};  ${jb_child.map((item) => {
+              const { c_fio, c_address, d_birthday } = item;
+              return `${c_fio} ${c_address} ${moment(d_birthday).format('DD.MM.YYYY')}; `;
+            })}`;
+            return <div title={title}>{value ? value : ""}</div>;
+          },
           width: "400px",
           style: { textAlign: "center" },
         },
@@ -158,7 +170,8 @@ export const DocumentsPanel = () => {
           Cell: StringCell,
         },
         {
-          title: "Дата и номер принятия решения о предоставлении земельного участка",
+          title:
+            "Дата и номер принятия решения о предоставлении земельного участка",
           accessor: "c_accept",
           operator: Operators.string,
           width: "100px",
@@ -167,7 +180,8 @@ export const DocumentsPanel = () => {
           Cell: StringCell,
         },
         {
-          title: "Кадастровый номер земельного участка, предоставленного многодетной семье",
+          title:
+            "Кадастровый номер земельного участка, предоставленного многодетной семье",
           accessor: "c_earth",
           operator: Operators.string,
           width: "100px",
@@ -223,7 +237,7 @@ export const DocumentsPanel = () => {
       ],
       []
     ),
-    select: `id,${getSelectByColumns(pd_user)}`,
+    select: `id,jb_child,${getSelectByColumns(pd_user)}`,
     handleClick: (record) => {
       setSelectedRow(record.row.original.id);
       setOpen(true);
