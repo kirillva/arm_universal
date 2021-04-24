@@ -276,8 +276,8 @@ export const DocumentsDetail = ({
   });
 
   const [printState, setPrintState] = useState({
-    registry: "13.04.2021 № 656",
-    land: "с 09.04.2021 под № 9914.",
+    // registry: "13.04.2021 № 656",
+    // land: "с 09.04.2021 под № 9914.",
     position:
       "Заместитель начальника управления ЖКХ, энергетики, транспорта и связи",
     official_name: "Д.С. Денисов"
@@ -317,7 +317,7 @@ export const DocumentsDetail = ({
         },
       ],
     });
-    setjbchild(dd_document ? dd_document.jb_child : []);
+    setjbchild(dd_document ? dd_document.jb_child || [] : []);
     setValues(dd_document);
     setLoading(false);
   };

@@ -7,7 +7,7 @@ import moment from "moment";
 import { runRpc } from "utils/rpc";
 
 export const DocumentPrint = ({ values, state, setState }) => {
-  const { n_number, d_date, c_fio, c_address } = values;
+  const { n_number, d_date, c_fio, c_address, c_accept, c_account } = values;
 
   function onPrintItems(text) {
     runRpc({
@@ -79,17 +79,19 @@ export const DocumentPrint = ({ values, state, setState }) => {
             удовлетворена.
           </p>
           <p style={{ lineHeight: "33px" }}>
-            Постановлением администрации города Чебоксары от
-            <TextField
+            Постановлением администрации города Чебоксары от {" "}
+            {/* {!print  ? <TextField
               style={{ margin: "0 10px" }}
               value={state.registry} onChange={(e)=>setState({...state, registry: e.target.value})}
-            />{" "}
+            /> : state.registry}{" "} */}
+            {c_accept || '"нет данных"'} {" "}
             Ваша семья включена в Реестр учета многодетных семей, имеющих право
             на бесплатное предоставление в собственность земельных участков,{" "}
-            <TextField
+            {c_account || '"нет данных"'}
+             {/* {!print  ? <TextField
               style={{ margin: "0 10px" }}
               value={state.land} onChange={(e)=>setState({...state, land: e.target.value})}
-            />
+            /> : state.land} */}
           </p>
           <p>
             По вопросу распределения и предоставления земельных участков Вы
@@ -106,11 +108,11 @@ export const DocumentPrint = ({ values, state, setState }) => {
               gap: "15px",
             }}
           >
-            <TextField
+             {!print ? <TextField
               style={{ flex: 1 }}
               value={state.position} onChange={(e)=>setState({...state, position: e.target.value})}
-            />
-            <TextField value={state.official_name} onChange={(e)=>setState({...state, official_name: e.target.value})} />
+            /> : <div style={{ flex: 1 }}>{state.position}</div>}
+             {!print ? <TextField value={state.official_name} onChange={(e)=>setState({...state, official_name: e.target.value})} /> : <div>{state.official_name}</div>}
           </div>
           <p style={{ fontSize: "0.8em" }}>Купцова Т.Г. 23-50-64</p>
         </div>
@@ -122,6 +124,7 @@ export const DocumentPrint = ({ values, state, setState }) => {
     <>
       {getContent()}
       <Button
+        disabled={!c_accept || !c_account}
         startIcon={<PrintSharp />}
         onClick={() =>
           onPrintItems(ReactDOMServer.renderToString(getContent(true)))
