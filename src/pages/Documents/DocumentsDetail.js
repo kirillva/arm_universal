@@ -158,7 +158,7 @@ export const DocumentsDetail = ({
         runRpc({
           action: "dd_documents",
           method: "Update",
-          data: [{ ...values, n_year: Number(values.n_year), jb_print: printState }],
+          data: [{ ...values, n_year: Number(values.n_year), jb_print: printState, f_user: getUserId() }],
           type: "rpc",
         }).finally(() => {
           setSubmitting(false);
@@ -889,7 +889,7 @@ export const DocumentsDetail = ({
               setState={setPrintState}
             />
           )}
-          {viewState === "HISTORY" && <DocumentHistory />}
+          {viewState === "HISTORY" && <DocumentHistory id={values.id}/>}
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>

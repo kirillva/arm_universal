@@ -44,7 +44,7 @@ export const getActivate = () => {
       return "";
     case "0":
       return "";
-      // return "Доступен пробный период";
+    // return "Доступен пробный период";
     default:
       return "Система не активирована";
   }
@@ -91,6 +91,13 @@ export const auth = async ({
   formData.append("Password", password);
   try {
     const responce = await sendFormData("auth", formData);
+    localStorage.setItem("activate", "");
+    if (responce.activate === true) {
+      localStorage.setItem("activate", 1);
+    }
+    if (responce.activate === false) {
+      localStorage.setItem("activate", 0);
+    }
     if (responce.user.disabled) {
       onDisabled();
     } else {
