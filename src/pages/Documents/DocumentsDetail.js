@@ -795,7 +795,7 @@ export const DocumentsDetail = ({
                           disabled={!isFullAccess}
                           label={"Возраст на момент постановки"}
                           name={`n_year`}
-                          value={item.n_year || ""}
+                          value={item.n_year ? item.n_year : '0'}
                           helperText={
                             (item.n_year >= 18 ? "Возраст >= 18 лет" : "")
                           }
