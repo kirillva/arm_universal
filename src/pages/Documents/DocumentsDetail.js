@@ -278,6 +278,11 @@ export const DocumentsDetail = ({
   const [printState, setPrintState] = useState({
     // registry: "13.04.2021 № 656",
     // land: "с 09.04.2021 под № 9914.",
+    text: '',
+    number: '',
+    date: '',
+    registry: '',
+    land: '',
     position:
       "Заместитель начальника управления ЖКХ, энергетики, транспорта и связи",
     official_name: "Д.С. Денисов"
@@ -285,10 +290,22 @@ export const DocumentsDetail = ({
 
   useEffect(()=>{
     if (values.jb_print) {
-      setPrintState({...printState, ...values.jb_print})
+      setPrintState({...printState, ...{
+        number: values.n_number,
+        date: moment(values.d_date).format('DD.MM.YYYY'),
+        registry: values.c_accept,
+        land: values.c_account
+      }, ...values.jb_print})
+    } else {
+      setPrintState({...printState, ...{
+        number: values.n_number,
+        date: moment(values.d_date).format('DD.MM.YYYY'),
+        registry: values.c_accept,
+        land: values.c_account
+      }});
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.jb_print]);
+  }, [values]);
 
   const onChangeJbChild = (id, name) => {
     return (e) => {

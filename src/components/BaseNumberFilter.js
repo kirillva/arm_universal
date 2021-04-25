@@ -36,7 +36,6 @@ const BaseNumberFromToFilter = ({
   const id = open ? "simple-popover" : undefined;
 
   const renderPeriod = () => {
-      debugger;
     if (!start && !end) {
       return "";
     }

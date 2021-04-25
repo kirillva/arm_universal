@@ -64,10 +64,24 @@ export const DocumentPrint = ({ values, state, setState }) => {
               428000, г. Чебоксары, ул. К. Маркса, 36<br/>  тел.(8352) 62-10-49; факс
               (8352) 23-50-11;<br/>  E-mail: gcheb05@cap.ru
             </p>
-            <div style={{ textDecoration: "underline" }}>
-              {moment(d_date).format("DD.MM.YYYY")} №{n_number}
+            <div>
+              {/* {moment(d_date).format("DD.MM.YYYY")} №{n_number} */}
+              {!print ? <TextField
+              style={{ width: '100px' }}
+              value={state.number} onChange={(e)=>setState({...state, number: e.target.value})}
+            /> : `№ ${state.number}`}
+            {'   '}
+            {!print ? <TextField
+              style={{ width: '100px' }}
+              value={state.date} onChange={(e)=>setState({...state, date: e.target.value})}
+            /> : state.date}
             </div>
-            <div style={{ textDecoration: 'underline', width: '200px', height: '20px', borderBottom: '1px solid', margin: 'auto' }}> </div>
+            <div style={{ width: '200px', height: '20px', margin: 'auto' }}>
+            {!print ? <TextField
+              style={{ width: '100px' }}
+              value={state.text} onChange={(e)=>setState({...state, text: e.target.value})}
+            /> : state.text}
+            </div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column',  justifyContent: 'center'}}>
             <div>Гр. {c_fio},</div>
