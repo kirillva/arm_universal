@@ -64,16 +64,16 @@ export const DocumentPrint = ({ values, state, setState }) => {
               (8352) 23-50-11;<br/>  E-mail: gcheb05@cap.ru
             </p>
             <div>
+            {!print ? <TextField
+              style={{ width: '100px' }}
+              value={state.date} onChange={(e)=>setState({...state, date: e.target.value})}
+            /> : state.date}
+              {'   '}
               {/* {moment(d_date).format("DD.MM.YYYY")} №{n_number} */}
               {!print ? <TextField
               style={{ width: '100px' }}
               value={state.number} onChange={(e)=>setState({...state, number: e.target.value})}
             /> : `№ ${state.number}`}
-            {'   '}
-            {!print ? <TextField
-              style={{ width: '100px' }}
-              value={state.date} onChange={(e)=>setState({...state, date: e.target.value})}
-            /> : state.date}
             </div>
             <div style={{ width: '200px', height: '20px', margin: 'auto' }}>
             {!print ? <TextField
