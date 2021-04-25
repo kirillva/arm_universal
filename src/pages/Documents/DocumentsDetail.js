@@ -772,6 +772,17 @@ export const DocumentsDetail = ({
                           name={`c_document`}
                           value={item.c_document || ""}
                         />
+                         <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "n_year")}
+                          disabled={!isFullAccess}
+                          label={"Возраст на момент постановки"}
+                          name={`n_year`}
+                          value={item.n_year || ""}
+                          helperText={
+                            (item.n_year >= 18 ? "Возраст >= 18 лет" : "")
+                          }
+                        />
                         <KeyboardDatePicker
                           autoOk
                           variant="inline"
@@ -781,11 +792,12 @@ export const DocumentsDetail = ({
                           value={item.d_birthday || null}
                           format={dateFormat}
                           size="small"
-                          helperText={
-                            (moment().diff(moment(item.d_birthday), 'year') > 18 ? "Возраст > 18 лет" : "")
-                          }
                           InputAdornmentProps={{ position: "end" }}
-                          onChange={onChangeJbChild(id, "d_birthday")}
+                          onChange={(e)=>{
+                            jbchild[id] = { ...jbchild[id], d_birthday: moment(e).toISOString(true) };
+                            jbchild[id] = { ...jbchild[id], n_year: moment().diff(e, "year") };
+                            setjbchild([...jbchild]);
+                          }}
                         />
                         <TextField
                           {...options}
