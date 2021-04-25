@@ -43,7 +43,7 @@ export const getActivate = () => {
     case "1":
       return "";
     case "0":
-      return "Доступен пробный период";
+      return "Действует пробный период";
     default:
       return "Система не активирована";
   }

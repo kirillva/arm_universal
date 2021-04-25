@@ -218,11 +218,30 @@ export const useTableComponent = ({
 
         if (column) {
           switch (column.operator) {
+            case "fromToNumber":
+              if (item.value.start) {
+                _filters.push({
+                  property: item.id,
+                  value: item.value.start,
+                  operator: ">=",
+                });
+              }
+              if (item.value.finish) {
+                _filters.push({
+                  property: item.id,
+                  value: item.value.finish,
+                  operator: "<=",
+                });
+              }
+              break;
+              
             case "fromTo":
               if (item.value.start) {
                 _filters.push({
                   property: item.id,
-                  value: moment(item.value.start).startOf('day').toISOString(true),
+                  value: moment(item.value.start)
+                    .startOf("day")
+                    .toISOString(true),
                   operator: ">=",
                 });
               }
@@ -230,7 +249,9 @@ export const useTableComponent = ({
               if (item.value.finish) {
                 _filters.push({
                   property: item.id,
-                  value: moment(item.value.finish).endOf('day').toISOString(true),
+                  value: moment(item.value.finish)
+                    .endOf("day")
+                    .toISOString(true),
                   operator: "<=",
                 });
               }
@@ -426,7 +447,7 @@ export const useTableComponent = ({
     };
   };
 
-  const ExportToCsv = ({ignore}) => {
+  const ExportToCsv = ({ ignore }) => {
     onFetchData({
       pageIndex,
       pageSize,
@@ -437,22 +458,25 @@ export const useTableComponent = ({
       if (!data || !data.length) return null;
       const columnObj = {};
       Object.keys(columns).forEach(
-        (key) => (columnObj[columns[key].accessor] = {
-          label: columns[key].title,
-          exportRenderer: columns[key].exportRenderer
-        })
+        (key) =>
+          (columnObj[columns[key].accessor] = {
+            label: columns[key].title,
+            exportRenderer: columns[key].exportRenderer,
+          })
       );
 
       var textToSaveAsBlob = new Blob(
         [
           "\uFEFF" +
-            Object.keys(data[0]).filter(key=>ignore.indexOf(key) < 0)
-              .map((key) => columnObj[key] ? columnObj[key].label : '')
+            Object.keys(data[0])
+              .filter((key) => ignore.indexOf(key) < 0)
+              .map((key) => (columnObj[key] ? columnObj[key].label : ""))
               .join(";") +
             "\n" +
             data
               .map((e) =>
-                Object.keys(e).filter(key=>ignore.indexOf(key) < 0)
+                Object.keys(e)
+                  .filter((key) => ignore.indexOf(key) < 0)
                   .map((key) => {
                     if (e[key]) {
                       if (columnObj[key] && columnObj[key].exportRenderer) {
@@ -581,7 +605,7 @@ export const useTableComponent = ({
         title={"Экспорт"}
         variant="contained"
         color="primary"
-        onClick={()=>ExportToCsv({ ignore: ['id', 'jb_child']})}
+        onClick={() => ExportToCsv({ ignore: ["id", "jb_child"] })}
       >
         Экспорт
       </Button>
@@ -706,10 +730,7 @@ export const useTableComponent = ({
                         style.width = column.width;
                       }
                       return (
-                        <TableCell
-                          style={style}
-                          {...column.getHeaderProps()}
-                        >
+                        <TableCell style={style} {...column.getHeaderProps()}>
                           <div>
                             {column.canFilter
                               ? column.render("Filter", filterProps)

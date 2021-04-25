@@ -133,7 +133,7 @@ export const DocumentsDetail = ({
     initialValues: {
       n_number: "",
       c_fio: "",
-      d_birthday: moment(),
+      d_birthday: null,
       n_year: "",
       c_document: "",
       c_address: "",
@@ -482,10 +482,6 @@ export const DocumentsDetail = ({
                     name={"n_year"}
                     // disabled={true}
                     error={errors.n_year}
-                    helperText={
-                      errors.n_year ||
-                      (values.n_year >= 18 ? "Возраст > 18 лет" : "")
-                    }
                     value={values.n_year}
                   />
                   <TextField
@@ -785,6 +781,9 @@ export const DocumentsDetail = ({
                           value={item.d_birthday || null}
                           format={dateFormat}
                           size="small"
+                          helperText={
+                            (moment().diff(moment(item.d_birthday), 'year') > 18 ? "Возраст > 18 лет" : "")
+                          }
                           InputAdornmentProps={{ position: "end" }}
                           onChange={onChangeJbChild(id, "d_birthday")}
                         />

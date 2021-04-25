@@ -83,18 +83,18 @@ export const DocumentPrint = ({ values, state, setState }) => {
           </p>
           <p style={{ lineHeight: "33px" }}>
             Постановлением администрации города Чебоксары от {" "}
-            {/* {!print  ? <TextField
+            {!print  ? <TextField
               style={{ margin: "0 10px" }}
               value={state.registry} onChange={(e)=>setState({...state, registry: e.target.value})}
-            /> : state.registry}{" "} */}
-            {c_accept || '"нет данных"'} {" "}
+            /> : state.registry}{" "}
+            {/* {c_accept || '"нет данных"'} {" "} */}
             Ваша семья включена в Реестр учета многодетных семей, имеющих право
             на бесплатное предоставление в собственность земельных участков,{" "}
-            {c_account || '"нет данных"'}
-             {/* {!print  ? <TextField
+            {/* {c_account || '"нет данных"'} */}
+             {!print  ? <TextField
               style={{ margin: "0 10px" }}
               value={state.land} onChange={(e)=>setState({...state, land: e.target.value})}
-            /> : state.land} */}
+            /> : state.land}
           </p>
           <p>
             По вопросу распределения и предоставления земельных участков Вы

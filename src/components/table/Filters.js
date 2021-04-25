@@ -18,6 +18,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 import BaseDatePicker from "components/BaseDatePicker";
+import BaseNumberFromToFilter from "components/BaseNumberFilter";
 const useStyles = makeStyles((theme) => ({
   adornedEnd: {
     paddingRight: "3px",
@@ -35,6 +36,7 @@ export const Operators = {
   user: "user",
   status: "status",
   fromTo: "fromTo",
+  fromToNumber: "fromToNumber",
 };
 
 function applyFilter(filterValue, value, setFilter) {
@@ -254,6 +256,20 @@ export const UserFilter = ({
       }}
     />
   );
+};
+export const NumberFromToFilter = ({ column: { filterValue = { start: null, finish: null }, setFilter }, className }) => {
+	return (
+		<BaseNumberFromToFilter
+			value={filterValue}
+			className={className}
+			// InputProps={{
+			// 	className: styles.DateFilter
+			// }}
+			onChange={props => setFilter({ ...filterValue, ...props, operator: Operators.fromToNumber })}
+			initialStart={filterValue.start}
+			initialFinish={filterValue.finish}
+		/>
+	);
 };
 
 export const DateFilter = ({ column: { filterValue = { start: null, finish: null }, setFilter }, className }) => {

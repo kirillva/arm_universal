@@ -6,6 +6,7 @@ import {
   DateSingleFilter,
   FromToFilter,
   NumberFilter,
+  NumberFromToFilter,
   Operators,
   StringFilter,
 } from "components/table/Filters";
@@ -72,10 +73,10 @@ export const DocumentsPanel = () => {
         {
           title: "№ п/п",
           accessor: "n_number",
-          operator: Operators.number,
-          Filter: NumberFilter,
+          operator: Operators.fromToNumber,
+          Filter: NumberFromToFilter,
           Cell: NumberCell,
-          width: "80px",
+          width: "100px",
           style: { textAlign: "center" },
         },
         {
@@ -138,11 +139,11 @@ export const DocumentsPanel = () => {
         {
           title: "Дата подачи заявления",
           accessor: "d_date",
-          operator: Operators.date,
+          operator: Operators.fromTo,
           width: "150px",
           style: { textAlign: "center" },
           exportRenderer: dateRenderer,
-          Filter: DateSingleFilter,
+          Filter: DateFilter,
           Cell: DateCell,
         },
         {
@@ -198,8 +199,8 @@ export const DocumentsPanel = () => {
           operator: Operators.date,
           width: "170px",
           style: { textAlign: "center" },
-          Filter: DateSingleFilter,
-          Cell: DateCell,
+          Filter: StringFilter,
+          Cell: StringCell,
         },
         {
           title: "Сообщение заявителю о снятии с учета",
@@ -207,8 +208,8 @@ export const DocumentsPanel = () => {
           operator: Operators.date,
           width: "170px",
           style: { textAlign: "center" },
-          Filter: DateSingleFilter,
-          Cell: DateCell,
+          Filter: StringFilter,
+          Cell: StringCell,
         },
         {
           title: "Примечание",
