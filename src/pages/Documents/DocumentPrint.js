@@ -51,24 +51,27 @@ export const DocumentPrint = ({ values, state, setState }) => {
               <img src={Chuvash} alt="chuvash" height="100px" />
             </div>
             <b>
-              ЧĂВАШ РЕСПУБЛИКИ ШУПАШКАР ХУЛА АДМИНИСТРАЦИЙĚН ПУРĂНМАЛЛИ
-              ÇУРТ-ЙĚРПЕ КОМУНАЛЛĂ ХУÇАЛАХ, ЭНЕРГЕТИКА, ТРАНСПОРТ ТАТА ÇЫХĂНУ
+              ЧĂВАШ РЕСПУБЛИКИ<br/> ШУПАШКАР ХУЛА АДМИНИСТРАЦИЙĚН<br/> ПУРĂНМАЛЛИ
+              ÇУРТ-ЙĚРПЕ КОМУНАЛЛĂ<br/>  ХУÇАЛАХ, ЭНЕРГЕТИКА, ТРАНСПОРТ ТАТА<br/>  ÇЫХĂНУ
               УПРАВЛЕНИЙĚ
             </b>
+            <div style={{ textDecoration: 'underline', width: '100px', height: '20px', borderBottom: '1px solid', margin: 'auto' }}> </div>
             <b>
-              Чувашская Республика УПРАВЛЕНИЕ ЖКХ, ЭНЕРГЕТИКИ, ТРАНСПОРТА И
-              СВЯЗИ администрации города Чебоксары
+              Чувашская Республика<br/>  УПРАВЛЕНИЕ ЖКХ, ЭНЕРГЕТИКИ,<br/>  ТРАНСПОРТА И
+              СВЯЗИ<br/>  администрации города<br/>  Чебоксары
             </b>
             <p style={{ fontSize: "0.8em" }}>
-              428000, г. Чебоксары, ул. К. Маркса, 36 тел.(8352) 62-10-49; факс
-              (8352) 23-50-11; E-mail: gcheb05@cap.ru
+              428000, г. Чебоксары, ул. К. Маркса, 36<br/>  тел.(8352) 62-10-49; факс
+              (8352) 23-50-11;<br/>  E-mail: gcheb05@cap.ru
             </p>
-            <p style={{ textDecoration: "underline" }}>
+            <div style={{ textDecoration: "underline" }}>
               {moment(d_date).format("DD.MM.YYYY")} №{n_number}
-            </p>
+            </div>
+            <div style={{ textDecoration: 'underline', width: '200px', height: '20px', borderBottom: '1px solid', margin: 'auto' }}> </div>
           </div>
-          <div style={{ flex: 1 }}>
-            Гр. {c_fio}, {c_address}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column',  justifyContent: 'center'}}>
+            <div>Гр. {c_fio},</div>
+            <div>{c_address}</div>
           </div>
         </div>
         <div style={{ textIndent: "50px" }}>

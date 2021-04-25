@@ -1,6 +1,7 @@
 export const DateCell = ({ cell, ...props }) => {
 	const value = cell.value;
-	return value ? new Date(value).toLocaleDateString() : '';
+	const text = value ? new Date(value).toLocaleDateString() : '';
+	return <div title={text}>{text}</div>;
 };
 
 export const NumberCell = ({ cell, ...props }) => {
