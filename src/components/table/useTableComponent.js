@@ -426,7 +426,7 @@ export const useTableComponent = ({
     };
   };
 
-  const ExportToCsv = () => {
+  const ExportToCsv = ({ignore}) => {
     onFetchData({
       pageIndex,
       pageSize,
@@ -435,23 +435,29 @@ export const useTableComponent = ({
       action,
     }).then(({ data }) => {
       if (!data || !data.length) return null;
-      const labels = {};
+      const columnObj = {};
       Object.keys(columns).forEach(
-        (key) => (labels[columns[key].accessor] = columns[key].title)
+        (key) => (columnObj[columns[key].accessor] = {
+          label: columns[key].title,
+          exportRenderer: columns[key].exportRenderer
+        })
       );
 
       var textToSaveAsBlob = new Blob(
         [
           "\uFEFF" +
-            Object.keys(data[0])
-              .map((key) => labels[key])
+            Object.keys(data[0]).filter(key=>ignore.indexOf(key) < 0)
+              .map((key) => columnObj[key] ? columnObj[key].label : '')
               .join(";") +
             "\n" +
             data
               .map((e) =>
-                Object.keys(e)
+                Object.keys(e).filter(key=>ignore.indexOf(key) < 0)
                   .map((key) => {
                     if (e[key]) {
+                      if (columnObj[key] && columnObj[key].exportRenderer) {
+                        return columnObj[key].exportRenderer(e[key]);
+                      }
                       if (e[key].replace && e[key].trim) {
                         return e[key]
                           .replace(/[\n]/g, "")
@@ -575,7 +581,7 @@ export const useTableComponent = ({
         title={"Экспорт"}
         variant="contained"
         color="primary"
-        onClick={ExportToCsv}
+        onClick={()=>ExportToCsv({ ignore: ['id', 'jb_child']})}
       >
         Экспорт
       </Button>

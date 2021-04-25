@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const DateCell = ({ cell, ...props }) => {
 	const value = cell.value;
 	const text = value ? new Date(value).toLocaleDateString() : '';
@@ -23,3 +25,7 @@ export const BoolCell = ({ cell, ...props }) => {
 	const value = cell.value;
 	return value ? 'Да' : value === false ? 'Нет' : '';
 };
+
+export const dateRenderer = (value) => {
+	return moment(value).format('DD.MM.YYYY')
+}

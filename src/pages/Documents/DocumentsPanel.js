@@ -12,6 +12,7 @@ import {
 import {
   BoolCell,
   DateCell,
+  dateRenderer,
   NumberCell,
   StringCell,
 } from "components/table/Cell";
@@ -103,6 +104,7 @@ export const DocumentsPanel = () => {
           operator: Operators.fromTo,
           width: "150px",
           style: { textAlign: "center" },
+          exportRenderer: dateRenderer,
           Filter: DateFilter,
           Cell: DateCell,
         },
@@ -139,6 +141,7 @@ export const DocumentsPanel = () => {
           operator: Operators.date,
           width: "150px",
           style: { textAlign: "center" },
+          exportRenderer: dateRenderer,
           Filter: DateSingleFilter,
           Cell: DateCell,
         },
