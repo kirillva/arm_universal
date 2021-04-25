@@ -87,6 +87,7 @@ const BaseDatePicker = ({
 				variant="outlined"
 				value={renderPeriod()}
 				className={className}
+				placeholder="Поиск..."
 				InputProps={{
 					contentEditable: false,
 					endAdornment: (

@@ -86,8 +86,6 @@ export const DocumentsPanel = () => {
           Filter: StringFilter,
           Cell: ({ cell, ...props }) => {
             const value = cell.value;
-            
-
             const {c_address, d_birthday} = props.row.original;
             const jb_child = props.row.original.jb_child || [];
             const title = `${value} ${c_address} ${moment(d_birthday).format('DD.MM.YYYY')};  ${jb_child.map((item) => {
