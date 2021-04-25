@@ -3,11 +3,10 @@ import { PrintSharp } from "@material-ui/icons";
 import React from "react";
 import Chuvash from "assets/chuvash.png";
 import ReactDOMServer from "react-dom/server";
-import moment from "moment";
 import { runRpc } from "utils/rpc";
 
 export const DocumentPrint = ({ values, state, setState }) => {
-  const { n_number, d_date, c_fio, c_address, c_accept, c_account } = values;
+  // const { c_accept, c_account } = values;
 
   function onPrintItems(text) {
     runRpc({
@@ -84,8 +83,17 @@ export const DocumentPrint = ({ values, state, setState }) => {
             </div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column',  justifyContent: 'center'}}>
-            <div>Гр. {c_fio},</div>
-            <div>{c_address}</div>
+            <div>
+              {/* Гр. {c_fio}, */}
+            {!print ? <TextField
+              style={{ width: '100%' }}
+              value={state.c_fio} onChange={(e)=>setState({...state, c_fio: e.target.value})}
+            /> : `Гр. ${state.c_fio}`}</div>
+            {/* {c_address} */}
+            <div>{!print ? <TextField
+              style={{ width: '100%' }}
+              value={state.c_address} onChange={(e)=>setState({...state, c_address: e.target.value})}
+            /> : `№ ${state.c_address}`}</div>
           </div>
         </div>
         <div style={{ textIndent: "50px" }}>
@@ -141,7 +149,7 @@ export const DocumentPrint = ({ values, state, setState }) => {
     <>
       {getContent()}
       <Button
-        disabled={!c_accept || !c_account}
+        // disabled={!c_accept || !c_account}
         startIcon={<PrintSharp />}
         onClick={() =>
           onPrintItems(ReactDOMServer.renderToString(getContent(true)))

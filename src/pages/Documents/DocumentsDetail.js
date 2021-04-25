@@ -278,6 +278,8 @@ export const DocumentsDetail = ({
   const [printState, setPrintState] = useState({
     // registry: "13.04.2021 № 656",
     // land: "с 09.04.2021 под № 9914.",
+    c_fio: '',
+    c_address: '',
     text: '',
     number: '',
     date: '',
@@ -289,20 +291,18 @@ export const DocumentsDetail = ({
   });
 
   useEffect(()=>{
+    const newValues = {
+      number: values.n_number,
+      date: moment(values.d_date).format('DD.MM.YYYY'),
+      registry: values.c_accept,
+      land: values.c_account,
+      c_fio: values.c_fio,
+      c_address: values.c_address
+    };
     if (values.jb_print) {
-      setPrintState({...printState, ...{
-        number: values.n_number,
-        date: moment(values.d_date).format('DD.MM.YYYY'),
-        registry: values.c_accept,
-        land: values.c_account
-      }, ...values.jb_print})
+      setPrintState({...printState, ...newValues, ...values.jb_print})
     } else {
-      setPrintState({...printState, ...{
-        number: values.n_number,
-        date: moment(values.d_date).format('DD.MM.YYYY'),
-        registry: values.c_accept,
-        land: values.c_account
-      }});
+      setPrintState({...printState, ...newValues});
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
@@ -796,6 +796,7 @@ export const DocumentsDetail = ({
                           label={"Возраст на момент постановки"}
                           name={`n_year`}
                           value={item.n_year ? item.n_year : '0'}
+                          error={item.n_year >= 18}
                           helperText={
                             (item.n_year >= 18 ? "Возраст >= 18 лет" : "")
                           }
