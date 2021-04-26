@@ -30,7 +30,6 @@ import {
 import MomentUtils from "@date-io/moment";
 import "moment/locale/ru";
 import moment from "moment";
-import Card from "@material-ui/core/Card";
 import { getClaims, getUserId } from "utils/user";
 import * as Yup from "yup";
 import { useMessageContext } from "context/MessageContext";
@@ -82,6 +81,7 @@ export const DocumentsDetail = ({
   const [loading, setLoading] = useState(false);
   const [viewState, setViewState] = useState("DETAIL");
   const [jbchild, setjbchild] = useState([]);
+  const [hiddenChilds, setHiddenChilds] = useState({});
 
   const isReadOnly = getClaims().indexOf(".readonly.") >= 0;
   const isFullAccess = getClaims().indexOf(".full.") >= 0;
@@ -158,7 +158,14 @@ export const DocumentsDetail = ({
         runRpc({
           action: "dd_documents",
           method: "Update",
-          data: [{ ...values, n_year: Number(values.n_year), jb_print: printState, f_user: getUserId() }],
+          data: [
+            {
+              ...values,
+              n_year: Number(values.n_year),
+              jb_print: printState,
+              f_user: getUserId(),
+            },
+          ],
           type: "rpc",
         }).finally(() => {
           setSubmitting(false);
@@ -242,7 +249,9 @@ export const DocumentsDetail = ({
                       return (
                         <ListItem>
                           <ListItemText
-                            primary={`Заявка № ${n_number}. Дата подачи: ${moment(d_date).format('DD.MM.YYYY')}`}
+                            primary={`Заявка № ${n_number}. Дата подачи: ${moment(
+                              d_date
+                            ).format("DD.MM.YYYY")}`}
                             secondary={`Заявитель: ${c_fio} ${moment(
                               d_birthday
                             ).format("DD.MM.YYYY")}`}
@@ -278,33 +287,33 @@ export const DocumentsDetail = ({
   const [printState, setPrintState] = useState({
     // registry: "13.04.2021 № 656",
     // land: "с 09.04.2021 под № 9914.",
-    c_fio: '',
-    c_address: '',
-    text: '',
-    number: '',
-    date: '',
-    registry: '',
-    land: '',
+    c_fio: "",
+    c_address: "",
+    text: "",
+    number: "",
+    date: "",
+    registry: "",
+    land: "",
     position:
       "Заместитель начальника управления ЖКХ, энергетики, транспорта и связи",
-    official_name: "Д.С. Денисов"
+    official_name: "Д.С. Денисов",
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     const newValues = {
       number: values.n_number,
-      date: moment(values.d_date).format('DD.MM.YYYY'),
+      date: moment(values.d_date).format("DD.MM.YYYY"),
       registry: values.c_accept,
       land: values.c_account,
       c_fio: values.c_fio,
-      c_address: values.c_address
+      c_address: values.c_address,
     };
     if (values.jb_print) {
-      setPrintState({...printState, ...newValues, ...values.jb_print})
+      setPrintState({ ...printState, ...newValues, ...values.jb_print });
     } else {
-      setPrintState({...printState, ...newValues});
+      setPrintState({ ...printState, ...newValues });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
   const onChangeJbChild = (id, name) => {
@@ -335,6 +344,13 @@ export const DocumentsDetail = ({
       ],
     });
     setjbchild(dd_document ? dd_document.jb_child || [] : []);
+    if (dd_document && dd_document.jb_child) {
+      const _hiddenChilds = {};
+      for (let i = 0; i < dd_document.jb_child.length; i++) {
+        _hiddenChilds[i] = true;
+      }
+      setHiddenChilds(_hiddenChilds);
+    }
     setValues(dd_document);
     setLoading(false);
   };
@@ -436,155 +452,7 @@ export const DocumentsDetail = ({
                 flexDirection={"column"}
                 border="1px solid #c4c4c4"
                 borderRadius="5px"
-              >
-                <Typography style={{ margin: "15px 0 0 15px" }}>
-                  Заявитель
-                </Typography>
-                <Box
-                  display="grid"
-                  gridGap="15px"
-                  gridTemplateColumns="1fr 1fr"
-                  padding="10px"
-                >
-                  <TextField
-                    {...options}
-                    label={"Номер"}
-                    name={"n_number"}
-                    value={values.n_number}
-                    // disabled={true}
-                  />
-                  <TextField
-                    {...options}
-                    label={"ФИО заявителя"}
-                    disabled={!isFullAccess}
-                    name={"c_fio"}
-                    error={errors.c_fio}
-                    helperText={errors.c_fio}
-                    value={values.c_fio}
-                  />
-                  <TextField
-                    {...options}
-                    label={"Номер телефона"}
-                    disabled={!isFullAccess}
-                    name={"c_phone"}
-                    error={errors.c_phone}
-                    helperText={errors.c_phone}
-                    value={values.c_phone}
-                  />
-                  <KeyboardDatePicker
-                    autoOk
-                    variant="inline"
-                    inputVariant="outlined"
-                    name={"d_birthday"}
-                    label={"Дата рождения"}
-                    disabled={!isFullAccess}
-                    format={dateFormat}
-                    size="small"
-                    error={errors.d_birthday}
-                    helperText={errors.d_birthday}
-                    InputAdornmentProps={{ position: "end" }}
-                    value={values.d_birthday}
-                    onChange={(date) => {
-                      setFieldValue(
-                        "d_birthday",
-                        moment(date).toISOString(true)
-                      );
-                      setFieldValue("n_year", moment().diff(date, "year"));
-                      validateField("d_birthday");
-                    }}
-                  />
-                  <TextField
-                    {...options}
-                    label={"Возраст на момент постановки"}
-                    name={"n_year"}
-                    // disabled={true}
-                    error={errors.n_year}
-                    value={values.n_year}
-                  />
-                  <TextField
-                    {...options}
-                    label={"Реквизиты документа, удостоверяющего личность"}
-                    name={"c_document"}
-                    disabled={!isFullAccess}
-                    error={errors.c_document}
-                    helperText={errors.c_document}
-                    value={values.c_document}
-                  />
-                  {/* <TextField
-                    {...options}
-                    label={"Адрес, телефон"}
-                    disabled={!isFullAccess}
-                    error={errors.c_address}
-                    helperText={errors.c_address}
-                    name={"c_address"}
-                    value={values.c_address}
-                  /> */}
-                  <DistinctSelectEditorField
-                    onChange={(value) => setFieldValue("c_address", value)}
-                    fieldProps={{
-                      margin: "none",
-                      size: "small",
-                      idProperty: "id",
-                      nameProperty: "c_address",
-                      table: "dd_documents",
-                      error: errors.c_address,
-                      helperText: errors.c_address,
-                    }}
-                    label={"Адрес, телефон"}
-                    name={"c_address"}
-                    value={values.c_address}
-                  />
-                  {/* <TextField
-                {...options}
-                label={"Дата подачи заявления"}
-                name={"d_date"}
-                value={values.d_date}
-              /> */}
-
-                  {/* <TextField
-              {...options}
-              label={"Идентификатор пользователя"}
-              name={"f_user"}
-              value={values.f_user}
-            /> */}
-                  {/* <TextField
-              label="sn_delete"
-              name={"sn_delete"}
-              value={values.sn_delete}
-              {...options}
-              select
-              onChange={(e) => setFieldValue("sn_delete", e.target.value)}
-            >
-              <MenuItem value={true}>Да</MenuItem>
-              <MenuItem value={false}>Нет</MenuItem>
-            </TextField> */}
-
-                  {/* <TextField
-              label="Роли"
-              name={"c_claims"}
-              value={values.c_claims}
-              {...options}
-              select
-              onChange={(e) => setFieldValue("c_claims", e.target.value)}
-            >
-              {roles.map((item) => (
-                <MenuItem value={item.id}>{item.c_description}</MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="e-mail"
-              name={"c_email"}
-              value={values.c_email}
-              {...options}
-            /> */}
-                </Box>
-              </Box>
-              <Box
-                display="flex"
-                flexDirection={"column"}
-                border="1px solid #c4c4c4"
-                borderRadius="5px"
-                margin="15px 0 0 0"
+                margin="15px 0 15px 0"
               >
                 <Typography style={{ margin: "15px 0 0 15px" }}>
                   Заявление
@@ -592,9 +460,16 @@ export const DocumentsDetail = ({
                 <Box
                   display="grid"
                   gridGap="15px"
-                  gridTemplateColumns="1fr 1fr"
+                  gridTemplateColumns="1fr 1fr 1fr 3fr"
                   padding="10px"
                 >
+                  <TextField
+                    {...options}
+                    label={"Номер"}
+                    name={"n_number"}
+                    value={values.n_number}
+                    disabled={!isFullAccess}
+                  />
                   <KeyboardDatePicker
                     autoOk
                     variant="inline"
@@ -629,80 +504,291 @@ export const DocumentsDetail = ({
                       table: "dd_documents",
                       error: errors.c_intent,
                       helperText: errors.c_intent,
+                      disabled: !isFullAccess,
                     }}
                     label={"Цель использования земельного участка"}
                     name={"c_intent"}
                     value={values.c_intent}
                   />
+                </Box>
+              </Box>
+              <Box
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
+                borderRadius="5px"
+              >
+                <Typography style={{ margin: "15px 0 0 15px" }}>
+                  Заявитель
+                </Typography>
+                <Box
+                  display="grid"
+                  gridGap="15px"
+                  gridTemplateColumns="1fr 1fr 1fr"
+                  padding="10px"
+                >
                   {/* <TextField
                     {...options}
-                    label={"Цель использования земельного участка"}
+                    label={"ФИО заявителя"}
                     disabled={!isFullAccess}
-                    error={errors.c_intent}
-                    helperText={errors.c_intent}
-                    name={"c_intent"}
-                    value={values.c_intent}
+                   
+                    
                   /> */}
-                  <TextField
-                    {...options}
-                    label={"Постановление о постановке на учет"}
-                    disabled={!isFullAccess}
-                    name={"c_account"}
-                    error={errors.c_account}
-                    helperText={errors.c_account}
-                    value={values.c_account}
+                  <DistinctSelectEditorField
+                    onChange={(value) => setFieldValue("c_address", value)}
+                    fieldProps={{
+                      margin: "none",
+                      size: "small",
+                      idProperty: "id",
+                      nameProperty: "c_address",
+                      table: "dd_documents",
+                      error: errors.c_fio,
+                      helperText: errors.c_fio,
+                      disabled: !isFullAccess,
+                    }}
+                    label={"ФИО заявителя"}
+                    name={"c_fio"}
+                    value={values.c_fio}
                   />
-                  {/* <TextField
-                {...options}
-                label={"Решение о снятии с учета"}
-                name={"d_take_off_solution"}
-                value={values.d_take_off_solution}
-              /> */}
                   <KeyboardDatePicker
                     autoOk
                     variant="inline"
                     inputVariant="outlined"
-                    label={"Решение о снятии с учета"}
+                    name={"d_birthday"}
+                    label={"Дата рождения"}
                     disabled={!isFullAccess}
-                    name={"d_take_off_solution"}
-                    error={errors.d_take_off_solution}
-                    helperText={errors.d_take_off_solution}
-                    value={values.d_take_off_solution || null}
                     format={dateFormat}
                     size="small"
+                    error={errors.d_birthday}
+                    helperText={errors.d_birthday}
                     InputAdornmentProps={{ position: "end" }}
-                    onChange={onChangeDate("d_take_off_solution")}
-                  />
-                  {/* <TextField
-                {...options}
-                label={"Сообщение заявителю о снятии с учета"}
-                name={"d_take_off_message"}
-                value={values.d_take_off_message}
-              /> */}
-                  <KeyboardDatePicker
-                    autoOk
-                    variant="inline"
-                    inputVariant="outlined"
-                    label={"Сообщение заявителю о снятии с учета"}
-                    disabled={!isFullAccess}
-                    name={"d_take_off_message"}
-                    value={values.d_take_off_message || null}
-                    format={dateFormat}
-                    size="small"
-                    InputAdornmentProps={{ position: "end" }}
-                    onChange={onChangeDate("d_take_off_message")}
+                    value={values.d_birthday}
+                    onChange={(date) => {
+                      setFieldValue(
+                        "d_birthday",
+                        moment(date).toISOString(true)
+                      );
+                      setFieldValue("n_year", moment().diff(date, "year"));
+                      validateField("d_birthday");
+                    }}
                   />
                   <TextField
                     {...options}
-                    label={"Примечание"}
+                    label={"Возраст на момент постановки"}
+                    name={"n_year"}
                     disabled={!isFullAccess}
-                    multiline
-                    rows={4}
-                    name={"c_notice"}
-                    value={values.c_notice}
+                    error={errors.n_year}
+                    value={values.n_year}
+                  />
+                  <DistinctSelectEditorField
+                    onChange={(value) => setFieldValue("c_address", value)}
+                    fieldProps={{
+                      margin: "none",
+                      size: "small",
+                      idProperty: "id",
+                      nameProperty: "c_address",
+                      table: "dd_documents",
+                      error: errors.c_address,
+                      helperText: errors.c_address,
+                      style: { gridColumnStart: 1, gridColumnEnd: 3 },
+                      disabled: !isFullAccess,
+                    }}
+                    label={"Адрес, телефон"}
+                    name={"c_address"}
+                    value={values.c_address}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Реквизиты документа, удостоверяющего личность"}
+                    name={"c_document"}
+                    disabled={!isFullAccess}
+                    error={errors.c_document}
+                    helperText={errors.c_document}
+                    value={values.c_document}
                   />
                 </Box>
               </Box>
+
+              <Box
+                display="flex"
+                flexDirection={"column"}
+                border="1px solid #c4c4c4"
+                borderRadius="5px"
+                margin="15px 0 0 0"
+              >
+                <Box
+                  display="flex"
+                  flexDirection={"row"}
+                  style={{
+                    margin: "15px 15px 0 15px",
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography style={{ flex: 1 }}>Родственники</Typography>
+                  <Button
+                    style={{ margin: "0 10px 10px 10px" }}
+                    disabled={!isFullAccess}
+                    onClick={() => {
+                      // debugger;
+                      // console.log(values.jb_child);
+                      setjbchild([...jbchild, {}]);
+                      setHiddenChilds({
+                        ...hiddenChilds,
+                        [Object.keys(hiddenChilds).length + 1]: true,
+                      });
+                      // setFieldValue()
+                    }}
+                    color="primary"
+                    variant="contained"
+                  >
+                    Добавить родственника
+                  </Button>
+                </Box>
+                {jbchild.map((item, id) => {
+                  return (
+                    <>
+                      <Box
+                        display="grid"
+                        gridGap="15px"
+                        gridTemplateColumns="2fr 1fr 1fr 2fr"
+                        margin="15px 0 0 0"
+                        padding="0 10px 10px 10px"
+                      >
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "c_fio")}
+                          disabled={!isFullAccess}
+                          label={"ФИО"}
+                          name={`c_fio`}
+                          value={item.c_fio || ""}
+                        />
+                        <KeyboardDatePicker
+                          autoOk
+                          variant="inline"
+                          inputVariant="outlined"
+                          label={"Дата рождения"}
+                          disabled={!isFullAccess}
+                          value={item.d_birthday || null}
+                          format={dateFormat}
+                          size="small"
+                          InputAdornmentProps={{ position: "end" }}
+                          onChange={(e) => {
+                            jbchild[id] = {
+                              ...jbchild[id],
+                              d_birthday: moment(e).toISOString(true),
+                            };
+                            jbchild[id] = {
+                              ...jbchild[id],
+                              n_year: moment().diff(e, "year"),
+                            };
+                            setjbchild([...jbchild]);
+                          }}
+                        />
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "n_year")}
+                          disabled={!isFullAccess}
+                          label={"Возраст на момент постановки"}
+                          name={`n_year`}
+                          value={item.n_year ? item.n_year : "0"}
+                          error={item.n_year >= 18}
+                          helperText={
+                            item.n_year >= 18 ? "Возраст >= 18 лет" : ""
+                          }
+                        />
+                        <TextField
+                          {...options}
+                          onChange={onChangeJbChild(id, "c_document")}
+                          disabled={!isFullAccess}
+                          label={
+                            "Реквизиты документа, удостоверяющего личность"
+                          }
+                          name={`c_document`}
+                          value={item.c_document || ""}
+                        />
+                        {!hiddenChilds[id] && (
+                          <>
+                            <TextField
+                              {...options}
+                              onChange={onChangeJbChild(id, "c_address")}
+                              disabled={!isFullAccess}
+                              label={"Адрес, телефон"}
+                              name={`c_address`}
+                              value={item.c_address || ""}
+                              style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
+                            />
+                            <TextField
+                              {...options}
+                              onChange={onChangeJbChild(id, "c_note")}
+                              disabled={!isFullAccess}
+                              multiline
+                              rows={4}
+                              label={"Примечание"}
+                              name={`c_note`}
+                              value={item.c_note || ""}
+                              style={{ gridColumnStart: 3, gridColumnEnd: 5 }}
+                            />
+                          </>
+                        )}
+                      </Box>
+
+                      <Box
+                        display="flex"
+                        flexDirection={"row"}
+                        style={{
+                          margin: "0 15px 15px auto",
+                          gap: '15px',
+                          alignItems: "center",
+                        }}
+                      >
+                        <Button
+                          style={{ width: "100px" }}
+                          onClick={() => {
+                            setHiddenChilds({
+                              ...hiddenChilds,
+                              [id]: !hiddenChilds[id],
+                            });
+                          }}
+                          color="primary"
+                          variant="contained"
+                        >
+                          {hiddenChilds[id] ? "Показать" : "Скрыть"}
+                        </Button>
+                        <Button
+                          style={{ width: "100px" }}
+                          disabled={!isFullAccess}
+                          onClick={() => {
+                            ShowAcceptWindow({
+                              title: "Предупреждение",
+                              components: `Вы действительно хотите удалить родственника? Данные могут быть потеряны.`,
+                              buttons: [
+                                {
+                                  text: "Да",
+                                  color: "secondary",
+                                  handler: () => {
+                                    jbchild.splice(id, 1);
+                                    setjbchild([...jbchild]);
+                                  },
+                                },
+                                {
+                                  text: "Нет",
+                                  color: "primary",
+                                },
+                              ],
+                            });
+                          }}
+                          color="primary"
+                          variant="contained"
+                        >
+                          Удалить
+                        </Button>
+                      </Box>
+                    </>
+                  );
+                })}
+              </Box>
+
               <Box
                 display="flex"
                 flexDirection={"column"}
@@ -735,7 +821,6 @@ export const DocumentsDetail = ({
                   />
                 </Box>
               </Box>
-
               <Box
                 display="flex"
                 flexDirection={"column"}
@@ -744,171 +829,72 @@ export const DocumentsDetail = ({
                 margin="15px 0 0 0"
               >
                 <Typography style={{ margin: "15px 0 0 15px" }}>
-                  Родственники
-                </Typography>
-                {jbchild.map((item, id) => {
-                  return (
-                    <>
-                      <Box
-                        display="grid"
-                        gridGap="15px"
-                        gridTemplateColumns="1fr 1fr"
-                        margin="15px 0 0 0"
-                        padding="0 10px 10px 10px"
-                      >
-                        <TextField
-                          {...options}
-                          onChange={onChangeJbChild(id, "c_fio")}
-                          disabled={!isFullAccess}
-                          label={"ФИО"}
-                          name={`c_fio`}
-                          value={item.c_fio || ""}
-                        />
-                        {/* <TextField
-                        {...options}
-                        onChange={onChangeJbChild(id, "n_year")}
-                        label={"Возраст"}
-                        name={`n_year`}
-                        value={item.n_year || ""}
-                      /> */}
-                        <TextField
-                          {...options}
-                          onChange={onChangeJbChild(id, "c_address")}
-                          disabled={!isFullAccess}
-                          label={"Адрес, телефон"}
-                          name={`c_address`}
-                          value={item.c_address || ""}
-                        />
-                        <TextField
-                          {...options}
-                          onChange={onChangeJbChild(id, "c_document")}
-                          disabled={!isFullAccess}
-                          label={
-                            "Реквизиты документа, удостоверяющего личность"
-                          }
-                          name={`c_document`}
-                          value={item.c_document || ""}
-                        />
-                         <TextField
-                          {...options}
-                          onChange={onChangeJbChild(id, "n_year")}
-                          disabled={!isFullAccess}
-                          label={"Возраст на момент постановки"}
-                          name={`n_year`}
-                          value={item.n_year ? item.n_year : '0'}
-                          error={item.n_year >= 18}
-                          helperText={
-                            (item.n_year >= 18 ? "Возраст >= 18 лет" : "")
-                          }
-                        />
-                        <KeyboardDatePicker
-                          autoOk
-                          variant="inline"
-                          inputVariant="outlined"
-                          label={"Дата рождения"}
-                          disabled={!isFullAccess}
-                          value={item.d_birthday || null}
-                          format={dateFormat}
-                          size="small"
-                          InputAdornmentProps={{ position: "end" }}
-                          onChange={(e)=>{
-                            jbchild[id] = { ...jbchild[id], d_birthday: moment(e).toISOString(true) };
-                            jbchild[id] = { ...jbchild[id], n_year: moment().diff(e, "year") };
-                            setjbchild([...jbchild]);
-                          }}
-                        />
-                        <TextField
-                          {...options}
-                          onChange={onChangeJbChild(id, "c_note")}
-                          disabled={!isFullAccess}
-                          multiline
-                          rows={4}
-                          label={"Примечание"}
-                          name={`c_note`}
-                          value={item.c_note || ""}
-                        />
-                      </Box>
-                      <Button
-                        style={{ width: "100px", margin: "0 10px 20px auto" }}
-                        disabled={!isFullAccess}
-                        onClick={() => {
-                          ShowAcceptWindow({
-                            title: "Предупреждение",
-                            components: `Вы действительно хотите удалить родственника? Данные могут быть потеряны.`,
-                            buttons: [
-                              {
-                                text: "Да",
-                                color: "secondary",
-                                handler: () => {
-                                  jbchild.splice(id, 1);
-                                  setjbchild([...jbchild]);
-                                },
-                              },
-                              {
-                                text: "Нет",
-                                color: "primary",
-                              },
-                            ],
-                          });
-                        }}
-                        color="primary"
-                        variant="contained"
-                      >
-                        Удалить
-                      </Button>
-                    </>
-                  );
-                })}
-                {
-                  <Button
-                    style={{ margin: "0 10px 10px 10px" }}
-                    disabled={!isFullAccess}
-                    onClick={() => {
-                      // debugger;
-                      // console.log(values.jb_child);
-                      setjbchild([...jbchild, {}]);
-                      // setFieldValue()
-                    }}
-                    color="primary"
-                    variant="contained"
-                  >
-                    Добавить родственника
-                  </Button>
-                }
-              </Box>
-              {/* <Box
-                display="flex"
-                flexDirection={"column"}
-                border="1px solid #c4c4c4"
-                borderRadius="5px"
-                margin="15px 0 0 0"
-              >
-                <Typography style={{ margin: "15px 0 0 15px" }}>
-                  Технические данные
+                  Др. поля
                 </Typography>
                 <Box
                   display="grid"
                   gridGap="15px"
                   gridTemplateColumns="1fr 1fr"
                   padding="10px"
-                  borderRadius="5px"
                 >
                   <TextField
                     {...options}
-                    disabled={true}
-                    label={"В рамках какого документа был импорт"}
-                    name={"c_import_doc"}
-                    value={values.c_import_doc}
+                    label={"Номер телефона"}
+                    disabled={!isFullAccess}
+                    name={"c_phone"}
+                    error={errors.c_phone}
+                    helperText={errors.c_phone}
+                    value={values.c_phone}
                   />
                   <TextField
                     {...options}
-                    disabled={true}
-                    label={"Текст предупреждения"}
-                    name={"c_import_warning"}
-                    value={values.c_import_warning}
+                    label={"Постановление о постановке на учет"}
+                    disabled={!isFullAccess}
+                    name={"c_account"}
+                    error={errors.c_account}
+                    helperText={errors.c_account}
+                    value={values.c_account}
+                  />
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    label={"Решение о снятии с учета"}
+                    disabled={!isFullAccess}
+                    name={"d_take_off_solution"}
+                    error={errors.d_take_off_solution}
+                    helperText={errors.d_take_off_solution}
+                    value={values.d_take_off_solution || null}
+                    format={dateFormat}
+                    size="small"
+                    InputAdornmentProps={{ position: "end" }}
+                    onChange={onChangeDate("d_take_off_solution")}
+                  />
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    label={"Сообщение заявителю о снятии с учета"}
+                    disabled={!isFullAccess}
+                    name={"d_take_off_message"}
+                    value={values.d_take_off_message || null}
+                    format={dateFormat}
+                    size="small"
+                    InputAdornmentProps={{ position: "end" }}
+                    onChange={onChangeDate("d_take_off_message")}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Примечание"}
+                    style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
+                    disabled={!isFullAccess}
+                    multiline
+                    rows={4}
+                    name={"c_notice"}
+                    value={values.c_notice}
                   />
                 </Box>
-              </Box> */}
+              </Box>
             </Box>
           )}
           {viewState === "PRINT" && (
@@ -918,7 +904,7 @@ export const DocumentsDetail = ({
               setState={setPrintState}
             />
           )}
-          {viewState === "HISTORY" && <DocumentHistory id={values.id}/>}
+          {viewState === "HISTORY" && <DocumentHistory id={values.id} />}
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>

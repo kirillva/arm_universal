@@ -364,6 +364,8 @@ export function DistinctSelectEditorField({
     size,
     operator,
     filter: initialFilter,
+    style,
+    disabled
   } = fieldProps;
 
   const [loading, setLoading] = useState(false);
@@ -432,6 +434,7 @@ export function DistinctSelectEditorField({
 
   return (
     <Autocomplete
+      style={style}
       freeSolo
       disableClearable
       options={options.map((option) => option)}
@@ -439,6 +442,7 @@ export function DistinctSelectEditorField({
       onChange={(e) => onChange(e.target.innerText)}
       inputValue={inputValue || ""}
       name={name}
+      disabled={disabled}
       filterOptions={(options, params) => {
         const filtered = optionsFilter(options, params);
 
@@ -457,7 +461,7 @@ export function DistinctSelectEditorField({
           error={error}
           helperText={helperText}
           variant="outlined"
-          InputProps={{ ...params.InputProps, type: "search" }}
+          InputProps={{ ...params.InputProps, type: "search", style: style }}
         />
       )}
     />
