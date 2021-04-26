@@ -1,4 +1,4 @@
-import data from "../config/config.json";
+// import data from "../config/config.json";
 // import localForage from "localforage";
 import { runRpc } from "./rpc.js";
 // localForage.config({
@@ -47,17 +47,24 @@ export const getConfig = function () {
     writeLog({ date: new Date(), type: WARNING_LOG, data: error });
     config = {};
   }
-  return Object.assign(data, config, regionconfig);
+  return Object.assign(config, regionconfig);
 };
 
-export const setConfig = function (config) {
-  try {
-    config = JSON.stringify(config);
-  } catch (error) {
-    writeLog({ date: new Date(), type: WARNING_LOG, data: error });
-    config = "{}";
-  }
-  localStorage.setItem("config", config);
+export const setConfig = function () {
+  fetch(`${process.env.PUBLIC_URL}/config/config.json`).then(
+    (configResponse) => {
+      configResponse.json().then((baseConfig) => {
+        let config = {};
+        try {
+          config = JSON.stringify(baseConfig);
+        } catch (error) {
+          writeLog({ date: new Date(), type: WARNING_LOG, data: error });
+          config = "{}";
+        }
+        localStorage.setItem("config", config);
+      });
+    }
+  );
 };
 
 export const writeLog = function (data) {
@@ -171,7 +178,7 @@ export const ArrayToObjByUID = (array, name) => {
 export const getSelectByColumns = (columns) => {
   if (columns && columns.length) {
     const items = [];
-    columns.forEach(column => {
+    columns.forEach((column) => {
       if (column.accessor) {
         items.push(column.accessor);
       }
@@ -179,29 +186,27 @@ export const getSelectByColumns = (columns) => {
         items.push(column.mapAccessor);
       }
     });
-    return items.join(',');
+    return items.join(",");
   } else {
     return null;
   }
 };
 
-
-
 export const getDivisionByLogin = (login) => {
   switch (login) {
     case "kalinin":
       return 1;
-      
+
     case "lenin":
       return 7;
-      
+
     case "moscow":
       return 8;
-      
+
     case "nov":
       return 10;
 
     default:
-      return null
+      return null;
   }
-} 
+};

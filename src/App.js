@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import IconButton from "@material-ui/core/IconButton";
@@ -18,6 +18,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import MessageContextProvider from "context/MessageContext";
+import { setConfig } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +52,10 @@ function ResponsiveDrawer() {
   const login = getItem("login");
 
   const claims = getClaims();
+
+  useEffect(()=>{
+    setConfig();
+  }, []);
 
   return (
     <div className={classes.root}>
