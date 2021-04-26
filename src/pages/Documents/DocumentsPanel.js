@@ -122,7 +122,7 @@ export const DocumentsPanel = () => {
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,
-          width: "400px",
+          width: "250px",
           style: { textAlign: "center" },
         },
         {
@@ -131,7 +131,7 @@ export const DocumentsPanel = () => {
           operator: Operators.string,
           Filter: StringFilter,
           Cell: StringCell,
-          width: "400px",
+          width: "300px",
           style: { textAlign: "center" },
         },
         {
@@ -166,7 +166,7 @@ export const DocumentsPanel = () => {
           title: "Постановление о постановке на учет (дата и номер)",
           accessor: "c_account",
           operator: Operators.string,
-          width: "100px",
+          width: "150px",
           style: { textAlign: "center" },
           Filter: StringFilter,
           Cell: StringCell,

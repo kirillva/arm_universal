@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, IconButton } from "@material-ui/core";
 import Popover from "@material-ui/core/Popover";
 import styles from "./BaseDatePicker.module.css";
 import "moment/locale/ru";
+import { Clear } from "@material-ui/icons";
 
 const BaseNumberFromToFilter = ({
   className,
@@ -66,11 +67,11 @@ const BaseNumberFromToFilter = ({
         onClick={handleClick}
         InputProps={{
           contentEditable: false,
-        //   endAdornment: (
-        //     <IconButton onClick={handleClick} size="small">
-        //       <DateRangeOutlined />
-        //     </IconButton>
-        //   ),
+          // endAdornment: (
+          //   <IconButton onClick={handleCancel} size="small">
+          //     <Clear />
+          //   </IconButton>
+          // ),
           ...InputProps,
         }}
       />

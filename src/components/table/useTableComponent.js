@@ -234,7 +234,7 @@ export const useTableComponent = ({
                 });
               }
               break;
-              
+
             case "fromTo":
               if (item.value.start) {
                 _filters.push({
@@ -672,31 +672,43 @@ export const useTableComponent = ({
                       style.minWidth = column.width;
                       style.width = column.width;
                     }
+
                     return (
                       <TableCell
-                        style={style}
-                        className={classes.headerOuterWrapper}
-                        {...column.getHeaderProps()}
+                      style={{ padding: 0 }}
+                        // className={classes.headerOuterWrapper}
                       >
-                        <span
-                          {...column.getSortByToggleProps()}
-                          title={column.title}
-                          className={classes.headerTitle}
-                          style={{
-                            ...column.style,
-                          }}
+                        <div
+                          style={{ ...style, height: "140px", backgroundColor: '#579a76' }}
+                          {...column.getHeaderProps()}
                         >
-                          {column.render("Header")}
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <ArrowDropUp />
+                          <span
+                            {...column.getSortByToggleProps()}
+                            title={column.title}
+                            className={classes.headerTitle}
+                            style={{
+                              ...column.style
+                            }}
+                          >
+                            {column.render("Header")}
+                            {column.isSorted ? (
+                              column.isSortedDesc ? (
+                                <ArrowDropUp />
+                              ) : (
+                                <ArrowDropDown />
+                              )
                             ) : (
-                              <ArrowDropDown />
-                            )
-                          ) : (
-                            ""
-                          )}
-                        </span>
+                              ""
+                            )}
+                          </span>
+                        </div>
+                        <div style={style} {...column.getHeaderProps()}>
+                          <div>
+                            {column.canFilter
+                              ? column.render("Filter", filterProps)
+                              : null}
+                          </div>
+                        </div>
                       </TableCell>
                     );
                   }
@@ -708,38 +720,6 @@ export const useTableComponent = ({
                 </div>
               ) : (
                 <TableBody className={classes.body}>
-                  {headers.map((column) => {
-                    let filterProps = { hidden: filterHidden };
-                    if (column.fieldProps) {
-                      filterProps = Object.assign(
-                        filterProps,
-                        column.fieldProps
-                      );
-                    }
-                    if (!selectable && column.id === "selection") {
-                      return null;
-                    } else {
-                      let style = { ...column.style };
-
-                      style.padding = "2px";
-                      if (column.id === "selection") {
-                        style.width = "80px";
-                      }
-                      if (column.width) {
-                        style.minWidth = column.width;
-                        style.width = column.width;
-                      }
-                      return (
-                        <TableCell style={style} {...column.getHeaderProps()}>
-                          <div>
-                            {column.canFilter
-                              ? column.render("Filter", filterProps)
-                              : null}
-                          </div>
-                        </TableCell>
-                      );
-                    }
-                  })}
                   {page.map((row) => {
                     prepareRow(row);
                     return (
@@ -758,6 +738,16 @@ export const useTableComponent = ({
                       >
                         {row.cells.map((cell) => {
                           const filterProps = cell.column.fieldProps;
+                          let style = { ...cell.column.style };
+
+                          if (cell.column.id === "selection") {
+                            style.width = "80px";
+                          }
+                          if (cell.column.width) {
+                            style.minWidth = cell.column.width;
+                            style.width = cell.column.width;
+                            style.maxWidth = cell.column.width;
+                          }
                           if (!selectable && cell.column.id === "selection") {
                             return null;
                           } else {
@@ -781,10 +771,11 @@ export const useTableComponent = ({
                                 {...cell.getCellProps()}
                                 className={classes.cell}
                                 style={
-                                  cell.column.style ||
-                                  (cell.column.id === "selection"
-                                    ? { width: "80px" }
-                                    : {})
+                                  style
+                                  // cell.column.style ||
+                                  // (cell.column.id === "selection"
+                                  //   ? { width: "80px" }
+                                  //   : {})
                                 }
                               >
                                 {cell.render("Cell", {
