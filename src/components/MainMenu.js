@@ -13,9 +13,9 @@ export const SimpleMenu = ({ setAuth }) => {
   const history = useHistory();
 
   return (
-    <Box display="flex" >
-      <Button color="secondary">
-        {getActivate()}
+    <Box display="flex" style={{ gap: '5px', alignItems: 'center' }} >
+      {/* <Button color="secondary">
+        
       </Button>
       <Button
         style={{flex: 1}}
@@ -23,8 +23,14 @@ export const SimpleMenu = ({ setAuth }) => {
         color="secondary"
         size="small"
       >
+        
+      </Button> */}
+      <Typography>
+        {getActivate()}
+      </Typography>
+      <Typography>
         {getUsername() || getItem("login")}
-      </Button>
+      </Typography>
       <Button
         style={{flex: 1}}
         endIcon={<ExitToAppIcon />}

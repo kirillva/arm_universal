@@ -535,12 +535,12 @@ export const DocumentsDetail = ({
                     
                   /> */}
                   <DistinctSelectEditorField
-                    onChange={(value) => setFieldValue("c_address", value)}
+                    onChange={(value) => setFieldValue("c_fio", value)}
                     fieldProps={{
                       margin: "none",
                       size: "small",
                       idProperty: "id",
-                      nameProperty: "c_address",
+                      nameProperty: "c_fio",
                       table: "dd_documents",
                       error: errors.c_fio,
                       helperText: errors.c_fio,
