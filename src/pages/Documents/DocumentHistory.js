@@ -44,7 +44,7 @@ export const DocumentHistory = ({ id }) => {
         <CircularProgress />
       ) : (
         history.map((item) => {
-          const { c_operation, d_date, c_user, jb_old_value, jb_new_value } = item;
+          const { c_operation, d_date, c_user, jb_new_value } = item;
 
           const getValue = (name) => {
             return jb_new_value[name] || "нет";

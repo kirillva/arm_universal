@@ -68,14 +68,14 @@ export const DocumentPrint = ({ values, state, setState }) => {
             <div>
             {!print ? <TextField
               style={{ width: '100px' }}
-              value={state.date} onChange={(e)=>setState({...state, date: e.target.value})}
-            /> : state.date}
+              value={state.date1} onChange={(e)=>setState({...state, date1: e.target.value})}
+            /> : state.date1}
               {'   '}
               {/* {moment(d_date).format("DD.MM.YYYY")} №{n_number} */}
               {!print ? <TextField
               style={{ width: '100px' }}
-              value={state.number} onChange={(e)=>setState({...state, number: e.target.value})}
-            /> : `№ ${state.number}`}
+              value={state.number1} onChange={(e)=>setState({...state, number1: e.target.value})}
+            /> : state.number1 ? `№ ${state.number1}` : ''}
             </div>
             <div style={{ width: '200px', margin: 'auto' }}>
             {!print ? <TextField
@@ -95,7 +95,7 @@ export const DocumentPrint = ({ values, state, setState }) => {
             <div>{!print ? <TextField
               style={{ width: '100%' }}
               value={state.c_address} onChange={(e)=>setState({...state, c_address: e.target.value})}
-            /> : `№ ${state.c_address}`}</div>
+            /> : state.c_address ? `№ ${state.c_address}` : ''}</div>
           </div>
         </div>
         <div style={{ textIndent: "50px", textAlign: 'justify' }}>
@@ -111,14 +111,17 @@ export const DocumentPrint = ({ values, state, setState }) => {
               style={{ margin: "0 10px" }}
               value={state.registry} onChange={(e)=>setState({...state, registry: e.target.value})}
             /> : state.registry}{" "}
-            {/* {c_accept || '"нет данных"'} {" "} */}
             Ваша семья включена в Реестр учета многодетных семей, имеющих право
-            на бесплатное предоставление в собственность земельных участков,{" "}
-            {/* {c_account || '"нет данных"'} */}
-             {!print  ? <TextField
-              style={{ margin: "0 10px" }}
-              value={state.land} onChange={(e)=>setState({...state, land: e.target.value})}
-            /> : state.land}
+            на бесплатное предоставление в собственность земельных участков, с {' '}
+            {!print ? <TextField
+              style={{ width: '100px' }}
+              value={state.date} onChange={(e)=>setState({...state, date: e.target.value})}
+            /> : state.date}
+            {' '}под{' '}
+            {!print ? <TextField
+              style={{ width: '100px' }}
+              value={state.number} onChange={(e)=>setState({...state, number: e.target.value})}
+            /> : `№ ${state.number}`}
           </div>
           <div>
             По вопросу распределения и предоставления земельных участков Вы

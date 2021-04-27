@@ -220,7 +220,10 @@ export const DocumentsDetail = ({
                     {
                       ...values,
                       // n_number: last_dd_document.n_number + 1,
-                      jb_print: last_dd_document.jb_print,
+                      jb_print: {
+                        position: last_dd_document.jb_print.position,
+                        official_name: last_dd_document.jb_print.official_name
+                      },
                       n_year: Number(values.n_year),
                     },
                   ],
@@ -301,10 +304,13 @@ export const DocumentsDetail = ({
 
   useEffect(() => {
     const newValues = {
+      number1: '',
+      date1: '',
       number: values.n_number,
       date: moment(values.d_date).format("DD.MM.YYYY"),
-      registry: values.c_accept,
-      land: values.c_account,
+      // registry: values.c_accept,
+      registry: values.c_account,
+      // land: values.c_account,
       c_fio: values.c_fio,
       c_address: values.c_address,
     };
