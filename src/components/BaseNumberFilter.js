@@ -64,14 +64,16 @@ const BaseNumberFromToFilter = ({
         value={renderPeriod()}
         placeholder="Поиск..."
         className={className}
-        onClick={handleClick}
+        inputProps={{
+          onClick: handleClick
+        }}
         InputProps={{
           contentEditable: false,
-          // endAdornment: (
-          //   <IconButton onClick={handleCancel} size="small">
-          //     <Clear />
-          //   </IconButton>
-          // ),
+          endAdornment: (
+            <IconButton onClick={handleCancel} size="small">
+              <Clear />
+            </IconButton>
+          ),
           ...InputProps,
         }}
       />
