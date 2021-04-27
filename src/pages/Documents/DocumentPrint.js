@@ -49,12 +49,14 @@ export const DocumentPrint = ({ values, state, setState }) => {
             <div>
               <img src={Chuvash} alt="chuvash" height="100px" />
             </div>
-            <b>
+            <b style={{
+              marginBottom: '20px',
+            }}>
               ЧĂВАШ РЕСПУБЛИКИ<br/> ШУПАШКАР ХУЛА АДМИНИСТРАЦИЙĚН<br/> ПУРĂНМАЛЛИ
               ÇУРТ-ЙĚРПЕ КОМУНАЛЛĂ<br/>  ХУÇАЛАХ, ЭНЕРГЕТИКА, ТРАНСПОРТ ТАТА<br/>  ÇЫХĂНУ
               УПРАВЛЕНИЙĚ
             </b>
-            <div style={{ textDecoration: 'underline', width: '100px', height: '20px', borderBottom: '1px solid', margin: 'auto' }}> </div>
+            <div style={{ textDecoration: 'underline', width: '100px', borderBottom: '1px solid', margin: 'auto' }}> </div>
             <b>
               Чувашская Республика<br/>  УПРАВЛЕНИЕ ЖКХ, ЭНЕРГЕТИКИ,<br/>  ТРАНСПОРТА И
               СВЯЗИ<br/>  администрации города<br/>  Чебоксары
@@ -75,7 +77,7 @@ export const DocumentPrint = ({ values, state, setState }) => {
               value={state.number} onChange={(e)=>setState({...state, number: e.target.value})}
             /> : `№ ${state.number}`}
             </div>
-            <div style={{ width: '200px', height: '20px', margin: 'auto' }}>
+            <div style={{ width: '200px', margin: 'auto' }}>
             {!print ? <TextField
               style={{ width: '100px' }}
               value={state.text} onChange={(e)=>setState({...state, text: e.target.value})}
@@ -96,14 +98,14 @@ export const DocumentPrint = ({ values, state, setState }) => {
             /> : `№ ${state.c_address}`}</div>
           </div>
         </div>
-        <div style={{ textIndent: "50px" }}>
-          <p>
+        <div style={{ textIndent: "50px", textAlign: 'justify' }}>
+          <div>
             Управление ЖКХ, энергетики, транспорта и связи администрации города
             Чебоксары сообщает, что Ваша просьба о постановке на учет для
             получения земельного участка в собственность бесплатно
             удовлетворена.
-          </p>
-          <p style={{ lineHeight: "33px" }}>
+          </div>
+          <div style={{ lineHeight: print ? 'normal' : "33px" }}>
             Постановлением администрации города Чебоксары от {" "}
             {!print  ? <TextField
               style={{ margin: "0 10px" }}
@@ -117,14 +119,14 @@ export const DocumentPrint = ({ values, state, setState }) => {
               style={{ margin: "0 10px" }}
               value={state.land} onChange={(e)=>setState({...state, land: e.target.value})}
             /> : state.land}
-          </p>
-          <p>
+          </div>
+          <div>
             По вопросу распределения и предоставления земельных участков Вы
             можете обращаться в МБУ «Управление территориального планирования»
             администрации города Чебоксары, тел.23-12-28.
-          </p>
+          </div>
         </div>
-        <div>
+        <div style={{ marginTop: '20px' }}>
           <div
             style={{
               display: "flex",
