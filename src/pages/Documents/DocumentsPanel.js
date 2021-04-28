@@ -226,7 +226,8 @@ export const DocumentsPanel = () => {
         {
           title: "Решение о снятии с учета (дата решения и номер) ",
           accessor: "d_take_off_solution",
-          operator: Operators.date,
+          exportRenderer: dateRenderer,
+          operator: Operators.fromTo,
           width: "170px",
           style: { textAlign: "center" },
           Filter: DateFilter,
@@ -235,7 +236,8 @@ export const DocumentsPanel = () => {
         {
           title: "Сообщение заявителю о снятии с учета",
           accessor: "d_take_off_message",
-          operator: Operators.date,
+          exportRenderer: dateRenderer,
+          operator: Operators.fromTo,
           width: "170px",
           style: { textAlign: "center" },
           Filter: DateFilter,
