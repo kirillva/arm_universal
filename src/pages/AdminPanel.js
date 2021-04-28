@@ -93,7 +93,7 @@ export const AdminPanel = () => {
       },
       claims.indexOf(".monkey.") >= 0
         ? {
-            title: "УИК",
+            title: "Рабочий УИК",
             accessor: "f_uik",
             operator: Operators.number,
             Filter: StringFilter,
@@ -109,6 +109,7 @@ export const AdminPanel = () => {
             ),
           }
         : null,
+      { style: { display: 'none' }, title: "УИК по месту жительства", accessor: "f_user___n_uik", operator: Operators.string, Filter: StringFilter, Cell: StringCell },
       { style: { display: 'none' }, title: "Домашний телефон", accessor: "f_user___c_phone_home", operator: Operators.string, Filter: StringFilter, Cell: StringCell }, 
       { style: { display: 'none' }, title: "Facebook", accessor: "f_user___c_facebook", operator: Operators.string, Filter: StringFilter, Cell: StringCell }, 
       { style: { display: 'none' }, title: "VK", accessor: "f_user___c_vk", operator: Operators.string, Filter: StringFilter, Cell: StringCell }, 
@@ -200,7 +201,7 @@ export const AdminPanel = () => {
     className: classes.table,
     title: "Список пользователей",
     columns: pd_userindivisions,
-    select: `id,f_user,n_gos_subdivision,f_uik,f_user___c_phone_home,f_user___c_facebook,f_user___c_vk,f_user___c_ok,f_user___c_twitter,f_user___c_work,f_user___c_job,f_user___c_bit1,f_user___c_bit2,f_user___c_bit3,f_user___c_bit4,f_user___c_bit5,f_user___c_bit6,f_user___c_bit7,f_user___c_bit8,f_user___c_notice,f_user___c_phone_main,
+    select: `id,f_user,n_gos_subdivision,f_uik,f_user___n_uik,f_user___c_phone_home,f_user___c_facebook,f_user___c_vk,f_user___c_ok,f_user___c_twitter,f_user___c_work,f_user___c_job,f_user___c_bit1,f_user___c_bit2,f_user___c_bit3,f_user___c_bit4,f_user___c_bit5,f_user___c_bit6,f_user___c_bit7,f_user___c_bit8,f_user___c_notice,f_user___c_phone_main,
     ${getSelectByColumns(
       pd_userindivisions
     )}`,
@@ -236,6 +237,7 @@ export const AdminPanel = () => {
             c_bit7: record.f_user___c_bit7,	
             c_bit8: record.f_user___c_bit8,	
             c_notice: record.f_user___c_notice,	
+            n_uik: record.f_user___n_uik,
             c_phone_main: record.f_user___c_phone_main,  
             d_birthday: record.f_user___d_birthday,	
             c_address: record.f_user___c_address,	
@@ -335,6 +337,7 @@ export const AdminPanel = () => {
             c_bit7: record.f_user___c_bit7,
             c_bit8: record.f_user___c_bit8,
             c_notice: record.f_user___c_notice,
+            n_uik: record.f_user___n_uik,
             c_phone_main: record.f_user___c_phone_main,
             d_birthday: record.f_user___d_birthday,	
             c_address: record.f_user___c_address,	
