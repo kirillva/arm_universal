@@ -19,6 +19,7 @@ import moment from "moment";
 import MomentUtils from "@date-io/moment";
 import BaseDatePicker from "components/BaseDatePicker";
 import BaseNumberFromToFilter from "components/BaseNumberFilter";
+import { COLORS } from "pages/Documents/DocumentsPanel";
 const useStyles = makeStyles((theme) => ({
   adornedEnd: {
     paddingRight: "3px",
@@ -176,6 +177,37 @@ export const FromToFilter = ({
         }}
       />
     </>
+  );
+};
+
+export const ColorsFilter = ({
+  column: { filterValue, setFilter },
+  className,
+  hidden,
+  style
+}) => {
+  // const classes = useStyles();
+
+  return (
+    <TextField
+      variant="outlined"
+      size="small"
+      margin="none"
+      style={{width: '100%', backgroundColor: COLORS[filterValue] }}
+      select
+      label={"Тег"}
+      value={filterValue}
+      onChange={(e)=>setFilter(e.target.value)}
+    >
+      <MenuItem key={''} value={''}>
+        нет
+      </MenuItem>
+      {Object.keys(COLORS).map((key) => (
+        <MenuItem style={{backgroundColor: COLORS[key]}} key={key} value={key}>
+            {key}
+        </MenuItem>
+      ))}
+    </TextField>
   );
 };
 

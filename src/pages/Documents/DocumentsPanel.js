@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   BoolFilter,
+  ColorsFilter,
   DateFilter,
   DateSingleFilter,
   FromToFilter,
@@ -30,6 +31,16 @@ import { DocumentsList } from "./DocumentsList";
 import SearchIcon from "@material-ui/icons/Search";
 import moment from "moment";
 
+export const COLORS = {
+  'красный': '#ee3f22',
+  'оранжевый': '#f26f23',
+  'желтый': '#fded20',
+  'зеленый': '#02b049',
+  'голубой': '#0095d7',
+  'синий': '#1049a0',
+  'фиолетовый': '#633391',
+};
+
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
@@ -49,12 +60,33 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "15px",
     // minHeight: '64px'
   },
-
+  red: {
+    backgroundColor: '#ee3f22'
+  },
+  orange: {
+    backgroundColor: '#f26f23'
+  },
+  yellow: {
+    backgroundColor: '#fded20'
+  },
+  green: {
+    backgroundColor: '#02b049'
+  },
+  lightBlue: {
+    backgroundColor: '#0095d7'
+  },
+  blue: {
+    backgroundColor: '#1049a0'
+  },
+  violet: {
+    backgroundColor: '#633391'
+  },
   title: {
     flex: 1,
     margin: "0 0 0 15px",
   },
 }));
+
 
 export const DocumentsPanel = () => {
   const classes = useStyles();
@@ -210,6 +242,15 @@ export const DocumentsPanel = () => {
           Cell: DateCell,
         },
         {
+          title: "Тег",
+          accessor: "c_tag",
+          operator: Operators.string,
+          width: "150px",
+          style: { textAlign: "center" },
+          Filter: ColorsFilter,
+          Cell: StringCell,
+        },
+        {
           title: "Примечание",
           accessor: "c_notice",
           width: "200px",
@@ -228,6 +269,26 @@ export const DocumentsPanel = () => {
     hideTitle: true,
     columns: pd_user,
     action: "dd_documents",
+    getRowClassName: (row) => {
+      switch (row.original.c_tag) {
+        case 'красный':
+          return classes.red;
+        case 'оранжевый':
+          return classes.orange;
+        case 'желтый':
+          return classes.yellow;
+        case 'зеленый':
+          return classes.green;
+        case 'голубой':
+          return classes.lightBlue;
+        case 'синий':
+          return classes.blue;
+        case 'фиолетовый':
+          return classes.violet;
+        default:
+          return ''
+      }
+    },
     sortBy: [{ id: "n_number", desc: true }],
     globalFilters: React.useMemo(
       () => [

@@ -40,6 +40,7 @@ import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import PrintIcon from "@material-ui/icons/Print";
 import { DocumentPrint } from "./DocumentPrint";
 import { DistinctSelectEditorField } from "components/table/Editors";
+import { COLORS } from "./DocumentsPanel";
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -149,6 +150,7 @@ export const DocumentsDetail = ({
       f_user: getUserId(),
       sn_delete: false,
       // jb_child: [],
+      c_tag: '',
       c_import_doc: "",
       c_import_warning: "",
     },
@@ -843,6 +845,23 @@ export const DocumentsDetail = ({
                   gridTemplateColumns="1fr 1fr"
                   padding="10px"
                 >
+                  <TextField
+                    {...options}
+                    style={{ backgroundColor: COLORS[values.c_tag] }}
+                    select
+                    label={"Тег"}
+                    disabled={!isFullAccess}
+                    name={"c_tag"}
+                    error={errors.c_tag}
+                    helperText={errors.c_tag}
+                    value={values.c_tag}
+                  >
+                    {Object.keys(COLORS).map((key) => (
+                      <MenuItem style={{backgroundColor: COLORS[key]}} key={key} value={key}>
+                         {key}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                   <TextField
                     {...options}
                     label={"Номер телефона"}
