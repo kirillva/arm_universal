@@ -670,16 +670,16 @@ export const useTableComponent = ({
                     }
                     if (column.width) {
                       style.minWidth = column.width;
-                      style.width = column.width;
+                      style.width = '100%';
                     }
 
                     return (
                       <TableCell
-                      style={{ padding: 0 }}
+                        style={{...style, padding: 0 }}
                         // className={classes.headerOuterWrapper}
                       >
                         <div
-                          style={{ ...style, height: "140px", backgroundColor: '#579a76' }}
+                          style={{ height: '100px', padding: '5px', backgroundColor: '#579a76' }}
                           {...column.getHeaderProps()}
                         >
                           <span
