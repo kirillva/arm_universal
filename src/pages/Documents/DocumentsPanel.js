@@ -32,13 +32,13 @@ import SearchIcon from "@material-ui/icons/Search";
 import moment from "moment";
 
 export const COLORS = {
-  'красный': '#ee3f22',
-  'оранжевый': '#f26f23',
-  'желтый': '#fded20',
-  'зеленый': '#02b049',
-  'голубой': '#0095d7',
-  'синий': '#1049a0',
-  'фиолетовый': '#633391',
+  'красный': '#ee3f2280',
+  'оранжевый': '#f26f2380',
+  'желтый': '#fded2080',
+  'зеленый': '#02b04980',
+  'голубой': '#0095d780',
+  'синий': '#1049a080',
+  'фиолетовый': '#63339180',
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -61,25 +61,25 @@ const useStyles = makeStyles((theme) => ({
     // minHeight: '64px'
   },
   red: {
-    backgroundColor: '#ee3f22'
+    backgroundColor: COLORS['красный']
   },
   orange: {
-    backgroundColor: '#f26f23'
+    backgroundColor: COLORS['оранжевый']
   },
   yellow: {
-    backgroundColor: '#fded20'
+    backgroundColor: COLORS['желтый']
   },
   green: {
-    backgroundColor: '#02b049'
+    backgroundColor: COLORS['зеленый']
   },
   lightBlue: {
-    backgroundColor: '#0095d7'
+    backgroundColor: COLORS['голубой']
   },
   blue: {
-    backgroundColor: '#1049a0'
+    backgroundColor: COLORS['синий']
   },
   violet: {
-    backgroundColor: '#633391'
+    backgroundColor: COLORS['фиолетовый']
   },
   title: {
     flex: 1,
@@ -261,6 +261,26 @@ export const DocumentsPanel = () => {
           Filter: StringFilter,
           Cell: StringCell,
         },
+        {
+          title: "",
+          accessor: "jb_child",
+          style: { display: 'none' },
+          exportRenderer: (jb_child)=>{
+            return jb_child && jb_child.length ? jb_child.map(item=>{
+              const {
+                c_address,
+                c_document,
+                c_fio,
+                c_note,
+                d_birthday,
+                n_year,
+              } = item;
+              return `\n;${c_fio|| ''};${moment(d_birthday).format('DD.MM.YYYY')};${n_year|| ''};${c_document|| ''};${c_address|| ''};;;;;;;;;;${c_note || ''}`
+            }).join('') : ''
+          },
+          Filter: () => null,
+          Cell: () => null,
+        },
       ].filter((item) => item),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -302,7 +322,7 @@ export const DocumentsPanel = () => {
       ],
       []
     ),
-    select: `id,jb_child,${getSelectByColumns(pd_user)}`,
+    select: `id,${getSelectByColumns(pd_user)}`,
     handleClick: (record) => {
       setSelectedRow(record.row.original.id);
       setOpen(true);

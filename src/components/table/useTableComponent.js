@@ -605,7 +605,7 @@ export const useTableComponent = ({
         title={"Экспорт"}
         variant="contained"
         color="primary"
-        onClick={() => ExportToCsv({ ignore: ["id", "jb_child"] })}
+        onClick={() => ExportToCsv({ ignore: ["id"] })}
       >
         Экспорт
       </Button>

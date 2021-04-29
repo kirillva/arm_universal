@@ -468,7 +468,7 @@ export const DocumentsDetail = ({
                 <Box
                   display="grid"
                   gridGap="15px"
-                  gridTemplateColumns="1fr 1fr 1fr 3fr"
+                  gridTemplateColumns="1fr 2fr 1fr 3fr 3fr"
                   padding="10px"
                 >
                   <TextField
@@ -517,6 +517,15 @@ export const DocumentsDetail = ({
                     label={"Цель использования земельного участка"}
                     name={"c_intent"}
                     value={values.c_intent}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Постановление о постановке на учет"}
+                    disabled={!isFullAccess}
+                    name={"c_account"}
+                    error={errors.c_account}
+                    helperText={errors.c_account}
+                    value={values.c_account}
                   />
                 </Box>
               </Box>
@@ -598,12 +607,21 @@ export const DocumentsDetail = ({
                       table: "dd_documents",
                       error: errors.c_address,
                       helperText: errors.c_address,
-                      style: { gridColumnStart: 1, gridColumnEnd: 3 },
+                      style: { gridColumnStart: 1, gridColumnEnd: 2 },
                       disabled: !isFullAccess,
                     }}
                     label={"Адрес, телефон"}
                     name={"c_address"}
                     value={values.c_address}
+                  />
+                  <TextField
+                    {...options}
+                    label={"Номер телефона"}
+                    disabled={!isFullAccess}
+                    name={"c_phone"}
+                    error={errors.c_phone}
+                    helperText={errors.c_phone}
+                    value={values.c_phone}
                   />
                   <TextField
                     {...options}
@@ -856,30 +874,15 @@ export const DocumentsDetail = ({
                     helperText={errors.c_tag}
                     value={values.c_tag}
                   >
+                    <MenuItem key={''} value={''}>
+                      нет
+                    </MenuItem>
                     {Object.keys(COLORS).map((key) => (
                       <MenuItem style={{backgroundColor: COLORS[key]}} key={key} value={key}>
                          {key}
                       </MenuItem>
                     ))}
                   </TextField>
-                  <TextField
-                    {...options}
-                    label={"Номер телефона"}
-                    disabled={!isFullAccess}
-                    name={"c_phone"}
-                    error={errors.c_phone}
-                    helperText={errors.c_phone}
-                    value={values.c_phone}
-                  />
-                  <TextField
-                    {...options}
-                    label={"Постановление о постановке на учет"}
-                    disabled={!isFullAccess}
-                    name={"c_account"}
-                    error={errors.c_account}
-                    helperText={errors.c_account}
-                    value={values.c_account}
-                  />
                   <KeyboardDatePicker
                     autoOk
                     variant="inline"
