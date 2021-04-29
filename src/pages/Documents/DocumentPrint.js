@@ -4,9 +4,11 @@ import React from "react";
 import Chuvash from "assets/chuvash.png";
 import ReactDOMServer from "react-dom/server";
 import { runRpc } from "utils/rpc";
+import { getClaims } from "utils/user";
 
 export const DocumentPrint = ({ values, state, setState }) => {
   // const { c_accept, c_account } = values;
+  const isFullAccess = getClaims().indexOf(".full.") >= 0;
 
   function onPrintItems(text) {
     runRpc({
@@ -67,18 +69,21 @@ export const DocumentPrint = ({ values, state, setState }) => {
             </p>
             <div>
             {!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100px' }}
               value={state.date1} onChange={(e)=>setState({...state, date1: e.target.value})}
             /> : state.date1}
               {'   '}
               {/* {moment(d_date).format("DD.MM.YYYY")} №{n_number} */}
               {!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100px' }}
               value={state.number1} onChange={(e)=>setState({...state, number1: e.target.value})}
             /> : state.number1 ? `№ ${state.number1}` : ''}
             </div>
             <div style={{ width: '200px', margin: 'auto' }}>
             {!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100px' }}
               value={state.text} onChange={(e)=>setState({...state, text: e.target.value})}
             /> : state.text}
@@ -88,11 +93,13 @@ export const DocumentPrint = ({ values, state, setState }) => {
             <div>
               {/* Гр. {c_fio}, */}
             {!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100%' }}
               value={state.c_fio} onChange={(e)=>setState({...state, c_fio: e.target.value})}
             /> : `Гр. ${state.c_fio}`}</div>
             {/* {c_address} */}
             <div>{!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100%' }}
               value={state.c_address} onChange={(e)=>setState({...state, c_address: e.target.value})}
             /> : state.c_address ? `№ ${state.c_address}` : ''}</div>
@@ -108,17 +115,20 @@ export const DocumentPrint = ({ values, state, setState }) => {
           <div style={{ lineHeight: print ? 'normal' : "33px" }}>
             Постановлением администрации города Чебоксары от {" "}
             {!print  ? <TextField
+              disabled={!isFullAccess}
               style={{ margin: "0 10px" }}
               value={state.registry} onChange={(e)=>setState({...state, registry: e.target.value})}
             /> : state.registry}{" "}
             Ваша семья включена в Реестр учета многодетных семей, имеющих право
             на бесплатное предоставление в собственность земельных участков, с {' '}
             {!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100px' }}
               value={state.date} onChange={(e)=>setState({...state, date: e.target.value})}
             /> : state.date}
             {' '}под{' '}
             {!print ? <TextField
+              disabled={!isFullAccess}
               style={{ width: '100px' }}
               value={state.number} onChange={(e)=>setState({...state, number: e.target.value})}
             /> : `№ ${state.number}`}
@@ -138,11 +148,11 @@ export const DocumentPrint = ({ values, state, setState }) => {
               gap: "15px",
             }}
           >
-             {!print ? <TextField
+             {!print ? <TextField disabled={!isFullAccess} 
               style={{ flex: 1 }}
               value={state.position} onChange={(e)=>setState({...state, position: e.target.value})}
             /> : <div style={{ flex: 1 }}>{state.position}</div>}
-             {!print ? <TextField value={state.official_name} onChange={(e)=>setState({...state, official_name: e.target.value})} /> : <div>{state.official_name}</div>}
+             {!print ? <TextField  disabled={!isFullAccess} value={state.official_name} onChange={(e)=>setState({...state, official_name: e.target.value})} /> : <div>{state.official_name}</div>}
           </div>
           <p style={{ fontSize: "0.8em" }}>Купцова Т.Г. 23-50-64</p>
         </div>
