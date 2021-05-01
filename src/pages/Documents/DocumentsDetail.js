@@ -41,6 +41,7 @@ import PrintIcon from "@material-ui/icons/Print";
 import { DocumentPrint } from "./DocumentPrint";
 import { DistinctSelectEditorField } from "components/table/Editors";
 import { COLORS } from "./DocumentsPanel";
+import { GetGUID } from "utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   Paper: {
@@ -155,6 +156,7 @@ export const DocumentsDetail = ({
       c_import_warning: "",
     },
     onSubmit: (values) => {
+      debugger;
       values.jb_child = jbchild;
       if (values.id) {
         runRpc({
@@ -187,12 +189,12 @@ export const DocumentsDetail = ({
                 },
                 {
                   property: "d_date",
-                  value: values.d_date.startOf("day").toISOString(true),
+                  value: moment(values.d_date).startOf("day").toISOString(true),
                   operator: ">=",
                 },
                 {
                   property: "d_date",
-                  value: values.d_date.endOf("day").toISOString(true),
+                  value: moment(values.d_date).endOf("day").toISOString(true),
                   operator: "<=",
                 },
               ],
@@ -222,10 +224,11 @@ export const DocumentsDetail = ({
                     {
                       ...values,
                       // n_number: last_dd_document.n_number + 1,
-                      jb_print: {
+                      jb_print: values.jb_print ? values.jb_print : {
                         position: last_dd_document.jb_print.position,
                         official_name: last_dd_document.jb_print.official_name
                       },
+                      id: GetGUID(),
                       n_year: Number(values.n_year),
                     },
                   ],
@@ -937,39 +940,68 @@ export const DocumentsDetail = ({
       </DialogContent>
       <DialogActions>
         {values.id && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              ShowAcceptWindow({
-                title: "Предупреждение",
-                components: `Вы действительно хотите удалить заявку? Данные могут быть потеряны.`,
-                buttons: [
-                  {
-                    text: "Да",
-                    color: "secondary",
-                    handler: () => {
-                      runRpc({
-                        action: "dd_documents",
-                        method: "Delete",
-                        data: [{ id: values.id }],
-                        type: "rpc",
-                      }).finally(() => {
-                        onSubmit();
-                      });
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                runRpcSingleRecord({
+                  action: "dd_documents",
+                  method: "Query",
+                  data: [
+                    {
+                      sort: [
+                        {
+                          property: "n_number",
+                          direction: "desc",
+                        },
+                      ],
                     },
-                  },
-                  {
-                    text: "Нет",
-                    color: "primary",
-                  },
-                ],
-              });
-            }}
-            disabled={!isFullAccess || loading}
-          >
-            Удалить
-          </Button>
+                  ],
+                }).then((last_dd_document) => {
+                  setFieldValue('id', null);
+                  setFieldValue("n_number", last_dd_document.n_number + 1);
+                });
+                
+              }}
+              disabled={!isFullAccess || loading}
+            >
+              Создать копию
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                ShowAcceptWindow({
+                  title: "Предупреждение",
+                  components: `Вы действительно хотите удалить заявку? Данные могут быть потеряны.`,
+                  buttons: [
+                    {
+                      text: "Да",
+                      color: "secondary",
+                      handler: () => {
+                        runRpc({
+                          action: "dd_documents",
+                          method: "Delete",
+                          data: [{ id: values.id }],
+                          type: "rpc",
+                        }).finally(() => {
+                          onSubmit();
+                        });
+                      },
+                    },
+                    {
+                      text: "Нет",
+                      color: "primary",
+                    },
+                  ],
+                });
+              }}
+              disabled={!isFullAccess || loading}
+            >
+              Удалить
+            </Button>
+          </>
         )}
         <Button
           variant="contained"
