@@ -19,13 +19,17 @@ export const SelectSubdivision = ({
   useEffect(() => {
     const division = getDivisionByLogin(login);
     const filter = [
-      { property: "id", value: 0, operator: "gt" },
       {
         property: "b_city",
         value: login.indexOf("nov") >= 0,
         operator: "=",
       }
     ]
+    if (login && login.toLowerCase().indexOf('test') >= 0) { 
+      filter.push({ property: "id", value: 0, operator: "lt" });
+    } else {
+      filter.push({ property: "id", value: 0, operator: "gt" });
+    }
     if (division) {
       filter.push({
         property: "f_division",
