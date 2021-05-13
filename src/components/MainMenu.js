@@ -152,6 +152,14 @@ export const SimpleMenu = ({ setAuth }) => {
           >
             Скачать отчет
           </MenuItem>
+          <MenuItem
+            button
+            onClick={() => {
+              window.location = `http://агитатор21.рус/`;
+            }}
+          >
+            Вернуться новому UI
+          </MenuItem>
         </>
         <MenuItem
           button

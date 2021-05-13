@@ -65,6 +65,23 @@ export const SigninForm = withRouter(({ history, setAuth }) => {
     <div className={classes.content}>
       <Paper className={classes.formWrapper}>
         <form className={classes.form} onSubmit={handleSubmit}>
+          <ul >
+            <li>
+              <a target="blank" rel="noreferrer" href={'https://youtu.be/LXFAwGcnl70'}>
+                Видеоинструкция к мобильному приложению
+              </a>			
+            </li>
+            <li>
+              <a target="blank" rel="noreferrer" href={'http://kes.it-serv.ru/vote-instruction/Инструкция пользователя.pdf'}>
+                Инструкция пользователя
+              </a>			
+            </li>
+            <li>
+              <a target="blank" rel="noreferrer" href={'http://kes.it-serv.ru/vote-instruction/Краткая памятка обходчика.pdf'}>
+                Краткая памятка обходчика
+              </a>			
+            </li>
+          </ul>
           <Typography variant="h6" className={classes.title}>
             Вход
           </Typography>

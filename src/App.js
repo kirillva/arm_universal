@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer() {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(Boolean(localStorage.getItem('token')));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
