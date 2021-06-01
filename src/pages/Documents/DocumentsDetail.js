@@ -156,7 +156,6 @@ export const DocumentsDetail = ({
       c_import_warning: "",
     },
     onSubmit: (values) => {
-      debugger;
       values.jb_child = jbchild;
       if (values.id) {
         runRpc({
@@ -410,6 +409,20 @@ export const DocumentsDetail = ({
     setjbchild([]);
   };
 
+  const eventHandler = (e) => {
+    const message = "На странице могут быть несохраненные данные, вы действительно хотите продолжить?";
+    (e || window.event).returnValue = message;
+    return message;
+  }
+
+  useEffect(() => {
+    const onbeforeunload = window.onbeforeunload;
+    window.onbeforeunload = eventHandler;
+    return () => {
+      window.onbeforeunload = onbeforeunload;
+    }
+  }, [])
+
   return (
     <Dialog
       open={open}
@@ -650,7 +663,7 @@ export const DocumentsDetail = ({
                   flexDirection={"row"}
                   style={{
                     margin: "15px 15px 0 15px",
-                    width: "100%",
+                    // width: "100%",
                     alignItems: "center",
                   }}
                 >
