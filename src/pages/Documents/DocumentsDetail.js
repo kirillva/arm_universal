@@ -92,6 +92,8 @@ export const DocumentsDetail = ({
 
   const classes = useStyles();
   const {
+    touched,
+    setFieldTouched,
     handleSubmit,
     handleChange,
     values,
@@ -328,6 +330,7 @@ export const DocumentsDetail = ({
 
   const onChangeJbChild = (id, name) => {
     return (e) => {
+      setFieldTouched(name, true);
       if (name !== "d_birthday") {
         jbchild[id] = { ...jbchild[id], [name]: e.target.value };
       } else {
@@ -395,18 +398,52 @@ export const DocumentsDetail = ({
     variant: "outlined",
     size: "small",
     margin: "none",
-    onChange: handleChange,
+    onChange: (e)=>{
+      handleChange(e);
+      setFieldTouched(e.target.name, true);
+    },
   };
   const dateFormat = "DD.MM.YYYY";
 
   const onChangeDate = (name) => {
-    return (date) => setFieldValue(name, moment(date).toISOString(true));
+    return (date) => {
+      setFieldValue(name, moment(date).toISOString(true));
+    };
   };
 
+  let _touched = 0;
+  Object.keys(touched).forEach(key=>{
+    _touched += touched[key];
+  });
+
   const onClose = () => {
-    resetForm();
-    setOpen(false);
-    setjbchild([]);
+    const _onClose = () => {
+      resetForm();
+      setOpen(false);
+      setjbchild([]);
+    }
+    if (_touched) {
+      ShowAcceptWindow({
+        title: "Предупреждение",
+        components: `Вы действительно хотите закрыть заявку? Данные могут быть потеряны.`,
+        buttons: [
+          {
+            text: "Да",
+            color: "secondary",
+            handler: () => {
+              _onClose();
+            },
+          },
+          {
+            text: "Нет",
+            color: "primary",
+          },
+        ],
+      });
+    } else {
+      _onClose();
+    }
+
   };
 
   const eventHandler = (e) => {
@@ -416,12 +453,13 @@ export const DocumentsDetail = ({
   }
 
   useEffect(() => {
+    if (!_touched) return; 
     const onbeforeunload = window.onbeforeunload;
     window.onbeforeunload = eventHandler;
     return () => {
       window.onbeforeunload = onbeforeunload;
     }
-  }, [])
+  }, [_touched])
 
   return (
     <Dialog
