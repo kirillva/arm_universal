@@ -152,6 +152,7 @@ export const DocumentsDetail = ({
       c_notice: "",
       f_user: getUserId(),
       sn_delete: false,
+      c_phone: '',
       // jb_child: [],
       c_tag: '',
       c_import_doc: "",
@@ -639,7 +640,7 @@ export const DocumentsDetail = ({
                         "d_birthday",
                         moment(date).toISOString(true)
                       );
-                      setFieldValue("n_year", moment().diff(date, "year"));
+                      setFieldValue("n_year", moment(values.d_date || new Date()).diff(date, "year"));
                       validateField("d_birthday");
                     }}
                   />
@@ -760,7 +761,7 @@ export const DocumentsDetail = ({
                             };
                             jbchild[id] = {
                               ...jbchild[id],
-                              n_year: moment().diff(e, "year"),
+                              n_year: moment(values.d_date || new Date()).diff(e, "year"),
                             };
                             setjbchild([...jbchild]);
                           }}
